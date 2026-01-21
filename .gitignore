@@ -1,0 +1,56 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build outputs
+dist/
+build/
+.next/
+.turbo/
+out/
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env*.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Testing
+coverage/
+.nyc_output/
+
+# Cache
+.cache/
+.eslintcache
+*.tsbuildinfo
+
+# React Native (mobile-app)
+apps/mobile-app/ios/Pods/
+apps/mobile-app/ios/build/
+apps/mobile-app/android/.gradle/
+apps/mobile-app/android/app/build/
+apps/mobile-app/android/build/
+*.jks
+*.keystore
+
+# Misc
+*.pem
+.vercel
+.netlify

@@ -1,0 +1,27 @@
+{
+  "name": "aetherlabs",
+  "private": true,
+  "scripts": {
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "lint": "turbo lint",
+    "type-check": "turbo type-check",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "clean": "turbo clean && rm -rf node_modules",
+    "dev:web": "turbo dev --filter=web",
+    "dev:landing": "turbo dev --filter=landing",
+    "dev:admin": "turbo dev --filter=admin",
+    "dev:playground": "turbo dev --filter=playground",
+    "build:ui": "turbo build --filter=@aetherlabs/ui"
+  },
+  "devDependencies": {
+    "prettier": "^3.2.4",
+    "turbo": "^2.3.0",
+    "@aetherlabs/eslint-config": "workspace:*",
+    "@aetherlabs/typescript-config": "workspace:*"
+  },
+  "packageManager": "pnpm@9.15.0",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

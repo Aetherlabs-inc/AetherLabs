@@ -1,0 +1,86 @@
+# AetherLabs Project Rules
+
+## Package Manager
+- Always use `pnpm` instead of `npm` for all package management commands
+- Use `pnpm add <package>` for dependencies
+- Use `pnpm add -D <package>` for dev dependencies
+- Use `pnpm install` for installing dependencies
+- Use `pnpm run <script>` for running scripts
+
+## Code Style & Standards
+- Use TypeScript for all new files (.ts, .tsx)
+- Use functional components with React hooks
+- Always include React import: `import React from 'react'`
+- Use 'use client' directive for client components in Next.js App Router
+- Follow Next.js 14+ App Router conventions
+- Use strict TypeScript mode (strict: true)
+- Use ES2017 target for TypeScript compilation
+
+## Project Structure
+- Components should be in `src/` directory
+- UI components in `components/ui/` (shadcn/ui)
+- Pages in `app/` directory following Next.js App Router structure
+- Use absolute imports with `@/` alias (configured in tsconfig.json)
+- Landing page components in `src/LandingPage/`
+- Services in `src/services/`
+- Utilities in `lib/` directory
+- Content files (MDX) in `content/` directory
+
+## Imports & Paths
+- Use absolute imports with `@/` alias: `@/components/ui/button`
+- Import React explicitly: `import React from 'react'`
+- Use named exports for components
+- Use default exports for page components
+
+## UI Components
+- Use shadcn/ui components from `@/components/ui/`
+- Use Radix UI primitives (already installed)
+- Use Tailwind CSS for styling
+- Use lucide-react for icons
+- Use `cn()` utility from `@/lib/utils` for className merging
+
+## Styling
+- Use Tailwind CSS utility classes
+- Use CSS variables for theming (defined in globals.css)
+- Follow shadcn/ui "new-york" style
+- Use Tailwind config from `tailwind.config.ts`
+
+## Next.js Conventions
+- Use App Router (app/ directory)
+- Use server components by default
+- Mark client components with 'use client'
+- Use `useRouter` from `next/navigation` for navigation
+- Use metadata exports for SEO
+
+## Form Handling
+- Use React hooks for form state management
+- Validate forms before submission
+- Use toast notifications from `@/hooks/use-toast` for feedback
+- Handle errors gracefully with user-friendly messages
+
+## Backend Integration
+- Supabase for backend services
+- Use `@/src/lib/supabase` for Supabase client
+- AWS Amplify for some backend features
+- API routes in `app/api/` directory
+
+## Content Management
+- Use MDX for content files (terms, privacy, etc.)
+- Use `gray-matter` for parsing frontmatter
+- Content files in `content/` directory
+- Use `getMDXContent()` from `lib/mdx.ts` for loading MDX
+
+## Git & Version Control
+- Follow existing .gitignore patterns
+- Commit messages should be descriptive
+
+## Testing & Quality
+- Run `pnpm run lint` before committing
+- Fix linting errors before proceeding
+- Use TypeScript strict mode for type safety
+
+## Project Context
+- This is AetherLabs - an art authentication platform using blockchain and NFC technology
+- Tech Stack: Next.js 14, TypeScript, React 18, Tailwind CSS, shadcn/ui, Supabase, Radix UI
+- Target: Art galleries, artists, and collectors for artwork authentication
+

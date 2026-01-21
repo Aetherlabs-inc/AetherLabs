@@ -1,0 +1,46 @@
+@import 'tailwindcss';
+@import '@aetherlabs/ui/tokens.css';
+
+/* Base styles */
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background-color: var(--color-neutral-950);
+  color: var(--color-neutral-100);
+}
+
+/* Monaco editor styling */
+.monaco-editor {
+  border-radius: 8px;
+}
+
+/* Custom scrollbar for dark theme */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-neutral-900);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-neutral-700);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-neutral-600);
+}
+
+/* Glow effect for active elements */
+.glow-primary {
+  box-shadow: 0 0 20px rgba(99, 101, 241, 0.635);
+}
+
+/* Gradient text utility */
+.text-gradient {
+  background: linear-gradient(135deg, var(--color-primary-400), var(--color-accent-400));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
