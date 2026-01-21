@@ -1,6 +1,5 @@
 import React from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, Badge } from '@aetherlabs/ui';
 import { Clock, Sparkles, Zap, Shield, Users, Camera, Globe } from 'lucide-react';
 
 interface Feature {

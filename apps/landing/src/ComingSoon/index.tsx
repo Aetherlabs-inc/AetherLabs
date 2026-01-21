@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Clock, ArrowLeft, Mail } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@aetherlabs/ui';
 import Link from 'next/link';
 
 interface ComingSoonProps {

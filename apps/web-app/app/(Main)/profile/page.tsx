@@ -3,14 +3,8 @@
 import { useState, useEffect } from 'react';
 import { createClient } from '@/src/lib/supabase';
 import { userProfileService, UserProfile, UserStats } from '@/src/services/user-profile-service';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
+import { Button, Input, Label, Card, CardContent, CardDescription, CardHeader, CardTitle, Avatar, AvatarFallback, AvatarImage, Badge, useToast } from '@aetherlabs/ui';
 import { User, Camera, Save, Loader2, Share2 } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
 
 export default function ProfilePage() {
     const [profile, setProfile] = useState<UserProfile | null>(null);

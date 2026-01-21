@@ -54,3 +54,6 @@ apps/mobile-app/android/build/
 *.pem
 .vercel
 .netlify
+
+.cursorrules
+CLAUDE.md

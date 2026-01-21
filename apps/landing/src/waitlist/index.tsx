@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react';
-import { toast } from '@/hooks/use-toast';
+import { toast } from '@aetherlabs/ui';
 import { Heart } from 'lucide-react';
 
 const WaitlistSection = () => {

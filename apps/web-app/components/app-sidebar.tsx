@@ -11,7 +11,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
-} from "@/components/ui/sidebar";
+} from "@aetherlabs/ui";
 import { Settings, Home, Image, Users, CreditCard, HelpCircle, LogOut, User } from "lucide-react";
 import { createClient } from '@/src/lib/supabase';
 

@@ -2,9 +2,7 @@
 
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import { Button, Input, Label } from '@aetherlabs/ui'
 import { cn } from '@/lib/utils'
 import { createClient } from '@/src/lib/supabase'
 import { BsEyeSlashFill, BsFillEyeFill } from "react-icons/bs"

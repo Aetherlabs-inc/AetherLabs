@@ -1,11 +1,11 @@
 'use client';
 import React, { useState } from "react"
 import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
+import { Button } from "@aetherlabs/ui"
+import { Card, CardContent } from "@aetherlabs/ui"
+import { Input } from "@aetherlabs/ui"
 import { signIn } from 'aws-amplify/auth';
-import { Label } from "@/components/ui/label";
+import { Label } from "@aetherlabs/ui";
 import { BsEyeSlashFill, BsFillEyeFill } from "react-icons/bs";
 import { useRouter } from "next/navigation";
 import Image from "next/image";

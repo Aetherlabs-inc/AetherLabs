@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@aetherlabs/ui";
 import TaskColumn, { Column } from './TaskColumn';
 import { Task } from './TaskCard';
 

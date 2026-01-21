@@ -5,7 +5,7 @@ import {
     SidebarFooter,
     SidebarGroup,
     SidebarHeader,
-} from "@/components/ui/sidebar"
+} from "@aetherlabs/ui"
 
 export function AppSidebar() {
     return (

@@ -2,8 +2,7 @@
 
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Button, Card, CardContent } from '@aetherlabs/ui';
 import { Palette, Building2, Gem } from 'lucide-react';
 
 const UseCases = () => {

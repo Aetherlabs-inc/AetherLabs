@@ -1,10 +1,7 @@
 'use client'
 import React, { useState, useEffect } from 'react';
 import { Search, Filter, Plus, Image as ImageIcon, Shield, AlertCircle, Clock, Eye, Wifi, CheckCircle, X, Trash2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { Button, Card, CardContent, Badge, AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@aetherlabs/ui';
 import RegisterArtwork from '@/src/Artworks/registerArtwork/RegisterArtwork';
 import COACertificate from '@/src/Artworks/registerArtwork/COACertificate';
 import ArtworkDetails from '@/src/Artworks/ArtworkDetails';

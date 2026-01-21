@@ -2,7 +2,14 @@
   "permissions": {
     "allow": [
       "Bash(pnpm dev)",
-      "Bash(pnpm install)"
+      "Bash(pnpm install)",
+      "Bash(npx turbo build:*)",
+      "Bash(pnpm --filter=playground-app build:*)",
+      "Bash(cat:*)",
+      "Bash(pnpm --filter=aetherlabs-landing build:*)",
+      "Bash(pnpm --filter=aetherlabs-landing-page build:*)",
+      "Bash(pnpm --filter=aetherlabs-dashboard build:*)",
+      "Bash(grep:*)"
     ]
   }
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@aetherlabs/ui';
 import { CheckCircle, Upload, CreditCard, Shield } from 'lucide-react';
 
 const HowItWorks = () => {

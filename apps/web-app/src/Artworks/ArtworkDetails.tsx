@@ -1,9 +1,6 @@
 import React from 'react';
 import { ArrowLeft, Eye, FileText, Wifi, Shield, QrCode, CheckCircle, AlertTriangle, User, Calendar, Ruler, Trash2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { Button, Card, CardContent, CardHeader, CardTitle, Badge, AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@aetherlabs/ui';
 import { ArtworkWithDetails } from '@/src/types/database';
 import { formatArtistName } from '@/src/utils/artist-utils';
 

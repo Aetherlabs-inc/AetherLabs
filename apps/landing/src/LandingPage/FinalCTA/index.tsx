@@ -3,7 +3,7 @@
 import Image from "next/image";
 import React from "react";
 import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
+import { Button } from '@aetherlabs/ui';
 
 export default function FinalCTA() {
     const router = useRouter();

@@ -1,13 +1,10 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import { Button, Input, Label, useToast } from '@aetherlabs/ui'
 import { cn } from '@/lib/utils'
 import { createClient } from '@/src/lib/supabase'
 import { userProfileService } from '@/src/services/user-profile-service'
-import { useToast } from '@/hooks/use-toast'
 import { BsEyeSlashFill, BsFillEyeFill } from "react-icons/bs"
 import Image from "next/image"
 

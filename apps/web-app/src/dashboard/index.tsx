@@ -15,9 +15,9 @@ import {
     ArcElement,
 } from "chart.js";
 import { Line, Doughnut } from "react-chartjs-2";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@aetherlabs/ui";
+import { Button } from "@aetherlabs/ui";
+import { Input } from "@aetherlabs/ui";
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, ArcElement);
 
