@@ -182,8 +182,8 @@ const Story = () => {
         }
         
         ::selection {
-          background: #BC8010;
-          color: white;
+          background: hsl(var(--primary));
+          color: hsl(var(--primary-foreground));
         }
       `}</style>
       
@@ -348,7 +348,7 @@ const Story = () => {
               title="Artists"
               line1="You pour yourself into your work."
               line2="Protect it, build your portfolio, and follow your pieces wherever they go."
-              color="#BC8010"
+              color="hsl(var(--primary))"
               delay={1200}
             />
             
@@ -356,7 +356,7 @@ const Story = () => {
               title="Galleries"
               line1="Trust is your currency."
               line2="Authenticate every sale and show collectors the proof they need."
-              color="#BC8010"
+              color="hsl(var(--primary))"
               delay={1350}
             />
             
@@ -364,7 +364,7 @@ const Story = () => {
               title="Dealers"
               line1="One bad piece can cost everything."
               line2="Verify before you buy. Complete history. No surprises."
-              color="#CA5B2B"
+              color="hsl(var(--accent))"
               delay={1500}
             />
             
@@ -372,7 +372,7 @@ const Story = () => {
               title="Collectors"
               line1="Your collection tells a story."
               line2="Own it with proof. Every piece verified, every history preserved."
-              color="#BC8010"
+              color="hsl(var(--primary))"
               delay={1650}
             />
           </div>

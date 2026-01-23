@@ -190,11 +190,11 @@ export default function PublicProfilePage() {
                                 const hasNFC = artwork.nfc_tags && artwork.nfc_tags.some(tag => tag.is_bound);
 
                                 return (
-                                    <Card 
-                                        key={artwork.id} 
-                                        className="border border-black dark:border-white bg-white dark:bg-black overflow-hidden hover:shadow-lg transition-shadow"
+                                    <Card
+                                        key={artwork.id}
+                                        className="border border-border bg-card overflow-hidden hover:shadow-lg transition-shadow"
                                     >
-                                        <div className="aspect-w-16 aspect-h-9 bg-gray-100 dark:bg-gray-900">
+                                        <div className="aspect-w-16 aspect-h-9 bg-muted">
                                             <img
                                                 src={artwork.image_url || '/placeholder-artwork.jpg'}
                                                 alt={artwork.title}
@@ -203,13 +203,13 @@ export default function PublicProfilePage() {
                                         </div>
                                         <CardContent className="p-4">
                                             <div className="mb-3">
-                                                <h3 className="font-semibold text-lg text-black dark:text-white mb-1">
+                                                <h3 className="font-semibold text-lg text-foreground mb-1">
                                                     {artwork.title}
                                                 </h3>
-                                                <p className="text-black dark:text-white text-sm mb-1">
+                                                <p className="text-foreground text-sm mb-1">
                                                     {formatArtistName(artwork.artist)}
                                                 </p>
-                                                <p className="text-gray-600 dark:text-gray-400 text-xs">
+                                                <p className="text-muted-foreground text-xs">
                                                     {artwork.year} • {artwork.medium}
                                                 </p>
                                             </div>
@@ -218,14 +218,14 @@ export default function PublicProfilePage() {
                                             <div className="mb-3">
                                                 {hasCertificate ? (
                                                     <div className="flex items-center gap-2 mb-2">
-                                                        <CheckCircle className="h-4 w-4 text-black dark:text-white" />
-                                                        <span className="text-sm font-medium text-black dark:text-white">
+                                                        <CheckCircle className="h-4 w-4 text-foreground" />
+                                                        <span className="text-sm font-medium text-foreground">
                                                             Certificate Issued
                                                         </span>
                                                         {artwork.certificates?.[0]?.certificate_id && (
-                                                            <Badge 
-                                                                variant="outline" 
-                                                                className="text-xs border-black dark:border-white text-black dark:text-white"
+                                                            <Badge
+                                                                variant="outline"
+                                                                className="text-xs"
                                                             >
                                                                 {artwork.certificates[0].certificate_id}
                                                             </Badge>
@@ -233,8 +233,8 @@ export default function PublicProfilePage() {
                                                     </div>
                                                 ) : (
                                                     <div className="flex items-center gap-2 mb-2">
-                                                        <CheckCircle className="h-4 w-4 text-gray-500" />
-                                                        <span className="text-sm text-gray-500">No Certificate</span>
+                                                        <CheckCircle className="h-4 w-4 text-muted-foreground" />
+                                                        <span className="text-sm text-muted-foreground">No Certificate</span>
                                                     </div>
                                                 )}
 
@@ -242,13 +242,13 @@ export default function PublicProfilePage() {
                                                 <div className="flex items-center gap-2 mb-2">
                                                     {hasNFC ? (
                                                         <>
-                                                            <Wifi className="h-4 w-4 text-black dark:text-white" />
-                                                            <span className="text-xs text-black dark:text-white">NFC Linked</span>
+                                                            <Wifi className="h-4 w-4 text-foreground" />
+                                                            <span className="text-xs text-foreground">NFC Linked</span>
                                                         </>
                                                     ) : (
                                                         <>
-                                                            <Wifi className="h-4 w-4 text-gray-400" />
-                                                            <span className="text-xs text-gray-500">No NFC</span>
+                                                            <Wifi className="h-4 w-4 text-muted-foreground" />
+                                                            <span className="text-xs text-muted-foreground">No NFC</span>
                                                         </>
                                                     )}
                                                 </div>
@@ -256,18 +256,18 @@ export default function PublicProfilePage() {
 
                                             {/* Status */}
                                             <div className="flex justify-between items-center">
-                                                <span 
+                                                <span
                                                     className={`px-2 py-1 rounded-full text-xs font-medium ${
                                                         artwork.status === 'authenticated'
-                                                            ? 'bg-black dark:bg-white text-white dark:text-black'
+                                                            ? 'bg-primary text-primary-foreground'
                                                             : artwork.status === 'pending_verification'
-                                                                ? 'bg-yellow-500 text-black'
-                                                                : 'bg-gray-500 text-white'
+                                                                ? 'bg-accent text-accent-foreground'
+                                                                : 'bg-muted text-muted-foreground'
                                                     }`}
                                                 >
                                                     {artwork.status.replace('_', ' ').toUpperCase()}
                                                 </span>
-                                                <span className="text-xs text-gray-600 dark:text-gray-400">
+                                                <span className="text-xs text-muted-foreground">
                                                     {new Date(artwork.created_at).toLocaleDateString()}
                                                 </span>
                                             </div>

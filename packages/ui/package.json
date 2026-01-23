@@ -10,6 +10,8 @@
     "./primitives/*": "./src/primitives/*.tsx",
     "./tokens": "./src/tokens/index.ts",
     "./tokens.css": "./src/tokens.css",
+    "./theme.css": "./src/theme.css",
+    "./tailwind-preset": "./src/tailwind-preset.ts",
     "./utils": "./src/utils/index.ts",
     "./hooks": "./src/hooks/index.ts"
   },

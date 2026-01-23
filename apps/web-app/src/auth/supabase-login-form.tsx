@@ -95,8 +95,8 @@ export function SupabaseLoginForm({
                         </Button>
                     </div>
                 </div>
-                {error && <p className="text-red-500 mb-4">{error}</p>}
-                <Button type="submit" className="w-full" onClick={handleSignIn} disabled={loading}>
+                {error && <p className="text-destructive mb-4">{error}</p>}
+                <Button type="submit" className="w-full bg-primary text-primary-foreground" onClick={handleSignIn} disabled={loading}>
                     Login
                 </Button>
                 <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">

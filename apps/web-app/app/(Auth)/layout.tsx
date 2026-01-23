@@ -26,7 +26,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
                         className="flex items-center gap-2 font-medium hover:opacity-80 transition-opacity"
                         aria-label="Return to home"
                     >
-                        <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
+                        <div className="flex h-6 w-6 items-center justify-center rounded-md bg-foreground text-background">
                             Æ
                         </div>
                         AetherLabs
@@ -38,7 +38,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
                     </div>
                 </div>
             </div>
-            <div className="relative hidden bg-muted lg:block bg-white">
+            <div className="relative hidden bg-muted lg:block">
                 <Image
                     src="/aetherhero1.png"
                     alt="AetherLabs creative workspace showcasing artistic authenticity"

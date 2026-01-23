@@ -475,35 +475,35 @@ const RegisterArtwork: React.FC<RegisterArtworkProps> = ({ onBack }) => {
 
     if (currentScreen === 'complete') {
         return (
-            <div className="min-h-screen bg-white dark:bg-black p-6">
+            <div className="min-h-screen bg-background p-6">
                 <div className="max-w-4xl mx-auto">
                     <div className="text-center">
                         <div className="mb-8">
-                            <div className="mx-auto w-20 h-20 bg-black dark:bg-white rounded-full flex items-center justify-center mb-6">
-                                <CheckCircle className="h-10 w-10 text-white dark:text-black" />
+                            <div className="mx-auto w-20 h-20 bg-primary rounded-full flex items-center justify-center mb-6">
+                                <CheckCircle className="h-10 w-10 text-primary-foreground" />
                             </div>
-                            <h1 className="text-4xl font-bold text-black dark:text-white mb-4">
+                            <h1 className="text-4xl font-bold text-foreground mb-4">
                                 Artwork Registration Complete!
                             </h1>
-                            <p className="text-xl text-black dark:text-white mb-8">
+                            <p className="text-xl text-foreground mb-8">
                                 &ldquo;{formData.title}&rdquo; has been successfully registered
                             </p>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                             {coaData && (
-                                <Card className="border border-black dark:border-white bg-white dark:bg-black">
+                                <Card className="border border-border bg-card">
                                     <CardHeader>
-                                        <CardTitle className="flex items-center gap-2 text-black dark:text-white">
-                                            <CheckCircle className="h-5 w-5 text-black dark:text-white" />
+                                        <CardTitle className="flex items-center gap-2 text-foreground">
+                                            <CheckCircle className="h-5 w-5 text-foreground" />
                                             Certificate of Authenticity
                                         </CardTitle>
                                     </CardHeader>
                                     <CardContent>
-                                        <p className="text-sm text-black dark:text-white mb-2">
+                                        <p className="text-sm text-foreground mb-2">
                                             Certificate ID: {coaData.certificateId}
                                         </p>
-                                        <p className="text-xs text-black dark:text-white">
+                                        <p className="text-xs text-muted-foreground">
                                             Blockchain verified and registered
                                         </p>
                                     </CardContent>
@@ -511,18 +511,18 @@ const RegisterArtwork: React.FC<RegisterArtworkProps> = ({ onBack }) => {
                             )}
 
                             {nfcData && nfcData.isBound && (
-                                <Card className="border border-black dark:border-white bg-white dark:bg-black">
+                                <Card className="border border-border bg-card">
                                     <CardHeader>
-                                        <CardTitle className="flex items-center gap-2 text-black dark:text-white">
-                                            <CheckCircle className="h-5 w-5 text-black dark:text-white" />
+                                        <CardTitle className="flex items-center gap-2 text-foreground">
+                                            <CheckCircle className="h-5 w-5 text-foreground" />
                                             NFC Tag Bound
                                         </CardTitle>
                                     </CardHeader>
                                     <CardContent>
-                                        <p className="text-sm text-black dark:text-white mb-2">
+                                        <p className="text-sm text-foreground mb-2">
                                             NFC UID: {nfcData.nfcUid}
                                         </p>
-                                        <p className="text-xs text-black dark:text-white">
+                                        <p className="text-xs text-muted-foreground">
                                             Physical verification enabled
                                         </p>
                                     </CardContent>
@@ -532,7 +532,7 @@ const RegisterArtwork: React.FC<RegisterArtworkProps> = ({ onBack }) => {
 
                         <Button
                             onClick={handleFinalComplete}
-                            className="px-8 py-3 text-lg font-semibold bg-black hover:bg-gray-800 dark:bg-white dark:hover:bg-gray-200 text-white dark:text-black"
+                            className="px-8 py-3 text-lg font-semibold bg-primary hover:bg-primary/90 text-primary-foreground"
                         >
                             Register Another Artwork
                         </Button>
@@ -543,7 +543,7 @@ const RegisterArtwork: React.FC<RegisterArtworkProps> = ({ onBack }) => {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-black dark:to-gray-800 p-6">
+        <div className="min-h-screen bg-background p-6">
             <div className="max-w-7xl mx-auto space-y-6">
                 {/* Header */}
                 <div className="mb-8">
@@ -551,7 +551,7 @@ const RegisterArtwork: React.FC<RegisterArtworkProps> = ({ onBack }) => {
                         <Button
                             onClick={onBack}
                             variant="ghost"
-                            className="mb-4 flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+                            className="mb-4 flex items-center gap-2 text-foreground hover:text-muted-foreground"
                         >
                             <ArrowLeft className="h-4 w-4" />
                             Back to Artworks
@@ -559,18 +559,18 @@ const RegisterArtwork: React.FC<RegisterArtworkProps> = ({ onBack }) => {
                     )}
 
                     <div className="text-center">
-                        <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                        <h1 className="text-4xl font-bold text-foreground mb-4">
                             Register New Artwork
                         </h1>
-                        <p className="text-xl text-gray-600 dark:text-gray-300 mb-4">
+                        <p className="text-xl text-muted-foreground mb-4">
                             Add a new artwork to your collection with detailed information
                         </p>
 
                         {/* Autosave Status */}
-                        <div className="flex items-center justify-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+                        <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
                             {isAutoSaving ? (
                                 <>
-                                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-500"></div>
+                                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-foreground"></div>
                                     Auto-saving...
                                 </>
                             ) : lastSaved ? (
@@ -585,9 +585,9 @@ const RegisterArtwork: React.FC<RegisterArtworkProps> = ({ onBack }) => {
 
                 <form onSubmit={handleSubmit} className="space-y-6">
                     {/* Identity Section - Core MVP Fields */}
-                    <Card className="border-0 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm">
+                    <Card className="border border-border bg-card">
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2 text-gray-900 dark:text-white">
+                            <CardTitle className="flex items-center gap-2 text-foreground">
                                 <FileText className="h-5 w-5" />
                                 Identity
                             </CardTitle>
@@ -600,7 +600,7 @@ const RegisterArtwork: React.FC<RegisterArtworkProps> = ({ onBack }) => {
                                 {/* Left Column - Text Fields */}
                                 <div className="space-y-4">
                                     <div className="space-y-2">
-                                        <Label htmlFor="title" className="text-gray-700 dark:text-gray-300">
+                                        <Label htmlFor="title" className="text-foreground">
                                             Title *
                                         </Label>
                                         <Input
@@ -608,10 +608,10 @@ const RegisterArtwork: React.FC<RegisterArtworkProps> = ({ onBack }) => {
                                             value={formData.title}
                                             onChange={(e) => handleInputChange('title', e.target.value)}
                                             placeholder="Enter artwork title"
-                                            className={errors.title ? 'border-red-500' : ''}
+                                            className={errors.title ? 'border-destructive' : ''}
                                         />
                                         {errors.title && (
-                                            <p className="text-sm text-red-500 flex items-center gap-1">
+                                            <p className="text-sm text-destructive flex items-center gap-1">
                                                 <AlertCircle className="h-4 w-4" />
                                                 {errors.title}
                                             </p>
@@ -620,7 +620,7 @@ const RegisterArtwork: React.FC<RegisterArtworkProps> = ({ onBack }) => {
 
                                     <div className="grid grid-cols-2 gap-4">
                                         <div className="space-y-2">
-                                            <Label htmlFor="year" className="text-gray-700 dark:text-gray-300">
+                                            <Label htmlFor="year" className="text-foreground">
                                                 Year *
                                             </Label>
                                             <Input
@@ -629,10 +629,10 @@ const RegisterArtwork: React.FC<RegisterArtworkProps> = ({ onBack }) => {
                                                 value={formData.year}
                                                 onChange={(e) => handleInputChange('year', e.target.value)}
                                                 placeholder="2024"
-                                                className={errors.year ? 'border-red-500' : ''}
+                                                className={errors.year ? 'border-destructive' : ''}
                                             />
                                             {errors.year && (
-                                                <p className="text-sm text-red-500 flex items-center gap-1">
+                                                <p className="text-sm text-destructive flex items-center gap-1">
                                                     <AlertCircle className="h-4 w-4" />
                                                     {errors.year}
                                                 </p>
@@ -640,7 +640,7 @@ const RegisterArtwork: React.FC<RegisterArtworkProps> = ({ onBack }) => {
                                         </div>
 
                                         <div className="space-y-2">
-                                            <Label htmlFor="medium" className="text-gray-700 dark:text-gray-300">
+                                            <Label htmlFor="medium" className="text-foreground">
                                                 Medium *
                                             </Label>
                                             <Input
@@ -648,10 +648,10 @@ const RegisterArtwork: React.FC<RegisterArtworkProps> = ({ onBack }) => {
                                                 value={formData.medium}
                                                 onChange={(e) => handleInputChange('medium', e.target.value)}
                                                 placeholder="Acrylic on canvas"
-                                                className={errors.medium ? 'border-red-500' : ''}
+                                                className={errors.medium ? 'border-destructive' : ''}
                                             />
                                             {errors.medium && (
-                                                <p className="text-sm text-red-500 flex items-center gap-1">
+                                                <p className="text-sm text-destructive flex items-center gap-1">
                                                     <AlertCircle className="h-4 w-4" />
                                                     {errors.medium}
                                                 </p>
@@ -661,7 +661,7 @@ const RegisterArtwork: React.FC<RegisterArtworkProps> = ({ onBack }) => {
 
                                     {/* Dimensions Helper */}
                                     <div className="space-y-2">
-                                        <Label className="text-gray-700 dark:text-gray-300">
+                                        <Label className="text-foreground">
                                             Dimensions *
                                         </Label>
                                         <div className="grid grid-cols-3 gap-2">
@@ -670,7 +670,7 @@ const RegisterArtwork: React.FC<RegisterArtworkProps> = ({ onBack }) => {
                                                     placeholder="H"
                                                     value={formData.dimensions.height}
                                                     onChange={(e) => handleDimensionChange('height', e.target.value)}
-                                                    className={errors.dimensions ? 'border-red-500' : ''}
+                                                    className={errors.dimensions ? 'border-destructive' : ''}
                                                 />
                                             </div>
                                             <div>
@@ -678,7 +678,7 @@ const RegisterArtwork: React.FC<RegisterArtworkProps> = ({ onBack }) => {
                                                     placeholder="W"
                                                     value={formData.dimensions.width}
                                                     onChange={(e) => handleDimensionChange('width', e.target.value)}
-                                                    className={errors.dimensions ? 'border-red-500' : ''}
+                                                    className={errors.dimensions ? 'border-destructive' : ''}
                                                 />
                                             </div>
                                             <div>
@@ -703,7 +703,7 @@ const RegisterArtwork: React.FC<RegisterArtworkProps> = ({ onBack }) => {
                                             ))}
                                         </div>
                                         {errors.dimensions && (
-                                            <p className="text-sm text-red-500 flex items-center gap-1">
+                                            <p className="text-sm text-destructive flex items-center gap-1">
                                                 <AlertCircle className="h-4 w-4" />
                                                 {errors.dimensions}
                                             </p>
@@ -713,17 +713,17 @@ const RegisterArtwork: React.FC<RegisterArtworkProps> = ({ onBack }) => {
 
                                 {/* Right Column - Image Upload */}
                                 <div className="space-y-4">
-                                    <Label className="text-gray-700 dark:text-gray-300">
+                                    <Label className="text-foreground">
                                         Primary Image *
                                     </Label>
                                     {!previewImage ? (
-                                        <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-8 text-center">
-                                            <Upload className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                                        <div className="border-2 border-dashed border-border rounded-lg p-8 text-center">
+                                            <Upload className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                                             <div className="space-y-2">
-                                                <p className="text-lg font-medium text-gray-900 dark:text-white">
+                                                <p className="text-lg font-medium text-foreground">
                                                     Upload Artwork Image
                                                 </p>
-                                                <p className="text-gray-500 dark:text-gray-400 text-sm">
+                                                <p className="text-muted-foreground text-sm">
                                                     JPG, PNG, WEBP • Max 10MB
                                                 </p>
                                             </div>
@@ -762,7 +762,7 @@ const RegisterArtwork: React.FC<RegisterArtworkProps> = ({ onBack }) => {
                                         </div>
                                     )}
                                     {errors.primaryImage && (
-                                        <p className="text-sm text-red-500 flex items-center gap-1">
+                                        <p className="text-sm text-destructive flex items-center gap-1">
                                             <AlertCircle className="h-4 w-4" />
                                             {errors.primaryImage}
                                         </p>
@@ -773,9 +773,9 @@ const RegisterArtwork: React.FC<RegisterArtworkProps> = ({ onBack }) => {
                     </Card>
 
                     {/* Details Section */}
-                    <Card className="border-0 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm">
+                    <Card className="border border-border bg-card">
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2 text-gray-900 dark:text-white">
+                            <CardTitle className="flex items-center gap-2 text-foreground">
                                 <FileText className="h-5 w-5" />
                                 Details
                             </CardTitle>
@@ -785,9 +785,9 @@ const RegisterArtwork: React.FC<RegisterArtworkProps> = ({ onBack }) => {
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <div className="space-y-2">
-                                <Label htmlFor="description" className="text-gray-700 dark:text-gray-300">
+                                <Label htmlFor="description" className="text-foreground">
                                     Description
-                                    <span className="text-sm text-gray-500 ml-2">
+                                    <span className="text-sm text-muted-foreground ml-2">
                                         ({formData.description.length}/500 characters)
                                     </span>
                                 </Label>
@@ -798,10 +798,10 @@ const RegisterArtwork: React.FC<RegisterArtworkProps> = ({ onBack }) => {
                                     placeholder="Describe the artwork, its style, and any notable features..."
                                     rows={4}
                                     maxLength={500}
-                                    className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white ${errors.description ? 'border-red-500' : ''}`}
+                                    className={`w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring bg-background text-foreground ${errors.description ? 'border-destructive' : ''}`}
                                 />
                                 {errors.description && (
-                                    <p className="text-sm text-red-500 flex items-center gap-1">
+                                    <p className="text-sm text-destructive flex items-center gap-1">
                                         <AlertCircle className="h-4 w-4" />
                                         {errors.description}
                                     </p>
@@ -810,7 +810,7 @@ const RegisterArtwork: React.FC<RegisterArtworkProps> = ({ onBack }) => {
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <Label className="text-gray-700 dark:text-gray-300">Edition Type</Label>
+                                    <Label className="text-foreground">Edition Type</Label>
                                     <div className="flex gap-2">
                                         <Button
                                             type="button"
@@ -831,23 +831,23 @@ const RegisterArtwork: React.FC<RegisterArtworkProps> = ({ onBack }) => {
 
                                 {formData.editionType === 'editioned' && (
                                     <div className="space-y-2">
-                                        <Label className="text-gray-700 dark:text-gray-300">Edition Details</Label>
+                                        <Label className="text-foreground">Edition Details</Label>
                                         <div className="grid grid-cols-2 gap-2">
                                             <Input
                                                 placeholder="Size (e.g., 20)"
                                                 value={formData.editionSize}
                                                 onChange={(e) => handleInputChange('editionSize', e.target.value)}
-                                                className={errors.edition ? 'border-red-500' : ''}
+                                                className={errors.edition ? 'border-destructive' : ''}
                                             />
                                             <Input
                                                 placeholder="Number (e.g., 2)"
                                                 value={formData.editionNumber}
                                                 onChange={(e) => handleInputChange('editionNumber', e.target.value)}
-                                                className={errors.edition ? 'border-red-500' : ''}
+                                                className={errors.edition ? 'border-destructive' : ''}
                                             />
                                         </div>
                                         {errors.edition && (
-                                            <p className="text-sm text-red-500 flex items-center gap-1">
+                                            <p className="text-sm text-destructive flex items-center gap-1">
                                                 <AlertCircle className="h-4 w-4" />
                                                 {errors.edition}
                                             </p>
@@ -864,7 +864,7 @@ const RegisterArtwork: React.FC<RegisterArtworkProps> = ({ onBack }) => {
                                             checked={formData.signature}
                                             onCheckedChange={(checked) => handleInputChange('signature', checked)}
                                         />
-                                        <Label htmlFor="signature" className="text-gray-700 dark:text-gray-300">
+                                        <Label htmlFor="signature" className="text-foreground">
                                             Signed
                                         </Label>
                                     </div>
@@ -878,7 +878,7 @@ const RegisterArtwork: React.FC<RegisterArtworkProps> = ({ onBack }) => {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <Label htmlFor="creationLocation" className="text-gray-700 dark:text-gray-300">
+                                    <Label htmlFor="creationLocation" className="text-foreground">
                                         Creation Location
                                     </Label>
                                     <Input
@@ -895,9 +895,9 @@ const RegisterArtwork: React.FC<RegisterArtworkProps> = ({ onBack }) => {
 
 
                     {/* Cataloging Section */}
-                    <Card className="border-0 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm">
+                    <Card className="border border-border bg-card">
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2 text-gray-900 dark:text-white">
+                            <CardTitle className="flex items-center gap-2 text-foreground">
                                 <FileText className="h-5 w-5" />
                                 Cataloging
                             </CardTitle>
@@ -908,14 +908,14 @@ const RegisterArtwork: React.FC<RegisterArtworkProps> = ({ onBack }) => {
                         <CardContent className="space-y-4">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <Label htmlFor="category" className="text-gray-700 dark:text-gray-300">
+                                    <Label htmlFor="category" className="text-foreground">
                                         Category
                                     </Label>
                                     <select
                                         id="category"
                                         value={formData.category}
                                         onChange={(e) => handleInputChange('category', e.target.value)}
-                                        className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white"
+                                        className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring bg-background text-foreground"
                                     >
                                         <option value="">Select category</option>
                                         {categories.map(category => (
@@ -925,7 +925,7 @@ const RegisterArtwork: React.FC<RegisterArtworkProps> = ({ onBack }) => {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <Label htmlFor="collection" className="text-gray-700 dark:text-gray-300">
+                                    <Label htmlFor="collection" className="text-foreground">
                                         Collection/Series
                                     </Label>
                                     <div className="flex gap-2">
@@ -947,7 +947,7 @@ const RegisterArtwork: React.FC<RegisterArtworkProps> = ({ onBack }) => {
                             </div>
 
                             <div className="space-y-2">
-                                <Label className="text-gray-700 dark:text-gray-300">Tags</Label>
+                                <Label className="text-foreground">Tags</Label>
                                 <div className="flex gap-2">
                                     <Input
                                         value={newTag}
@@ -971,7 +971,7 @@ const RegisterArtwork: React.FC<RegisterArtworkProps> = ({ onBack }) => {
                                                 <button
                                                     type="button"
                                                     onClick={() => removeTag(tag)}
-                                                    className="ml-1 hover:text-red-500"
+                                                    className="ml-1 hover:text-destructive"
                                                 >
                                                     <X className="h-3 w-3" />
                                                 </button>
@@ -988,11 +988,11 @@ const RegisterArtwork: React.FC<RegisterArtworkProps> = ({ onBack }) => {
                         <Button
                             type="submit"
                             disabled={isSubmitting}
-                            className="px-8 py-3 text-lg font-semibold bg-gray-900 hover:bg-gray-800 dark:bg-white dark:hover:bg-gray-100 text-white dark:text-black"
+                            className="px-8 py-3 text-lg font-semibold bg-primary hover:bg-primary/90 text-primary-foreground"
                         >
                             {isSubmitting ? (
                                 <>
-                                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary-foreground mr-2"></div>
                                     Registering Artwork...
                                 </>
                             ) : (

@@ -109,43 +109,43 @@ const COAGenerationScreen: React.FC<COAGenerationScreenProps> = ({
     };
 
     return (
-        <div className="min-h-screen bg-white dark:bg-black p-6">
+        <div className="min-h-screen bg-background p-6">
             <div className="max-w-4xl mx-auto">
                 {/* Header */}
                 <div className="mb-8">
                     <Button
                         onClick={onBack}
                         variant="ghost"
-                        className="mb-4 flex items-center gap-2 text-black dark:text-white hover:text-gray-600 dark:hover:text-gray-300"
+                        className="mb-4 flex items-center gap-2 text-foreground hover:text-muted-foreground"
                     >
                         <ArrowLeft className="h-4 w-4" />
                         Back to COA Decision
                     </Button>
 
                     <div className="text-center">
-                        <h1 className="text-4xl font-bold text-black dark:text-white mb-4">
+                        <h1 className="text-4xl font-bold text-foreground mb-4">
                             Generate Certificate of Authenticity
                         </h1>
-                        <p className="text-xl text-black dark:text-white">
+                        <p className="text-xl text-foreground">
                             Create a blockchain-verified certificate for &quot;{artworkData.title}&quot;
                         </p>
                     </div>
                 </div>
 
                 {!isGenerating && !coaData && (
-                    <Card className="border border-black dark:border-white bg-white dark:bg-black">
+                    <Card className="border border-border bg-card">
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2 text-black dark:text-white">
+                            <CardTitle className="flex items-center gap-2 text-foreground">
                                 <Shield className="h-5 w-5" />
                                 Artist Information
                             </CardTitle>
-                            <CardDescription className="text-black dark:text-white">
+                            <CardDescription className="text-muted-foreground">
                                 Please provide the artist name for the certificate
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-6">
                             <div className="space-y-2">
-                                <Label htmlFor="artistName" className="text-black dark:text-white">
+                                <Label htmlFor="artistName" className="text-foreground">
                                     Artist Name *
                                 </Label>
                                 <Input
@@ -157,24 +157,24 @@ const COAGenerationScreen: React.FC<COAGenerationScreenProps> = ({
                                 />
                             </div>
 
-                            <div className="bg-gray-100 dark:bg-gray-900 rounded-lg p-4">
-                                <h4 className="font-semibold text-black dark:text-white mb-2">Artwork Details</h4>
+                            <div className="bg-muted rounded-lg p-4">
+                                <h4 className="font-semibold text-foreground mb-2">Artwork Details</h4>
                                 <div className="grid grid-cols-2 gap-4 text-sm">
                                     <div>
-                                        <span className="text-black dark:text-white">Title:</span>
-                                        <p className="font-medium text-black dark:text-white">{artworkData.title}</p>
+                                        <span className="text-muted-foreground">Title:</span>
+                                        <p className="font-medium text-foreground">{artworkData.title}</p>
                                     </div>
                                     <div>
-                                        <span className="text-black dark:text-white">Year:</span>
-                                        <p className="font-medium text-black dark:text-white">{artworkData.year}</p>
+                                        <span className="text-muted-foreground">Year:</span>
+                                        <p className="font-medium text-foreground">{artworkData.year}</p>
                                     </div>
                                     <div>
-                                        <span className="text-black dark:text-white">Medium:</span>
-                                        <p className="font-medium text-black dark:text-white">{artworkData.medium}</p>
+                                        <span className="text-muted-foreground">Medium:</span>
+                                        <p className="font-medium text-foreground">{artworkData.medium}</p>
                                     </div>
                                     <div>
-                                        <span className="text-black dark:text-white">Dimensions:</span>
-                                        <p className="font-medium text-black dark:text-white">{artworkData.dimensions}</p>
+                                        <span className="text-muted-foreground">Dimensions:</span>
+                                        <p className="font-medium text-foreground">{artworkData.dimensions}</p>
                                     </div>
                                 </div>
                             </div>
@@ -183,7 +183,7 @@ const COAGenerationScreen: React.FC<COAGenerationScreenProps> = ({
                                 <Button
                                     onClick={handleGenerate}
                                     disabled={!artistName.trim()}
-                                    className="flex-1 py-3 text-lg font-semibold bg-black hover:bg-gray-800 dark:bg-white dark:hover:bg-gray-200 text-white dark:text-black"
+                                    className="flex-1 py-3 text-lg font-semibold bg-primary hover:bg-primary/90 text-primary-foreground"
                                 >
                                     <Shield className="h-5 w-5 mr-2" />
                                     Generate COA
@@ -191,7 +191,7 @@ const COAGenerationScreen: React.FC<COAGenerationScreenProps> = ({
                                 <Button
                                     onClick={onSkip}
                                     variant="outline"
-                                    className="px-6 py-3 text-lg font-semibold border-black dark:border-white text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-900"
+                                    className="px-6 py-3 text-lg font-semibold border-border text-foreground hover:bg-muted"
                                 >
                                     Skip
                                 </Button>
@@ -201,13 +201,13 @@ const COAGenerationScreen: React.FC<COAGenerationScreenProps> = ({
                 )}
 
                 {isGenerating && (
-                    <Card className="border border-black dark:border-white bg-white dark:bg-black">
+                    <Card className="border border-border bg-card">
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2 text-black dark:text-white">
+                            <CardTitle className="flex items-center gap-2 text-foreground">
                                 <Loader2 className="h-5 w-5 animate-spin" />
                                 Generating Certificate
                             </CardTitle>
-                            <CardDescription className="text-black dark:text-white">
+                            <CardDescription className="text-muted-foreground">
                                 Creating your blockchain-verified certificate of authenticity
                             </CardDescription>
                         </CardHeader>
@@ -216,10 +216,10 @@ const COAGenerationScreen: React.FC<COAGenerationScreenProps> = ({
                                 {generationSteps.map((step, index) => (
                                     <div key={index} className="flex items-center gap-3">
                                         <div className={`w-6 h-6 rounded-full flex items-center justify-center ${index < generationStep
-                                            ? 'bg-black dark:bg-white text-white dark:text-black'
+                                            ? 'bg-primary text-primary-foreground'
                                             : index === generationStep
-                                                ? 'bg-yellow-500 text-black'
-                                                : 'bg-gray-200 dark:bg-gray-700 text-gray-500'
+                                                ? 'bg-accent text-accent-foreground'
+                                                : 'bg-muted text-muted-foreground'
                                             }`}>
                                             {index < generationStep ? (
                                                 <CheckCircle className="h-4 w-4" />
@@ -230,8 +230,8 @@ const COAGenerationScreen: React.FC<COAGenerationScreenProps> = ({
                                             )}
                                         </div>
                                         <span className={`${index <= generationStep
-                                            ? 'text-black dark:text-white'
-                                            : 'text-gray-500 dark:text-gray-400'
+                                            ? 'text-foreground'
+                                            : 'text-muted-foreground'
                                             }`}>
                                             {step}
                                         </span>
@@ -246,7 +246,7 @@ const COAGenerationScreen: React.FC<COAGenerationScreenProps> = ({
                     <div className="space-y-6">
                         {/* Certificate Display */}
                         <div className="mb-6">
-                            <h2 className="text-2xl font-bold text-black dark:text-white mb-4 text-center">
+                            <h2 className="text-2xl font-bold text-foreground mb-4 text-center">
                                 Your Certificate of Authenticity
                             </h2>
                             <COACertificate
@@ -269,33 +269,33 @@ const COAGenerationScreen: React.FC<COAGenerationScreenProps> = ({
                         </div>
 
                         {/* Action Buttons */}
-                        <Card className="border border-black dark:border-white bg-white dark:bg-black">
+                        <Card className="border border-border bg-card">
                             <CardHeader>
-                                <CardTitle className="flex items-center gap-2 text-black dark:text-white">
-                                    <CheckCircle className="h-5 w-5 text-black dark:text-white" />
+                                <CardTitle className="flex items-center gap-2 text-foreground">
+                                    <CheckCircle className="h-5 w-5 text-foreground" />
                                     Certificate Generated Successfully
                                 </CardTitle>
-                                <CardDescription className="text-black dark:text-white">
+                                <CardDescription className="text-muted-foreground">
                                     Your certificate of authenticity has been created and registered on the blockchain
                                 </CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-6">
-                                <div className="bg-gray-100 dark:bg-gray-900 border border-black dark:border-white rounded-lg p-4">
+                                <div className="bg-muted border border-border rounded-lg p-4">
                                     <div className="flex items-center gap-2 mb-2">
-                                        <CheckCircle className="h-5 w-5 text-black dark:text-white" />
-                                        <span className="font-semibold text-black dark:text-white">
+                                        <CheckCircle className="h-5 w-5 text-foreground" />
+                                        <span className="font-semibold text-foreground">
                                             Certificate ID: {coaData.certificateId}
                                         </span>
                                         <Button
                                             size="sm"
                                             variant="ghost"
                                             onClick={() => copyToClipboard(coaData.certificateId)}
-                                            className="text-black dark:text-white hover:bg-gray-200 dark:hover:bg-gray-800"
+                                            className="text-foreground hover:bg-muted"
                                         >
                                             <Copy className="h-4 w-4" />
                                         </Button>
                                     </div>
-                                    <p className="text-sm text-black dark:text-white">
+                                    <p className="text-sm text-muted-foreground">
                                         This certificate is now permanently recorded on the blockchain
                                     </p>
                                 </div>
@@ -304,14 +304,14 @@ const COAGenerationScreen: React.FC<COAGenerationScreenProps> = ({
                                     <Button
                                         onClick={downloadCOA}
                                         variant="outline"
-                                        className="flex-1 py-3 text-lg font-semibold border-black dark:border-white text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-900"
+                                        className="flex-1 py-3 text-lg font-semibold border-border text-foreground hover:bg-muted"
                                     >
                                         <Download className="h-5 w-5 mr-2" />
                                         Download COA PDF
                                     </Button>
                                     <Button
                                         onClick={handleComplete}
-                                        className="flex-1 py-3 text-lg font-semibold bg-black hover:bg-gray-800 dark:bg-white dark:hover:bg-gray-200 text-white dark:text-black"
+                                        className="flex-1 py-3 text-lg font-semibold bg-primary hover:bg-primary/90 text-primary-foreground"
                                     >
                                         Continue to NFC
                                         <ArrowRight className="h-4 w-4 ml-2" />

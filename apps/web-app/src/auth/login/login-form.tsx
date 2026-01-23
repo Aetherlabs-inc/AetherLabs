@@ -113,7 +113,7 @@ export function LoginForm({
                         </Button>
                     </div>
                 </div>
-                {error && <p className="text-red-500 mb-4">{error}</p>}
+                {error && <p className="text-destructive mb-4">{error}</p>}
                 <Button type="submit" className="w-full" onClick={handleLogin} disabled={loading}>
                     Login
                 </Button>

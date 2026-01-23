@@ -393,8 +393,8 @@ export function SupabaseMultiStepSignup({
             {renderStep()}
 
             {/* Error and Success Messages */}
-            {error && <p className="text-red-500 text-sm text-center">{error}</p>}
-            {message && <p className="text-green-500 text-sm text-center">{message}</p>}
+            {error && <p className="text-destructive text-sm text-center">{error}</p>}
+            {message && <p className="text-success text-sm text-center">{message}</p>}
 
             {/* Navigation Buttons */}
             <div className="flex justify-between pt-6">

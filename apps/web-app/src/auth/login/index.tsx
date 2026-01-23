@@ -126,7 +126,7 @@ export function LoginForm({
                                 </div>
 
                             </div>
-                            {error && <p className="text-red-500 mb-4">{error}</p>}
+                            {error && <p className="text-destructive mb-4">{error}</p>}
                             <Button
                                 className="mt-4 w-full h-12 text-lg font-bold rounded-full"
                                 onClick={handleLogin}

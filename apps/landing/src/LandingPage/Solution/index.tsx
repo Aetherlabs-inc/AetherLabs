@@ -158,7 +158,7 @@ const Solution = () => {
             title: "Artists",
             tagline: "You pour yourself into your work.",
             description: "Protect it, build your portfolio, and follow your pieces wherever they go.",
-            color: "#BC8010",
+            color: "hsl(var(--primary))",
             features: ["Authenticate unlimited works", "Track where your art travels", "Build verified portfolio"]
         },
         {
@@ -166,7 +166,7 @@ const Solution = () => {
             title: "Galleries",
             tagline: "Trust is your currency.",
             description: "Authenticate every sale and show collectors the proof they need.",
-            color: "#BC8010",
+            color: "hsl(var(--primary))",
             features: ["Bulk authentication", "Exhibition management", "Instant buyer confidence"]
         },
         {
@@ -174,7 +174,7 @@ const Solution = () => {
             title: "Dealers",
             tagline: "One bad piece can cost everything.",
             description: "Verify before you buy. Complete history. No surprises.",
-            color: "#CA5B2B",
+            color: "hsl(var(--accent))",
             features: ["Pre-purchase verification", "Complete provenance", "Risk protection"]
         },
         {
@@ -182,7 +182,7 @@ const Solution = () => {
             title: "Collectors",
             tagline: "Your collection tells a story.",
             description: "Own it with proof. Every piece verified, every history preserved.",
-            color: "#BC8010",
+            color: "hsl(var(--primary))",
             features: ["Digital collection", "Insurance documentation", "Verified resale"]
         }
     ];
@@ -195,13 +195,13 @@ const Solution = () => {
                 <div
                     className="absolute inset-0 opacity-20"
                     style={{
-                        backgroundImage: `radial-gradient(circle at 1px 1px, rgba(188,128,16,0.05) 1px, transparent 0)`,
+                        backgroundImage: `radial-gradient(circle at 1px 1px, hsl(var(--primary) / 0.05) 1px, transparent 0)`,
                         backgroundSize: '48px 48px'
                     }}
                 />
                 {/* Gradient blobs */}
-                <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-aether-gold/5 rounded-full blur-3xl" />
-                <div className="absolute bottom-1/4 left-0 w-[500px] h-[500px] bg-aether-terracotta/5 rounded-full blur-3xl" />
+                <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/5 rounded-full blur-3xl" />
+                <div className="absolute bottom-1/4 left-0 w-[500px] h-[500px] bg-accent/5 rounded-full blur-3xl" />
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 
                               w-[900px] h-[900px] bg-aether-gold/3 rounded-full blur-3xl" />
             </div>

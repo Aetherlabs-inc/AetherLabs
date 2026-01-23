@@ -97,24 +97,24 @@ const NFCBindingScreen: React.FC<NFCBindingScreenProps> = ({
     };
 
     return (
-        <div className="min-h-screen bg-white dark:bg-black p-6">
+        <div className="min-h-screen bg-background p-6">
             <div className="max-w-4xl mx-auto">
                 {/* Header */}
                 <div className="mb-8">
                     <Button
                         onClick={onBack}
                         variant="ghost"
-                        className="mb-4 flex items-center gap-2 text-black dark:text-white hover:text-gray-600 dark:hover:text-gray-300"
+                        className="mb-4 flex items-center gap-2 text-foreground hover:text-muted-foreground"
                     >
                         <ArrowLeft className="h-4 w-4" />
                         Back to COA Generation
                     </Button>
 
                     <div className="text-center">
-                        <h1 className="text-4xl font-bold text-black dark:text-white mb-4">
+                        <h1 className="text-4xl font-bold text-foreground mb-4">
                             NFC Tag Binding
                         </h1>
-                        <p className="text-xl text-black dark:text-white">
+                        <p className="text-xl text-foreground">
                             Bind an NFC tag to &quot;{artworkData.title}&quot; for physical verification
                         </p>
                     </div>
@@ -122,13 +122,13 @@ const NFCBindingScreen: React.FC<NFCBindingScreenProps> = ({
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     {/* NFC Binding Options */}
-                    <Card className="border border-black dark:border-white bg-white dark:bg-black">
+                    <Card className="border border-border bg-card">
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2 text-black dark:text-white">
+                            <CardTitle className="flex items-center gap-2 text-foreground">
                                 <Wifi className="h-5 w-5" />
                                 NFC Binding Options
                             </CardTitle>
-                            <CardDescription className="text-black dark:text-white">
+                            <CardDescription className="text-muted-foreground">
                                 Choose how to bind your NFC tag to the artwork
                             </CardDescription>
                         </CardHeader>
@@ -136,10 +136,10 @@ const NFCBindingScreen: React.FC<NFCBindingScreenProps> = ({
                             <div className="space-y-4">
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-3">
-                                        <Wifi className="h-5 w-5 text-black dark:text-white" />
+                                        <Wifi className="h-5 w-5 text-foreground" />
                                         <div>
-                                            <h4 className="font-semibold text-black dark:text-white">Bind NFC Tag</h4>
-                                            <p className="text-sm text-black dark:text-white">
+                                            <h4 className="font-semibold text-foreground">Bind NFC Tag</h4>
+                                            <p className="text-sm text-muted-foreground">
                                                 Scan and bind an NFC tag to this artwork
                                             </p>
                                         </div>
@@ -152,14 +152,14 @@ const NFCBindingScreen: React.FC<NFCBindingScreenProps> = ({
 
                                 {bindNFC && (
                                     <div className="space-y-4">
-                                        <div className="bg-gray-100 dark:bg-gray-900 border border-black dark:border-white rounded-lg p-4">
+                                        <div className="bg-muted border border-border rounded-lg p-4">
                                             <div className="flex items-center gap-2 mb-2">
-                                                <Smartphone className="h-5 w-5 text-black dark:text-white" />
-                                                <span className="font-semibold text-black dark:text-white">
+                                                <Smartphone className="h-5 w-5 text-foreground" />
+                                                <span className="font-semibold text-foreground">
                                                     NFC Scanning Instructions
                                                 </span>
                                             </div>
-                                            <ul className="text-sm text-black dark:text-white space-y-1">
+                                            <ul className="text-sm text-foreground space-y-1">
                                                 <li>• Hold your NFC-enabled device close to the tag</li>
                                                 <li>• Ensure NFC is enabled on your device</li>
                                                 <li>• Keep the device steady for 2-3 seconds</li>
@@ -170,7 +170,7 @@ const NFCBindingScreen: React.FC<NFCBindingScreenProps> = ({
                                         {!isScanning && !nfcData && (
                                             <Button
                                                 onClick={simulateNFCDetection}
-                                                className="w-full py-3 text-lg font-semibold bg-black hover:bg-gray-800 dark:bg-white dark:hover:bg-gray-200 text-white dark:text-black"
+                                                className="w-full py-3 text-lg font-semibold bg-primary hover:bg-primary/90 text-primary-foreground"
                                             >
                                                 <Wifi className="h-5 w-5 mr-2" />
                                                 Start NFC Scan
@@ -180,36 +180,36 @@ const NFCBindingScreen: React.FC<NFCBindingScreenProps> = ({
                                         {isScanning && (
                                             <div className="text-center space-y-4">
                                                 <div className="flex items-center justify-center">
-                                                    <Loader2 className="h-8 w-8 animate-spin text-black dark:text-white" />
+                                                    <Loader2 className="h-8 w-8 animate-spin text-foreground" />
                                                 </div>
                                                 <div>
-                                                    <p className="font-semibold text-black dark:text-white">
+                                                    <p className="font-semibold text-foreground">
                                                         Scanning for NFC Tag...
                                                     </p>
-                                                    <p className="text-sm text-black dark:text-white">
+                                                    <p className="text-sm text-muted-foreground">
                                                         Hold your device close to the NFC tag
                                                     </p>
                                                 </div>
                                                 <div className="flex items-center justify-center gap-2">
-                                                    <div className="w-2 h-2 bg-black dark:bg-white rounded-full animate-pulse"></div>
-                                                    <div className="w-2 h-2 bg-black dark:bg-white rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
-                                                    <div className="w-2 h-2 bg-black dark:bg-white rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
+                                                    <div className="w-2 h-2 bg-foreground rounded-full animate-pulse"></div>
+                                                    <div className="w-2 h-2 bg-foreground rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
+                                                    <div className="w-2 h-2 bg-foreground rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
                                                 </div>
                                             </div>
                                         )}
 
                                         {nfcData && nfcData.bindingStatus === 'success' && (
-                                            <div className="bg-gray-100 dark:bg-gray-900 border border-black dark:border-white rounded-lg p-4">
+                                            <div className="bg-muted border border-border rounded-lg p-4">
                                                 <div className="flex items-center gap-2 mb-2">
-                                                    <CheckCircle className="h-5 w-5 text-black dark:text-white" />
-                                                    <span className="font-semibold text-black dark:text-white">
+                                                    <CheckCircle className="h-5 w-5 text-foreground" />
+                                                    <span className="font-semibold text-foreground">
                                                         NFC Tag Successfully Bound
                                                     </span>
                                                 </div>
-                                                <p className="text-sm text-black dark:text-white mb-2">
+                                                <p className="text-sm text-foreground mb-2">
                                                     NFC UID: {nfcData.nfcUid}
                                                 </p>
-                                                <p className="text-sm text-black dark:text-white">
+                                                <p className="text-sm text-muted-foreground">
                                                     This tag is now linked to your artwork and COA
                                                 </p>
                                             </div>
@@ -221,52 +221,52 @@ const NFCBindingScreen: React.FC<NFCBindingScreenProps> = ({
                     </Card>
 
                     {/* Artwork & COA Summary */}
-                    <Card className="border border-black dark:border-white bg-white dark:bg-black">
+                    <Card className="border border-border bg-card">
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2 text-black dark:text-white">
+                            <CardTitle className="flex items-center gap-2 text-foreground">
                                 <Shield className="h-5 w-5" />
                                 Artwork Summary
                             </CardTitle>
-                            <CardDescription className="text-black dark:text-white">
+                            <CardDescription className="text-muted-foreground">
                                 Details of your artwork and certificate
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <div className="space-y-3">
                                 <div>
-                                    <Label className="text-black dark:text-white">Artwork Title</Label>
-                                    <p className="font-semibold text-black dark:text-white">{artworkData.title}</p>
+                                    <Label className="text-muted-foreground">Artwork Title</Label>
+                                    <p className="font-semibold text-foreground">{artworkData.title}</p>
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
-                                        <Label className="text-black dark:text-white">Year</Label>
-                                        <p className="font-semibold text-black dark:text-white">{artworkData.year}</p>
+                                        <Label className="text-muted-foreground">Year</Label>
+                                        <p className="font-semibold text-foreground">{artworkData.year}</p>
                                     </div>
                                     <div>
-                                        <Label className="text-black dark:text-white">Medium</Label>
-                                        <p className="font-semibold text-black dark:text-white">{artworkData.medium}</p>
+                                        <Label className="text-muted-foreground">Medium</Label>
+                                        <p className="font-semibold text-foreground">{artworkData.medium}</p>
                                     </div>
                                 </div>
                                 <div>
-                                    <Label className="text-black dark:text-white">Dimensions</Label>
-                                    <p className="font-semibold text-black dark:text-white">{artworkData.dimensions}</p>
+                                    <Label className="text-muted-foreground">Dimensions</Label>
+                                    <p className="font-semibold text-foreground">{artworkData.dimensions}</p>
                                 </div>
                             </div>
 
                             {coaData && (
-                                <div className="border-t pt-4">
+                                <div className="border-t border-border pt-4">
                                     <div className="flex items-center gap-2 mb-3">
-                                        <CheckCircle className="h-5 w-5 text-black dark:text-white" />
-                                        <span className="font-semibold text-black dark:text-white">Certificate of Authenticity</span>
+                                        <CheckCircle className="h-5 w-5 text-foreground" />
+                                        <span className="font-semibold text-foreground">Certificate of Authenticity</span>
                                     </div>
                                     <div className="space-y-2">
                                         <div>
-                                            <Label className="text-black dark:text-white">Certificate ID</Label>
-                                            <p className="font-mono text-sm text-black dark:text-white">{coaData.certificateId}</p>
+                                            <Label className="text-muted-foreground">Certificate ID</Label>
+                                            <p className="font-mono text-sm text-foreground">{coaData.certificateId}</p>
                                         </div>
                                         <div>
-                                            <Label className="text-black dark:text-white">Blockchain Hash</Label>
-                                            <p className="font-mono text-xs text-black dark:text-white break-all">
+                                            <Label className="text-muted-foreground">Blockchain Hash</Label>
+                                            <p className="font-mono text-xs text-muted-foreground break-all">
                                                 {coaData.blockchainHash.substring(0, 20)}...
                                             </p>
                                         </div>
@@ -274,26 +274,26 @@ const NFCBindingScreen: React.FC<NFCBindingScreenProps> = ({
                                 </div>
                             )}
 
-                            <div className="border-t pt-4">
+                            <div className="border-t border-border pt-4">
                                 <div className="flex items-center gap-2 mb-3">
-                                    <Wifi className="h-5 w-5 text-black dark:text-white" />
-                                    <span className="font-semibold text-black dark:text-white">NFC Status</span>
+                                    <Wifi className="h-5 w-5 text-foreground" />
+                                    <span className="font-semibold text-foreground">NFC Status</span>
                                 </div>
                                 <div className="flex items-center gap-2">
                                     {nfcData && nfcData.isBound ? (
                                         <>
-                                            <CheckCircle className="h-4 w-4 text-black dark:text-white" />
-                                            <span className="text-sm text-black dark:text-white">NFC Tag Bound</span>
+                                            <CheckCircle className="h-4 w-4 text-foreground" />
+                                            <span className="text-sm text-foreground">NFC Tag Bound</span>
                                         </>
                                     ) : bindNFC ? (
                                         <>
-                                            <Loader2 className="h-4 w-4 animate-spin text-yellow-500" />
-                                            <span className="text-sm text-yellow-600 dark:text-yellow-400">Scanning...</span>
+                                            <Loader2 className="h-4 w-4 animate-spin text-accent" />
+                                            <span className="text-sm text-accent">Scanning...</span>
                                         </>
                                     ) : (
                                         <>
-                                            <AlertCircle className="h-4 w-4 text-gray-400" />
-                                            <span className="text-sm text-gray-500">No NFC Tag</span>
+                                            <AlertCircle className="h-4 w-4 text-muted-foreground" />
+                                            <span className="text-sm text-muted-foreground">No NFC Tag</span>
                                         </>
                                     )}
                                 </div>
@@ -307,13 +307,13 @@ const NFCBindingScreen: React.FC<NFCBindingScreenProps> = ({
                     <Button
                         onClick={handleSkip}
                         variant="outline"
-                        className="px-8 py-3 text-lg font-semibold border-black dark:border-white text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-900"
+                        className="px-8 py-3 text-lg font-semibold border-border text-foreground hover:bg-muted"
                     >
                         Skip NFC Binding
                     </Button>
                     <Button
                         onClick={handleComplete}
-                        className="px-8 py-3 text-lg font-semibold bg-black hover:bg-gray-800 dark:bg-white dark:hover:bg-gray-200 text-white dark:text-black"
+                        className="px-8 py-3 text-lg font-semibold bg-primary hover:bg-primary/90 text-primary-foreground"
                     >
                         Complete Registration
                         <ArrowRight className="h-4 w-4 ml-2" />
@@ -322,7 +322,7 @@ const NFCBindingScreen: React.FC<NFCBindingScreenProps> = ({
 
                 {/* Additional Info */}
                 <div className="mt-8 text-center">
-                    <p className="text-sm text-black dark:text-white">
+                    <p className="text-sm text-muted-foreground">
                         You can bind an NFC tag later from your artwork&apos;s detail page
                     </p>
                 </div>

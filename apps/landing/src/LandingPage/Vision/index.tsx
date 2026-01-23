@@ -59,7 +59,7 @@ const Vision = () => {
                 <div
                     className="absolute inset-0 opacity-30"
                     style={{
-                        backgroundImage: `radial-gradient(circle at 1px 1px, rgba(188,128,16,0.04) 1px, transparent 0)`,
+                        backgroundImage: `radial-gradient(circle at 1px 1px, hsl(var(--primary) / 0.04) 1px, transparent 0)`,
                         backgroundSize: '32px 32px'
                     }}
                 />

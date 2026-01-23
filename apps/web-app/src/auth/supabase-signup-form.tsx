@@ -249,8 +249,8 @@ export function SupabaseSignupForm({
                     </div>
                 </div>
 
-                {error && <p className="text-red-500 mb-4">{error}</p>}
-                {message && <p className="text-green-500 mb-4">{message}</p>}
+                {error && <p className="text-destructive mb-4">{error}</p>}
+                {message && <p className="text-success mb-4">{message}</p>}
 
                 <Button type="submit" className="w-full" disabled={loading}>
                     {loading ? 'Creating account...' : 'Create Account'}

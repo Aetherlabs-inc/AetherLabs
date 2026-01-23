@@ -2,6 +2,7 @@ import React from "react";
 import type { Metadata } from "next";
 import "./../styles/globals.css";
 import Provider from "@/components/provider";
+import { ThemeProvider } from "@/components/theme-provider";
 
 
 
@@ -86,19 +87,15 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en" suppressHydrationWarning>
-            <head>
-                <link rel="stylesheet" href="https://use.typekit.net/gtt1ipu.css"></link>
-                <link rel="icon" href="/Aether-logo.png" type="image/png" />
-            </head>
-            <body className="flex flex-col">
-                <Provider>
-                    <main className="">
-                        {children}
-                    </main>
-                </Provider>
-
-            </body>
-
+            <ThemeProvider attribute="class" defaultTheme='light' disableTransitionOnChange>
+                <body className="flex flex-col">
+                    <Provider>
+                        <main className="">
+                            {children}
+                        </main>
+                    </Provider>
+                </body>
+            </ThemeProvider>
         </html>
     );
 }
