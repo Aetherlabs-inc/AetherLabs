@@ -9,19 +9,9 @@
     @apply border-border;
   }
 
-  html {
-    font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
-  }
-
   body {
     @apply bg-background text-foreground antialiased;
-    font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
     letter-spacing: -0.025em;
-  }
-
-  /* All elements inherit Inter font from body */
-  * {
-    font-family: inherit;
   }
 
   ::selection {

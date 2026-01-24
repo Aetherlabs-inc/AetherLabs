@@ -47,7 +47,7 @@ Required environment variables:
 
 3. Run database migrations:
 ```bash
-# Apply Supabase migrations from supabase-*.sql files
+# Apply Supabase migrations from packages/supabase/SQL/*.sql files
 ```
 
 4. Run the development server:
@@ -69,19 +69,27 @@ app/
     collections/     # Collections
     profile/         # User profile settings
     exhibitions/     # Exhibitions
-    (Management)/    # Admin routes
+    (management)/    # Admin routes
+    (settings-support)/ # Settings and help routes
   api/               # API routes
 
 src/
-  dashboard/         # Dashboard components
-  Artworks/          # Artwork components
+  features/          # Feature modules
+    dashboard/       # Dashboard UI
+    artworks/        # Artwork UI + registration flow
+    certificates/    # Certificate UI
+    collections/     # Collection UI
+    profile/         # Profile UI
+    exhibitions/     # Exhibitions UI
+    settings/        # Settings UI
+    management/      # Admin UIs
   services/          # Backend services
   types/             # TypeScript types
   lib/               # Supabase & utilities
   components/        # Auth provider
 
-middleware.ts        # Auth middleware
-supabase-*.sql       # Database migrations
+proxy.ts             # Auth proxy
+packages/supabase/SQL/*.sql       # Database migrations
 ```
 
 ## Authentication
@@ -94,8 +102,8 @@ This app requires authentication. Users must:
 ## Database Migrations
 
 Apply migrations in order:
-1. `supabase-username-migration.sql`
-2. `supabase-public-profile-policy.sql`
+1. `packages/supabase/SQL/supabase-username-migration.sql`
+2. `packages/supabase/SQL/supabase-public-profile-policy.sql`
 3. Other migrations as needed
 
 ## Deployment
@@ -108,4 +116,3 @@ This is a protected application and should be deployed with:
 ## Related Repositories
 
 - [Landing Page](../landing-page) - Public-facing marketing site
-

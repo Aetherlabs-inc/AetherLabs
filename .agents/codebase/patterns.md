@@ -91,16 +91,16 @@ supabase.auth.onAuthStateChange((event, session) => {
 await supabase.auth.signOut();
 ```
 
-## Protected Routes (Next.js Middleware)
+## Protected Routes (Next.js Proxy)
 
 ```typescript
-// middleware.ts
+// proxy.ts
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
 const protectedRoutes = ['/dashboard', '/artworks', '/certificates', '/profile'];
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const response = NextResponse.next();
 
   const supabase = createServerClient(

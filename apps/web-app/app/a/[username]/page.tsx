@@ -5,7 +5,7 @@ import { useParams } from 'next/navigation';
 import { userProfileService, UserProfile, UserStats } from '@/src/services/user-profile-service';
 import { ArtworkService } from '@/src/services/artwork-service';
 import { ArtworkWithDetails } from '@/src/types/database';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, Avatar, AvatarFallback, AvatarImage, Badge, Button } from '@aetherlabs/ui';
+import { Card, CardContent, Avatar, AvatarFallback, AvatarImage, Badge, Button } from '@aetherlabs/ui';
 import { User, Loader2, CheckCircle, Wifi, MapPin, Globe, Calendar } from 'lucide-react';
 import { formatArtistName } from '@/src/utils/artist-utils';
 

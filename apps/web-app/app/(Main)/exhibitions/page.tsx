@@ -1,6 +1,5 @@
-import ComingSoon from '@/components/ComingSoon';
-import React from 'react';
 import type { Metadata } from 'next';
+import ExhibitionsPage from '@/src/features/exhibitions/ExhibitionsPage';
 
 export const metadata: Metadata = {
     title: "Exhibitions",
@@ -11,10 +10,6 @@ export const metadata: Metadata = {
     },
 };
 
-const ExhibitionsPage: React.FC = () => {
-    return (
-        <ComingSoon />
-    );
-};
-
-export default ExhibitionsPage;
+export default function Page() {
+    return <ExhibitionsPage />;
+}

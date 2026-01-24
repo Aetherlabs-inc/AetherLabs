@@ -26,6 +26,8 @@ All documentation is in `.agents/`. Read the relevant file for your task:
 - **Monorepo:** Turbo orchestrates all builds
 - **Shared UI:** Check `packages/ui` before creating components
 - **Two-layer model:** Shared primitives → App wrappers
+- **App flow:** Build page components in `apps/*/src/**` and import them into `apps/*/app/**` route files
+- **Feature structure:** Organize app UI under `apps/*/src/features/**`; avoid spaces/caps in route group folder names
 
 ## Brand Colors
 

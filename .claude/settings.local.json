@@ -10,7 +10,8 @@
       "Bash(pnpm --filter=aetherlabs-landing-page build:*)",
       "Bash(pnpm --filter=aetherlabs-dashboard build:*)",
       "Bash(grep:*)",
-      "Bash(tree:*)"
+      "Bash(tree:*)",
+      "Bash(pnpm add:*)"
     ]
   }
 }

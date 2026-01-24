@@ -45,7 +45,7 @@ Row Level Security (RLS) policies control who can access which rows:
 - **Public Profiles**: Anyone can view profiles that have a `username` or `slug` set
 - **No Username/Slug**: Profiles without username/slug can only be viewed by the owner
 
-**Migration File**: `supabase/migrations/add_public_profile_viewing_policy.sql`
+**Migration File**: `packages/supabase/SQL/add_public_profile_viewing_policy.sql`
 
 ### 2. Query Level (Column Selection)
 
@@ -143,7 +143,7 @@ The `profile_visibility` field currently has two states:
 To apply the RLS policy changes:
 
 1. Open Supabase Dashboard → SQL Editor
-2. Run: `supabase/migrations/add_public_profile_viewing_policy.sql`
+2. Run: `packages/supabase/SQL/add_public_profile_viewing_policy.sql`
 3. Verify the policies are active in the Supabase Dashboard
 
 ## Future Enhancements

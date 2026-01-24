@@ -13,6 +13,8 @@
 2. Use Turbo for monorepo orchestration
 3. Keep shared code in shared packages, avoid duplicating logic across apps
 4. Prefer changes that improve reuse without making components harder to understand
+5. Build app page components in `apps/*/src/**` and import them into `apps/*/app/**` route files
+6. Keep feature UI under `src/features/*` and avoid spaces/caps in route group folder names
 
 ## Working Conventions
 

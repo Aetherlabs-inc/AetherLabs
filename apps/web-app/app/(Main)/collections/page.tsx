@@ -1,9 +1,8 @@
-import ComingSoon from '@/components/ComingSoon';
-import React from 'react';
 import type { Metadata } from 'next';
+import CollectionsComingSoon from '@/src/features/collections/CollectionsComingSoon';
 
 export const metadata: Metadata = {
-    title: "Collections",
+    title: "Collections | AetherLabs",
     description: "Organize and manage your art collections with AetherLabs. Create curated collections of authenticated artwork.",
     robots: {
         index: false,
@@ -11,12 +10,6 @@ export const metadata: Metadata = {
     },
 };
 
-const CollectionsPage: React.FC = () => {
-    return (
-        <div>
-            <ComingSoon />
-        </div>
-    );
-};
-
-export default CollectionsPage;
+export default function CollectionsPage() {
+    return <CollectionsComingSoon />;
+}

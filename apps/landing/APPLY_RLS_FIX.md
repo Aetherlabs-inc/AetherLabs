@@ -8,7 +8,7 @@ Run the following SQL in your Supabase SQL Editor:
 
 1. Go to your Supabase Dashboard
 2. Navigate to **SQL Editor**
-3. Copy and paste the contents of `supabase-fix-rls.sql`
+3. Copy and paste the contents of `packages/supabase/SQL/supabase-fix-rls.sql`
 4. Click **Run**
 
 ## Alternative: Quick Fix SQL

@@ -1,12 +1,11 @@
 'use client'
 
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button, Input, Label } from '@aetherlabs/ui'
 import { cn } from '@/lib/utils'
 import { createClient } from '@/src/lib/supabase'
 import { BsEyeSlashFill, BsFillEyeFill } from "react-icons/bs"
-import Image from "next/image"
 
 const supabase = createClient()
 
@@ -49,89 +48,94 @@ export function SupabaseLoginForm({
 
     return (
         <form className={cn("flex flex-col gap-6", className)} {...props} onSubmit={handleSignIn}>
-            <div className="flex flex-col items-center gap-2 text-center">
-                <h1 className="text-2xl font-bold">Login to your account</h1>
-                <p className="text-balance text-sm text-muted-foreground">
-                    Enter your email below to login to your account
-                </p>
-            </div>
-            <div className="grid gap-6">
-                <div className="grid gap-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input
-                        id="email"
-                        type="email"
-                        placeholder="m@example.com"
-                        required
-                        onChange={(e) => setEmail(e.target.value)}
-                        value={email}
+            <div className="relative overflow-hidden rounded-[28px] border border-[#2A2121]/15 bg-white/70 px-6 py-7 shadow-[0_20px_60px_-45px_rgba(42,33,33,0.7)] backdrop-blur-xl">
+                <div className="pointer-events-none absolute inset-0">
+                    <div className="absolute inset-0 opacity-40 [background:radial-gradient(140%_120%_at_10%_0%,rgba(202,91,43,0.25),transparent_55%),radial-gradient(120%_120%_at_90%_100%,rgba(188,128,16,0.22),transparent_60%)]" />
+                    <div className="absolute inset-0 opacity-30 [background:linear-gradient(120deg,rgba(42,33,33,0.08),transparent_35%,rgba(42,33,33,0.04))]" />
+                    <div
+                        className="absolute inset-0 opacity-[0.18] mix-blend-multiply"
+                        style={{
+                            backgroundImage:
+                                'url("data:image/svg+xml;utf8,<svg xmlns=\\"http://www.w3.org/2000/svg\\" width=\\"160\\" height=\\"160\\" viewBox=\\"0 0 160 160\\"><filter id=\\"n\\"><feTurbulence type=\\"fractalNoise\\" baseFrequency=\\"0.9\\" numOctaves=\\"2\\" stitchTiles=\\"stitch\\"/></filter><rect width=\\"160\\" height=\\"160\\" filter=\\"url(%23n)\\" opacity=\\"0.35\\"/></svg>")'
+                        }}
                     />
                 </div>
-                <div className="grid gap-2">
-                    <div className="flex items-center">
-                        <Label htmlFor="password">Password</Label>
-                        <a
-                            href="#"
-                            className="ml-auto text-sm underline-offset-4 hover:underline"
-                        >
-                            Forgot your password?
-                        </a>
+                <div className="relative">
+                <div className="flex flex-col gap-4 text-left">
+                    <div className="flex items-center gap-3">
+                        <div className="h-2.5 w-2.5 rounded-full bg-[#BC8010]" />
+                        <span className="text-[11px] uppercase tracking-[0.32em] text-[#2A2121]/70">studio access</span>
                     </div>
-                    <div className="relative w-full flex items-center">
-                        <Input
-                            type={isVisible ? "text" : "password"}
-                            placeholder="Enter your password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            className="w-full h-12 rounded-xl pr-12" // Ensure there is padding to not overlap the icon
-                        />
-                        <Button
-                            onClick={toggleVisibility}
-                            className="absolute right-0 inset-y-0 h-12 w-12 flex items-center justify-center rounded-xl"
-                            aria-label="Toggle password visibility"  // Accessibility improvement
-                            variant="ghost"
-                        >
-                            {isVisible ? <BsFillEyeFill /> : <BsEyeSlashFill />}
-                        </Button>
+                    <div>
+                        <h1 className="text-2xl font-semibold text-[#2A2121]">Welcome back</h1>
+                        <p className="text-sm text-[#2A2121]/60">
+                            Enter the archive to steward your authenticated works.
+                        </p>
                     </div>
-                </div>
-                {error && <p className="text-destructive mb-4">{error}</p>}
-                <Button type="submit" className="w-full bg-primary text-primary-foreground" onClick={handleSignIn} disabled={loading}>
-                    Login
-                </Button>
-                <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
-                    <span className="relative z-10 bg-background px-2 text-muted-foreground">
-                        Or continue with
-                    </span>
-                </div>
-                <div className="grid gap-2">
-                    <Button variant="outline" className="w-full">
-                        <Image
-                            src="/apple-logo.png"
-                            alt="Apple logo"
-                            width={20}
-                            height={20}
-                            className="mr-2"
-                        />
-                        Login with Apple
-                    </Button>
-                    <Button variant="outline" className="w-full">
-                        <Image
-                            src="/google.png"
-                            alt="Apple logo"
-                            width={20}
-                            height={20}
-                            className="mr-2"
-                        />
-                        Login with Google
-                    </Button>
                 </div>
 
+                <div className="mt-6 grid gap-4">
+                    <div className="grid gap-2">
+                        <Label htmlFor="email" className="text-xs uppercase tracking-wider text-[#2A2121]/70">Email</Label>
+                        <Input
+                            id="email"
+                            type="email"
+                            placeholder="studio@email.com"
+                            required
+                            onChange={(e) => setEmail(e.target.value)}
+                            value={email}
+                            className="h-12 rounded-2xl border-[#2A2121]/15 bg-white/80"
+                        />
+                    </div>
+                    <div className="grid gap-2">
+                        <div className="flex items-center justify-between">
+                            <Label htmlFor="password" className="text-xs uppercase tracking-wider text-[#2A2121]/70">Password</Label>
+                            <a
+                                href="#"
+                                className="text-[11px] text-[#2A2121]/60 underline-offset-4 hover:underline"
+                            >
+                                Forgot?
+                            </a>
+                        </div>
+                        <div className="relative w-full flex items-center">
+                            <Input
+                                type={isVisible ? "text" : "password"}
+                                placeholder="Enter your password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                className="w-full h-12 rounded-2xl pr-12 border-[#2A2121]/15 bg-white/80"
+                            />
+                            <Button
+                                onClick={toggleVisibility}
+                                type="button"
+                                className="absolute right-0 inset-y-0 h-12 w-12 flex items-center justify-center rounded-2xl"
+                                aria-label="Toggle password visibility"
+                                variant="ghost"
+                            >
+                                {isVisible ? <BsFillEyeFill /> : <BsEyeSlashFill />}
+                            </Button>
+                        </div>
+                    </div>
+                    {error && <p className="text-sm text-destructive">{error}</p>}
+                </div>
+
+                <div className="mt-6">
+                    <Button
+                        type="submit"
+                        className="w-full rounded-2xl bg-[#2A2121] text-white hover:bg-[#2A2121]/90"
+                        onClick={handleSignIn}
+                        disabled={loading}
+                    >
+                        {loading ? "Signing in..." : "Enter Studio"}
+                    </Button>
+                </div>
+                </div>
             </div>
-            <div className="text-center text-sm">
-                Don&apos;t have an account?{" "}
-                <a href="/signup" className="underline underline-offset-4">
-                    Sign up
+
+            <div className="text-center text-sm text-[#2A2121]/70">
+                New here?{" "}
+                <a href="/signup" className="font-medium text-[#CA5B2B] underline underline-offset-4">
+                    Create your account
                 </a>
             </div>
         </form>

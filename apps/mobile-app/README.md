@@ -114,9 +114,9 @@ EXPO_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 1. Go to your Supabase project dashboard
 2. Navigate to **SQL Editor**
 3. Run the migrations in order:
-   - `supabase/schema.sql` - Base schema (profiles, artworks, collections)
-   - `supabase/migrations/create_user_profiles.sql` - User profiles table
-   - `supabase/migrations/create_certificates.sql` - Certificates table
+   - `packages/supabase/SQL/schema.sql` - Base schema (profiles, artworks, collections)
+   - `packages/supabase/SQL/create_user_profiles.sql` - User profiles table
+   - `packages/supabase/SQL/create_certificates.sql` - Certificates table
 
 See `SUPABASE_SETUP.md` for detailed instructions.
 

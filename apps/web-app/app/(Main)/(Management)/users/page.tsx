@@ -1,5 +1,5 @@
-import React from 'react';
 import type { Metadata } from 'next';
+import UsersPage from '@/src/features/management/UsersPage';
 
 export const metadata: Metadata = {
     title: "Users Management",
@@ -10,13 +10,6 @@ export const metadata: Metadata = {
     },
 };
 
-const UsersPage: React.FC = () => {
-    return (
-        <div>
-            <h1>Users Management</h1>
-            <p>This is the users management page.</p>
-        </div>
-    );
-};
-
-export default UsersPage;
+export default function Page() {
+    return <UsersPage />;
+}

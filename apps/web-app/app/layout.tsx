@@ -1,8 +1,8 @@
 import React from "react";
 import type { Metadata } from "next";
 import "./../styles/globals.css";
-import Provider from "@/components/provider";
-import { ThemeProvider } from "@/components/theme-provider";
+import Provider from "@/src/components/provider";
+import { ThemeProvider } from "@/src/components/theme-provider";
 
 
 

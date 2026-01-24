@@ -417,7 +417,7 @@ The `profile_visibility` and `slug` fields enable profile sharing functionality:
 
 ## Migration Files
 
-Migration files are located in `supabase/migrations/`:
+Migration files are located in `packages/supabase/SQL/`:
 
 **Core Tables:**
 
@@ -435,7 +435,7 @@ Migration files are located in `supabase/migrations/`:
 
 - `fix_constraints.sql` - Fixes CHECK constraints for status, binding_status, and user_type fields (normalizes to lowercase)
 
-**Note**: The actual database schema may differ from migration files. Always refer to `database_scheme.sql` for the current state of the database.
+**Note**: The actual database schema may differ from migration files. Always refer to `packages/supabase/SQL/database_scheme.sql` for the current state of the database.
 
 ---
 
@@ -467,5 +467,5 @@ Migration files are located in `supabase/migrations/`:
 
 ---
 
-*Last Updated: Based on actual database schema from database_scheme.sql*
+*Last Updated: Based on actual database schema from packages/supabase/SQL/database_scheme.sql*
 *Schema Version: 2.1*

@@ -1,4 +1,5 @@
 import { ArtworkService } from '../artwork-service'
+import { createClient } from '@/src/lib/supabase'
 
 // Mock Supabase client
 jest.mock('@/src/lib/supabase', () => ({
@@ -26,7 +27,7 @@ jest.mock('@/src/lib/supabase', () => ({
 
 describe('ArtworkService.deleteArtwork', () => {
     it('should delete artwork and related data', async () => {
-        const mockSupabase = require('@/src/lib/supabase').createClient()
+        const mockSupabase = createClient()
 
         await ArtworkService.deleteArtwork('test-artwork-id')
 
@@ -41,7 +42,7 @@ describe('ArtworkService.deleteArtwork', () => {
     })
 
     it('should handle deletion without image gracefully', async () => {
-        const mockSupabase = require('@/src/lib/supabase').createClient()
+        const mockSupabase = createClient()
         mockSupabase.from().single.mockResolvedValueOnce({
             data: { image_url: null }
         })
@@ -53,7 +54,7 @@ describe('ArtworkService.deleteArtwork', () => {
     })
 
     it('should handle storage deletion errors gracefully', async () => {
-        const mockSupabase = require('@/src/lib/supabase').createClient()
+        const mockSupabase = createClient()
         mockSupabase.storage.from().remove.mockRejectedValueOnce(new Error('Storage error'))
 
         // Should not throw an error even if storage deletion fails

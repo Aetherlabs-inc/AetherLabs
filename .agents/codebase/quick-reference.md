@@ -63,12 +63,13 @@ EXPO_PUBLIC_SUPABASE_ANON_KEY=<key>
 | Purpose | Path |
 |---------|------|
 | Root Layout | `app/layout.tsx` |
-| Middleware | `middleware.ts` |
-| Artwork Registration | `src/Artworks/registerArtwork/RegisterArtwork.tsx` |
+| Proxy | `proxy.ts` |
+| Page components | `src/**` (import into `app/**` routes) |
+| Artwork Registration | `src/features/artworks/registerArtwork/RegisterArtwork.tsx` |
 | Services | `src/services/*.ts` |
 | Database Types | `src/types/database.ts` |
 | Supabase Client | `src/lib/supabase.ts` |
-| Dashboard | `src/dashboard/index.tsx` |
+| Dashboard | `src/features/dashboard/index.tsx` |
 
 ### Mobile App (`apps/mobile-app/`)
 | Purpose | Path |
@@ -102,7 +103,7 @@ EXPO_PUBLIC_SUPABASE_ANON_KEY=<key>
 ### Add a new page (web-app)
 1. Create `apps/web-app/app/(Main)/page-name/page.tsx`
 2. Add nav link in `apps/web-app/components/app-sidebar.tsx`
-3. Add to middleware if protected
+3. Add to proxy matcher if protected
 
 ### Add a new screen (mobile-app)
 1. Create file in `apps/mobile-app/app/` (Expo Router)

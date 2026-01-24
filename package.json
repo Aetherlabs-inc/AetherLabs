@@ -15,10 +15,10 @@
     "build:ui": "turbo build --filter=@aetherlabs/ui"
   },
   "devDependencies": {
-    "prettier": "^3.2.4",
-    "turbo": "^2.3.0",
     "@aetherlabs/eslint-config": "workspace:*",
-    "@aetherlabs/typescript-config": "workspace:*"
+    "@aetherlabs/typescript-config": "workspace:*",
+    "prettier": "^3.2.4",
+    "turbo": "^2.3.0"
   },
   "packageManager": "pnpm@9.15.0",
   "engines": {
@@ -29,5 +29,8 @@
       "@types/react": "^18.2.48",
       "@types/react-dom": "^18.2.18"
     }
+  },
+  "dependencies": {
+    "qrcode.react": "^4.2.0"
   }
 }

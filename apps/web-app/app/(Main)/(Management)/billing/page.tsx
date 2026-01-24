@@ -1,5 +1,5 @@
-import React from 'react';
 import type { Metadata } from 'next';
+import BillingPage from '@/src/features/management/BillingPage';
 
 export const metadata: Metadata = {
     title: "Billing",
@@ -10,13 +10,6 @@ export const metadata: Metadata = {
     },
 };
 
-const BillingPage: React.FC = () => {
-    return (
-        <div>
-            <h1>Billing Management</h1>
-            <p>This is the billing management page.</p>
-        </div>
-    );
-};
-
-export default BillingPage;
+export default function Page() {
+    return <BillingPage />;
+}

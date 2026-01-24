@@ -33,7 +33,7 @@ EXPO_PUBLIC_SUPABASE_ANON_KEY=your_anon_key_here
 3. Run the following migrations in order:
 
 ### Step 1: Base Schema
-Copy and paste the contents of `supabase/schema.sql` and click "Run"
+Copy and paste the contents of `packages/supabase/SQL/schema.sql` and click "Run"
 
 This will create:
 - `profiles` table for user profiles
@@ -43,7 +43,7 @@ This will create:
 - Automatic timestamp triggers
 
 ### Step 2: User Profiles Table
-Copy and paste the contents of `supabase/migrations/create_user_profiles.sql` and click "Run"
+Copy and paste the contents of `packages/supabase/SQL/create_user_profiles.sql` and click "Run"
 
 This will create:
 - `user_profiles` table with all profile fields (email, full_name, user_type, bio, website, location, phone, instagram, avatar_url)

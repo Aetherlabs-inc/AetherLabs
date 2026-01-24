@@ -1,6 +1,4 @@
-'use client';
-import React from "react"
-import Dashboard from "@/src/dashboard/index";
+import Dashboard from "@/src/features/dashboard/index";
 
 export default function Page() {
     return (

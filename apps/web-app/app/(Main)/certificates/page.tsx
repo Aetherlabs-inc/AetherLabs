@@ -1,8 +1,8 @@
-import React from 'react';
 import type { Metadata } from 'next';
+import Certificates from '@/src/features/certificates/Certificates';
 
 export const metadata: Metadata = {
-    title: "Certificates",
+    title: "Certificates | AetherLabs",
     description: "View and manage your NFC-enabled certificates of authenticity (COA) for your artwork. Verify and track certificate status.",
     robots: {
         index: false,
@@ -10,13 +10,6 @@ export const metadata: Metadata = {
     },
 };
 
-const CertificatesPage: React.FC = () => {
-    return (
-        <div>
-            <h1>Certificates</h1>
-            <p>This is the certificates page.</p>
-        </div>
-    );
-};
-
-export default CertificatesPage;
+export default function CertificatesPage() {
+    return <Certificates />;
+}
