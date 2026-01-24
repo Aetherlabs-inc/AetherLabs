@@ -1,16 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, Button, Label, Switch } from '@aetherlabs/ui';
 import {
     Wifi,
     ArrowLeft,
     ArrowRight,
     CheckCircle,
-    AlertCircle,
-    Loader2,
     Smartphone,
     Shield,
 } from 'lucide-react';
-import { ArtworkRegistrationService } from '@/src/services/artwork-registration-service';
 
 interface NFCBindingScreenProps {
     artworkData: {
@@ -43,43 +40,14 @@ const NFCBindingScreen: React.FC<NFCBindingScreenProps> = ({
     onComplete,
     onSkip
 }) => {
-    const [bindNFC, setBindNFC] = useState(false);
-    const [isScanning, setIsScanning] = useState(false);
-    const [nfcData, setNfcData] = useState<NFCData | null>(null);
-    const [scanAttempts, setScanAttempts] = useState(0);
-
-    const handleNFCScan = async () => {
-        setIsScanning(true);
-        setScanAttempts(prev => prev + 1);
-        console.log('Scan attempt:', scanAttempts);
-
-        try {
-            // Simulate NFC scanning
-            await new Promise(resolve => setTimeout(resolve, 3000));
-
-            // Generate NFC UID and bind to artwork
-            const nfcUid = `NFC-${Date.now()}-${Math.random().toString(36).substr(2, 8).toUpperCase()}`;
-            const newNFCData = await ArtworkRegistrationService.bindNFCTag('temp-artwork-id', nfcUid);
-
-            setNfcData(newNFCData);
-            setIsScanning(false);
-        } catch (error) {
-            console.error('NFC scan failed:', error);
-            alert(`Error binding NFC tag: ${error instanceof Error ? error.message : 'Unknown error'}`);
-            setIsScanning(false);
-        }
-    };
+    const bindNFC = false;
 
     const handleComplete = () => {
-        if (nfcData) {
-            onComplete(nfcData);
-        } else {
-            onComplete({
-                nfcUid: '',
-                isBound: false,
-                bindingStatus: 'pending'
-            });
-        }
+        onComplete({
+            nfcUid: '',
+            isBound: false,
+            bindingStatus: 'pending'
+        });
     };
 
     const handleSkip = () => {
@@ -88,12 +56,6 @@ const NFCBindingScreen: React.FC<NFCBindingScreenProps> = ({
             isBound: false,
             bindingStatus: 'pending'
         });
-    };
-
-    const simulateNFCDetection = () => {
-        // In a real app, this would use the Web NFC API
-        // For now, we'll simulate the detection
-        handleNFCScan();
     };
 
     return (
@@ -146,76 +108,23 @@ const NFCBindingScreen: React.FC<NFCBindingScreenProps> = ({
                                     </div>
                                     <Switch
                                         checked={bindNFC}
-                                        onCheckedChange={setBindNFC}
+                                        disabled
                                     />
                                 </div>
 
-                                {bindNFC && (
-                                    <div className="space-y-4">
-                                        <div className="bg-muted border border-border rounded-lg p-4">
-                                            <div className="flex items-center gap-2 mb-2">
-                                                <Smartphone className="h-5 w-5 text-foreground" />
-                                                <span className="font-semibold text-foreground">
-                                                    NFC Scanning Instructions
-                                                </span>
-                                            </div>
-                                            <ul className="text-sm text-foreground space-y-1">
-                                                <li>• Hold your NFC-enabled device close to the tag</li>
-                                                <li>• Ensure NFC is enabled on your device</li>
-                                                <li>• Keep the device steady for 2-3 seconds</li>
-                                                <li>• Wait for the binding confirmation</li>
-                                            </ul>
+                                <div className="space-y-4">
+                                    <div className="bg-muted border border-border rounded-lg p-4">
+                                        <div className="flex items-center gap-2 mb-2">
+                                            <Smartphone className="h-5 w-5 text-foreground" />
+                                            <span className="font-semibold text-foreground">
+                                                NFC Binding Coming Soon
+                                            </span>
                                         </div>
-
-                                        {!isScanning && !nfcData && (
-                                            <Button
-                                                onClick={simulateNFCDetection}
-                                                className="w-full py-3 text-lg font-semibold bg-primary hover:bg-primary/90 text-primary-foreground"
-                                            >
-                                                <Wifi className="h-5 w-5 mr-2" />
-                                                Start NFC Scan
-                                            </Button>
-                                        )}
-
-                                        {isScanning && (
-                                            <div className="text-center space-y-4">
-                                                <div className="flex items-center justify-center">
-                                                    <Loader2 className="h-8 w-8 animate-spin text-foreground" />
-                                                </div>
-                                                <div>
-                                                    <p className="font-semibold text-foreground">
-                                                        Scanning for NFC Tag...
-                                                    </p>
-                                                    <p className="text-sm text-muted-foreground">
-                                                        Hold your device close to the NFC tag
-                                                    </p>
-                                                </div>
-                                                <div className="flex items-center justify-center gap-2">
-                                                    <div className="w-2 h-2 bg-foreground rounded-full animate-pulse"></div>
-                                                    <div className="w-2 h-2 bg-foreground rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
-                                                    <div className="w-2 h-2 bg-foreground rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
-                                                </div>
-                                            </div>
-                                        )}
-
-                                        {nfcData && nfcData.bindingStatus === 'success' && (
-                                            <div className="bg-muted border border-border rounded-lg p-4">
-                                                <div className="flex items-center gap-2 mb-2">
-                                                    <CheckCircle className="h-5 w-5 text-foreground" />
-                                                    <span className="font-semibold text-foreground">
-                                                        NFC Tag Successfully Bound
-                                                    </span>
-                                                </div>
-                                                <p className="text-sm text-foreground mb-2">
-                                                    NFC UID: {nfcData.nfcUid}
-                                                </p>
-                                                <p className="text-sm text-muted-foreground">
-                                                    This tag is now linked to your artwork and COA
-                                                </p>
-                                            </div>
-                                        )}
+                                        <p className="text-sm text-muted-foreground">
+                                            NFC binding is temporarily disabled during testing. You can continue and bind a tag later.
+                                        </p>
                                     </div>
-                                )}
+                                </div>
                             </div>
                         </CardContent>
                     </Card>
@@ -264,12 +173,6 @@ const NFCBindingScreen: React.FC<NFCBindingScreenProps> = ({
                                             <Label className="text-muted-foreground">Certificate ID</Label>
                                             <p className="font-mono text-sm text-foreground">{coaData.certificateId}</p>
                                         </div>
-                                        <div>
-                                            <Label className="text-muted-foreground">Blockchain Hash</Label>
-                                            <p className="font-mono text-xs text-muted-foreground break-all">
-                                                {coaData.blockchainHash.substring(0, 20)}...
-                                            </p>
-                                        </div>
                                     </div>
                                 </div>
                             )}
@@ -280,22 +183,8 @@ const NFCBindingScreen: React.FC<NFCBindingScreenProps> = ({
                                     <span className="font-semibold text-foreground">NFC Status</span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    {nfcData && nfcData.isBound ? (
-                                        <>
-                                            <CheckCircle className="h-4 w-4 text-foreground" />
-                                            <span className="text-sm text-foreground">NFC Tag Bound</span>
-                                        </>
-                                    ) : bindNFC ? (
-                                        <>
-                                            <Loader2 className="h-4 w-4 animate-spin text-accent" />
-                                            <span className="text-sm text-accent">Scanning...</span>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <AlertCircle className="h-4 w-4 text-muted-foreground" />
-                                            <span className="text-sm text-muted-foreground">No NFC Tag</span>
-                                        </>
-                                    )}
+                                    <CheckCircle className="h-4 w-4 text-muted-foreground" />
+                                    <span className="text-sm text-muted-foreground">NFC binding disabled</span>
                                 </div>
                             </div>
                         </CardContent>

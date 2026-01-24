@@ -325,7 +325,7 @@ const COACertificateDocument: React.FC<CertificateData> = ({
               </View>
               <Text style={styles.brandName}>AetherLabs</Text>
               <Text style={styles.title}>Certificate of Authenticity</Text>
-              <Text style={styles.subtitle}>Digital Art Registry • Blockchain Verified</Text>
+              <Text style={styles.subtitle}>Digital Art Registry • Verified Record</Text>
             </View>
 
             {/* Ornamental Divider */}
@@ -420,7 +420,7 @@ const COACertificateDocument: React.FC<CertificateData> = ({
                   <Text style={styles.certDetailValue}>{formatDate(certificateData.generatedAt)}</Text>
                 </View>
                 <View style={styles.certDetailRow}>
-                  <Text style={styles.certDetailLabel}>Blockchain Signature</Text>
+                  <Text style={styles.certDetailLabel}>Registry Signature</Text>
                   <Text style={styles.hashValue}>
                     {certificateData.blockchainHash.slice(0, 40)}...
                   </Text>
@@ -431,7 +431,7 @@ const COACertificateDocument: React.FC<CertificateData> = ({
             {/* Footer */}
             <View style={styles.footer}>
               <Text style={styles.footerText}>
-                This certificate is digitally signed and recorded on the blockchain.
+                This certificate is digitally signed and recorded in your registry.
                 The authenticity of this artwork can be verified at any time by visiting{' '}
                 <Text style={styles.footerHighlight}>aetherlabs.art/verify</Text>
               </Text>

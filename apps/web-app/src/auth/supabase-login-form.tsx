@@ -48,12 +48,12 @@ export function SupabaseLoginForm({
 
     return (
         <form className={cn("flex flex-col gap-6", className)} {...props} onSubmit={handleSignIn}>
-            <div className="relative overflow-hidden rounded-[28px] border border-[#2A2121]/15 bg-white/70 px-6 py-7 shadow-[0_20px_60px_-45px_rgba(42,33,33,0.7)] backdrop-blur-xl">
+            <div className="relative overflow-hidden rounded-[28px] border border-[#2A2121]/18 bg-[#f2f2f2]/70 px-6 py-7 shadow-[0_24px_70px_-50px_rgba(42,33,33,0.7)] backdrop-blur-xl">
                 <div className="pointer-events-none absolute inset-0">
-                    <div className="absolute inset-0 opacity-40 [background:radial-gradient(140%_120%_at_10%_0%,rgba(202,91,43,0.25),transparent_55%),radial-gradient(120%_120%_at_90%_100%,rgba(188,128,16,0.22),transparent_60%)]" />
-                    <div className="absolute inset-0 opacity-30 [background:linear-gradient(120deg,rgba(42,33,33,0.08),transparent_35%,rgba(42,33,33,0.04))]" />
+                    <div className="absolute inset-0 opacity-35 [background:radial-gradient(140%_120%_at_10%_0%,rgba(202,91,43,0.22),transparent_55%),radial-gradient(120%_120%_at_90%_100%,rgba(188,128,16,0.2),transparent_60%)]" />
+                    <div className="absolute inset-0 opacity-45 [background:linear-gradient(120deg,rgba(42,33,33,0.1),transparent_35%,rgba(42,33,33,0.06))]" />
                     <div
-                        className="absolute inset-0 opacity-[0.18] mix-blend-multiply"
+                        className="absolute inset-0 opacity-[0.28] mix-blend-multiply"
                         style={{
                             backgroundImage:
                                 'url("data:image/svg+xml;utf8,<svg xmlns=\\"http://www.w3.org/2000/svg\\" width=\\"160\\" height=\\"160\\" viewBox=\\"0 0 160 160\\"><filter id=\\"n\\"><feTurbulence type=\\"fractalNoise\\" baseFrequency=\\"0.9\\" numOctaves=\\"2\\" stitchTiles=\\"stitch\\"/></filter><rect width=\\"160\\" height=\\"160\\" filter=\\"url(%23n)\\" opacity=\\"0.35\\"/></svg>")'

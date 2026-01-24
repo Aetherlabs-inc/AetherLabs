@@ -652,6 +652,9 @@ importers:
       tailwindcss-animate:
         specifier: ^1.0.7
         version: 1.0.7(tailwindcss@3.4.19(tsx@4.19.4)(yaml@2.8.2))
+      three:
+        specifier: ^0.171.0
+        version: 0.171.0
     devDependencies:
       '@eslint/js':
         specifier: ^8.57.1

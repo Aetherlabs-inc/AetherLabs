@@ -89,16 +89,33 @@ export function SupabaseSignupForm({
 
     return (
         <form className={cn("flex flex-col gap-6", className)} {...props} onSubmit={handleSignUp}>
-            <div className="flex flex-col gap-3 text-center">
-                <div className="mx-auto w-fit rounded-full border border-[#2A2121]/15 bg-[#CA5B2B]/10 px-3 py-1 text-xs uppercase tracking-[0.2em] text-[#2A2121]">
-                    Artist Entry
+            <div className="relative overflow-hidden rounded-[28px] border border-[#2A2121]/18 bg-[#f2f2f2]/70 px-6 py-7 shadow-[0_24px_70px_-50px_rgba(42,33,33,0.7)] backdrop-blur-xl">
+                <div className="pointer-events-none absolute inset-0">
+                    <div className="absolute inset-0 opacity-35 [background:radial-gradient(140%_120%_at_10%_0%,rgba(202,91,43,0.22),transparent_55%),radial-gradient(120%_120%_at_90%_100%,rgba(188,128,16,0.2),transparent_60%)]" />
+                    <div className="absolute inset-0 opacity-45 [background:linear-gradient(120deg,rgba(42,33,33,0.1),transparent_35%,rgba(42,33,33,0.06))]" />
+                    <div
+                        className="absolute inset-0 opacity-[0.28] mix-blend-multiply"
+                        style={{
+                            backgroundImage:
+                                'url("data:image/svg+xml;utf8,<svg xmlns=\\"http://www.w3.org/2000/svg\\" width=\\"160\\" height=\\"160\\" viewBox=\\"0 0 160 160\\"><filter id=\\"n\\"><feTurbulence type=\\"fractalNoise\\" baseFrequency=\\"0.9\\" numOctaves=\\"2\\" stitchTiles=\\"stitch\\"/></filter><rect width=\\"160\\" height=\\"160\\" filter=\\"url(%23n)\\" opacity=\\"0.35\\"/></svg>")'
+                        }}
+                    />
                 </div>
-                <h1 className="text-2xl font-semibold text-[#2A2121]">Create your studio access</h1>
-                <p className="text-sm text-[#2A2121]/60">
-                    AetherLabs keeps your artwork verified and beautifully documented.
-                </p>
-            </div>
-            <div className="grid gap-5">
+                <div className="relative">
+                    <div className="flex flex-col gap-4 text-left">
+                        <div className="flex items-center gap-3">
+                            <div className="h-2.5 w-2.5 rounded-full bg-[#BC8010]" />
+                            <span className="text-[11px] uppercase tracking-[0.32em] text-[#2A2121]/70">studio access</span>
+                        </div>
+                        <div>
+                            <h1 className="text-2xl font-semibold text-[#2A2121]">Create your studio access</h1>
+                            <p className="text-sm text-[#2A2121]/60">
+                                AetherLabs keeps your artwork verified and beautifully documented.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className="mt-6 grid gap-4">
                 <div className="grid gap-2">
                     <Label htmlFor="fullName">Full Name *</Label>
                     <Input
@@ -108,7 +125,7 @@ export function SupabaseSignupForm({
                         required
                         onChange={(e) => setFullName(e.target.value)}
                         value={fullName}
-                        className="h-12 rounded-2xl border-[#2A2121]/20"
+                        className="h-12 rounded-2xl border-[#2A2121]/15 bg-white/80"
                     />
                 </div>
 
@@ -121,7 +138,7 @@ export function SupabaseSignupForm({
                         required
                         onChange={(e) => setEmail(e.target.value)}
                         value={email}
-                        className="h-12 rounded-2xl border-[#2A2121]/20"
+                        className="h-12 rounded-2xl border-[#2A2121]/15 bg-white/80"
                     />
                 </div>
 
@@ -135,7 +152,12 @@ export function SupabaseSignupForm({
                                 variant={userType === type ? 'default' : 'outline'}
                                 size="sm"
                                 onClick={() => setUserType(type)}
-                                className="capitalize rounded-2xl"
+                                className={cn(
+                                    "capitalize rounded-full border-[#2A2121]/10 shadow-[0_10px_20px_-18px_rgba(42,33,33,0.35)]",
+                                    userType === type
+                                        ? "bg-[#CA5B2B] text-white hover:bg-[#CA5B2B]/90 border-transparent"
+                                        : "bg-white/60 text-[#2A2121]/70 hover:text-[#2A2121] hover:border-[#CA5B2B]/35 hover:bg-white/80"
+                                )}
                             >
                                 {type}
                             </Button>
@@ -152,7 +174,7 @@ export function SupabaseSignupForm({
                             placeholder="Create a password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className="w-full h-12 rounded-2xl pr-12 border-[#2A2121]/20"
+                            className="w-full h-12 rounded-2xl pr-12 border-[#2A2121]/15 bg-white/80"
                         />
                         <Button
                             onClick={toggleVisibility}
@@ -175,7 +197,7 @@ export function SupabaseSignupForm({
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         required
-                        className="h-12 rounded-2xl border-[#2A2121]/20"
+                        className="h-12 rounded-2xl border-[#2A2121]/15 bg-white/80"
                     />
                 </div>
 
@@ -188,6 +210,8 @@ export function SupabaseSignupForm({
                 >
                     {loading ? 'Creating Account...' : 'Enter the Portal'}
                 </Button>
+                    </div>
+                </div>
             </div>
             <div className="text-center text-sm text-[#2A2121]/70">
                 Already have access?{' '}

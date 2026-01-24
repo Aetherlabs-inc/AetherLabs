@@ -71,8 +71,8 @@ const COADecisionScreen: React.FC<COADecisionScreenProps> = ({
                                         <p className="text-foreground font-mono">COA-XXXX-XXXX</p>
                                     </div>
                                     <div>
-                                        <span className="text-foreground font-semibold">Blockchain Hash:</span>
-                                        <p className="text-muted-foreground font-mono text-xs">0x1234...5678</p>
+                                        <span className="text-foreground font-semibold">Registry Signature:</span>
+                                        <p className="text-muted-foreground font-mono text-xs">SIG-XXXX-XXXX</p>
                                     </div>
                                     <div>
                                         <span className="text-foreground font-semibold">Status:</span>
@@ -86,7 +86,7 @@ const COADecisionScreen: React.FC<COADecisionScreenProps> = ({
                                         <span className="text-sm text-foreground font-semibold">Features Included:</span>
                                     </div>
                                     <ul className="text-sm text-foreground space-y-1 ml-4">
-                                        <li>• Blockchain verification</li>
+                                        <li>• Secure registry verification</li>
                                         <li>• Unique certificate ID</li>
                                         <li>• QR code for verification</li>
                                         <li>• NFC tag binding capability</li>
@@ -105,14 +105,15 @@ const COADecisionScreen: React.FC<COADecisionScreenProps> = ({
                         className="px-8 py-3 text-lg font-semibold border-border text-foreground hover:bg-muted"
                     >
                         <FileText className="h-5 w-5 mr-2" />
-                        Skip COA
+                        Continue Without COA
                     </Button>
                     <Button
                         onClick={onGenerateCOA}
+                        disabled
                         className="px-8 py-3 text-lg font-semibold bg-primary hover:bg-primary/90 text-primary-foreground"
                     >
                         <Shield className="h-5 w-5 mr-2" />
-                        Generate COA
+                        Generate COA (Soon)
                         <ArrowRight className="h-4 w-4 ml-2" />
                     </Button>
                 </div>

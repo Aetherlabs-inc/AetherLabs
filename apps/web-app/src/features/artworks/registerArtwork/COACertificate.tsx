@@ -80,7 +80,7 @@ const COACertificate: React.FC<COACertificateProps> = ({
                     </div>
                     <div>
                         <h1 className="text-3xl font-bold text-foreground">CERTIFICATE OF AUTHENTICITY</h1>
-                        <p className="text-sm text-foreground mt-1">Digital Certificate • Blockchain Verified</p>
+                        <p className="text-sm text-foreground mt-1">Digital Certificate • Verified Record</p>
                     </div>
                 </div>
                 <div className="w-full h-0.5 bg-foreground"></div>
@@ -210,11 +210,11 @@ const COACertificate: React.FC<COACertificateProps> = ({
                         </div>
                     </div>
 
-                    {/* Blockchain Hash */}
+                    {/* Registry Signature */}
                     <div>
                         <h3 className="text-lg font-semibold text-foreground mb-2 flex items-center gap-2">
                             <Hash className="h-4 w-4" />
-                            Blockchain Hash
+                            Registry Signature
                         </h3>
                         <div className="bg-muted border border-border rounded p-2">
                             <p className="font-mono text-xs text-foreground break-all">
@@ -240,8 +240,8 @@ const COACertificate: React.FC<COACertificateProps> = ({
                         <div className="w-24 h-24 bg-muted border border-border rounded mx-auto mb-3 flex items-center justify-center">
                             <Shield className="h-12 w-12 text-foreground" />
                         </div>
-                        <p className="text-sm text-foreground">Blockchain Verified</p>
-                        <p className="text-xs text-muted-foreground mt-1">Immutable Record</p>
+                        <p className="text-sm text-foreground">Verified Record</p>
+                        <p className="text-xs text-muted-foreground mt-1">Registry Protected</p>
                     </div>
                 </div>
             </div>
@@ -259,13 +259,13 @@ const COACertificate: React.FC<COACertificateProps> = ({
                     </div>
                     <div>
                         <p className="text-sm font-semibold text-foreground">Verification</p>
-                        <p className="text-xs text-muted-foreground">Blockchain Secured</p>
+                        <p className="text-xs text-muted-foreground">Registry Secured</p>
                     </div>
                 </div>
 
                 <div className="mt-4 text-center">
                     <p className="text-xs text-muted-foreground">
-                        This certificate is digitally signed and recorded on the blockchain.
+                        This certificate is digitally signed and recorded in your registry.
                         Any modifications to this document will invalidate its authenticity.
                     </p>
                 </div>

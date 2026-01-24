@@ -22,6 +22,7 @@ import {
 } from 'lucide-react'
 import { CertificateService, type Certificate, type CertificateStats } from '@/src/services/certificate-service'
 import { DataError } from '@/src/components/error-states'
+import CertificatePreview from '@/src/features/certificates/CertificatePreview'
 
 // Skeleton components
 function CertificateCardSkeleton() {
@@ -94,30 +95,40 @@ export default function Certificates() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
+  const [previewCert, setPreviewCert] = useState<Certificate | null>(null)
 
-  const fetchData = async () => {
-    try {
-      setLoading(true)
-      setError(null)
+  // const fetchData = async () => {
+  //   try {
+  //     setLoading(true)
+  //     setError(null)
 
-      const [certsData, statsData] = await Promise.all([
-        CertificateService.getCertificates(),
-        CertificateService.getStats(),
-      ])
+  //     // const [certsData, statsData] = await Promise.all([
+  //     //   CertificateService.getCertificates(),
+  //     //   CertificateService.getStats(),
+  //     // ])
+  //     const certsData = []
+  //     const statsData = {
+  //       total: 0,
+  //       thisMonth: 0,
+  //       withNFC: 0,
+  //     }
 
-      setCertificates(certsData)
-      setStats(statsData)
-    } catch (err) {
-      console.error('Failed to fetch certificates:', err)
-      setError(err instanceof Error ? err.message : 'Failed to load certificates')
-    } finally {
-      setLoading(false)
-    }
-  }
+  //     setCertificates(certsData)
+  //     setStats(statsData)
+  //     if (!previewCert && certsData.length > 0) {
+  //       setPreviewCert(certsData[0])
+  //     }
+  //   } catch (err) {
+  //     console.error('Failed to fetch certificates:', err)
+  //     setError(err instanceof Error ? err.message : 'Failed to load certificates')
+  //   } finally {
+  //     setLoading(false)
+  //   }
+  // }
 
-  useEffect(() => {
-    fetchData()
-  }, [])
+  // useEffect(() => {
+  //   fetchData()
+  // }, [])
 
   // Filter certificates based on search
   const filteredCertificates = useMemo(() => {
@@ -175,6 +186,10 @@ export default function Certificates() {
           <p className="text-muted-foreground mt-1">
             View and manage your certificates of authenticity
           </p>
+        </div>
+
+        <div className="mb-8">
+          <CertificatePreview certificate={previewCert} />
         </div>
 
         {/* Stats Cards */}
@@ -353,6 +368,13 @@ export default function Certificates() {
                           >
                             <Download className="w-4 h-4 mr-2" />
                             Download
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setPreviewCert(cert)}
+                          >
+                            Preview
                           </Button>
                           <Button
                             variant="ghost"

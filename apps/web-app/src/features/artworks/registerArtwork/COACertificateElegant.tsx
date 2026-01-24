@@ -2,9 +2,10 @@
 
 import React from 'react'
 import { motion } from 'framer-motion'
-import { Shield, CheckCircle, Wifi, Copy, Download } from 'lucide-react'
+import { CheckCircle, Copy, Download } from 'lucide-react'
 import { Button } from '@aetherlabs/ui'
 import { QRCodeSVG } from 'qrcode.react'
+import Image from 'next/image'
 
 interface COACertificateElegantProps {
   artworkData: {
@@ -33,52 +34,6 @@ interface COACertificateElegantProps {
   className?: string
 }
 
-// Decorative corner component
-const CornerDecoration = ({ position }: { position: 'tl' | 'tr' | 'bl' | 'br' }) => {
-  const rotations = {
-    tl: 'rotate-0',
-    tr: 'rotate-90',
-    bl: '-rotate-90',
-    br: 'rotate-180'
-  }
-  const positions = {
-    tl: 'top-0 left-0',
-    tr: 'top-0 right-0',
-    bl: 'bottom-0 left-0',
-    br: 'bottom-0 right-0'
-  }
-
-  return (
-    <div className={`absolute ${positions[position]} w-16 h-16 ${rotations[position]}`}>
-      <svg viewBox="0 0 64 64" className="w-full h-full text-[#BC8010]">
-        <path
-          d="M0 0 L24 0 L24 2 L2 2 L2 24 L0 24 Z"
-          fill="currentColor"
-        />
-        <path
-          d="M8 0 L8 2 L2 2 L2 8 L0 8 L0 0 Z"
-          fill="currentColor"
-          opacity="0.3"
-          transform="translate(4, 4)"
-        />
-      </svg>
-    </div>
-  )
-}
-
-// Ornamental divider
-const OrnamentalDivider = () => (
-  <div className="flex items-center justify-center gap-4 my-6">
-    <div className="h-px bg-gradient-to-r from-transparent via-[#BC8010]/40 to-transparent flex-1" />
-    <div className="flex items-center gap-2">
-      <div className="w-1.5 h-1.5 bg-[#BC8010] rotate-45" />
-      <div className="w-2 h-2 border border-[#BC8010] rotate-45" />
-      <div className="w-1.5 h-1.5 bg-[#BC8010] rotate-45" />
-    </div>
-    <div className="h-px bg-gradient-to-r from-transparent via-[#BC8010]/40 to-transparent flex-1" />
-  </div>
-)
-
 const COACertificateElegant: React.FC<COACertificateElegantProps> = ({
   artworkData,
   certificateData,
@@ -88,18 +43,22 @@ const COACertificateElegant: React.FC<COACertificateElegantProps> = ({
   onCopy,
   className = ''
 }) => {
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
+  const formatDate = (dateString: string) =>
+    new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
-      month: 'long',
-      day: 'numeric'
+      month: 'short',
+      day: 'numeric',
     })
-  }
 
   const handleCopy = () => {
     navigator.clipboard.writeText(certificateData.certificateId)
     onCopy?.()
   }
+
+  const noiseSvg =
+    "<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/></filter><rect width='160' height='160' filter='url(%23n)' opacity='0.45'/></svg>"
+  const noiseUrl = `url("data:image/svg+xml;utf8,${encodeURIComponent(noiseSvg)}")`
+  const backgroundImageUrl = artworkData.imageUrl || '/IMG_6262-2.jpg'
 
   return (
     <div className={`relative ${className}`}>
@@ -108,201 +67,90 @@ const COACertificateElegant: React.FC<COACertificateElegantProps> = ({
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="relative bg-[#FEFDFB] dark:bg-[#1a1817] border-2 border-[#2A2121] dark:border-[#BC8010]/30 p-8 md:p-12 max-w-3xl mx-auto shadow-2xl"
+        className="relative max-w-[460px] sm:max-w-[520px] mx-auto overflow-hidden rounded-[28px] border border-[#2A2121]/10 bg-[#f7f4ef] shadow-[0_22px_60px_rgba(42,33,33,0.18)]"
       >
-        {/* Corner Decorations */}
-        <CornerDecoration position="tl" />
-        <CornerDecoration position="tr" />
-        <CornerDecoration position="bl" />
-        <CornerDecoration position="br" />
-
-        {/* Inner Border */}
-        <div className="absolute inset-4 border border-[#2A2121]/10 dark:border-[#BC8010]/10 pointer-events-none" />
-
-        {/* Certificate Header */}
-        <div className="text-center mb-8 pt-4">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
-            <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-[#2A2121] dark:bg-[#BC8010] mb-4">
-              <Shield className="w-7 h-7 text-white dark:text-[#2A2121]" />
-            </div>
-          </motion.div>
-
-          <h1 className="text-xs tracking-[0.4em] text-[#BC8010] uppercase mb-2 font-medium">
-            AetherLabs
-          </h1>
-          <h2 className="text-2xl md:text-3xl font-light tracking-wide text-[#2A2121] dark:text-white uppercase">
-            Certificate of Authenticity
-          </h2>
-          <p className="text-xs text-[#2A2121]/60 dark:text-white/50 mt-2 tracking-wider">
-            Digital Art Registry • Blockchain Verified
-          </p>
+        <div className="absolute inset-0 overflow-hidden rounded-[28px] border border-[#2A2121]/10 shadow-[0_22px_60px_rgba(42,33,33,0.18)] w-full h-full">
+          <Image
+            src={backgroundImageUrl}
+            alt={artworkData.title}
+            fill
+            className="object-cover invert saturate-150"
+          />
+          <div
+            className="absolute inset-0 bg-black/10 bg-blend-multiply"
+            style={{ backgroundImage: noiseUrl }}
+          />
         </div>
 
-        <OrnamentalDivider />
-
-        {/* Certificate Body */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-          {/* Left: Artwork Image */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="flex flex-col"
-          >
-            <div className="relative aspect-[4/5] bg-[#f5f3f0] dark:bg-[#2A2121] border border-[#2A2121]/10 dark:border-[#BC8010]/20 overflow-hidden">
-              {artworkData.imageUrl ? (
-                <img
-                  src={artworkData.imageUrl}
-                  alt={artworkData.title}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center">
-                  <div className="text-center text-[#2A2121]/30 dark:text-white/30">
-                    <Shield className="w-12 h-12 mx-auto mb-2" />
-                    <p className="text-sm">Artwork Image</p>
-                  </div>
-                </div>
-              )}
-              {/* Image overlay gradient */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent pointer-events-none" />
-            </div>
-          </motion.div>
-
-          {/* Right: Artwork Details */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-            className="flex flex-col justify-center"
-          >
-            {/* Title */}
-            <div className="mb-6">
-              <p className="text-xs text-[#BC8010] uppercase tracking-wider mb-1">Artwork Title</p>
-              <h3 className="text-xl md:text-2xl font-semibold text-[#2A2121] dark:text-white leading-tight">
-                {artworkData.title}
-              </h3>
-            </div>
-
-            {/* Artist */}
-            <div className="mb-6">
-              <p className="text-xs text-[#BC8010] uppercase tracking-wider mb-1">Artist</p>
-              <p className="text-lg text-[#2A2121] dark:text-white">
-                {artworkData.artistName || 'Unknown Artist'}
+        <div className="relative px-6 py-7 sm:px-8 sm:py-8">
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <p className="flex h-7 w-7 items-center font-playfair justify-center rounded-md bg-[#2A2121] text-[#f9f8f6] text-sm font-medium text-center">
+                Æ
               </p>
+              <p className="text-sm font-playfair text-[#2A2121]/80">AetherLabs</p>
             </div>
-
-            {/* Details Grid */}
-            <div className="grid grid-cols-2 gap-4 mb-6">
-              <div>
-                <p className="text-xs text-[#2A2121]/50 dark:text-white/50 uppercase tracking-wider mb-1">Year</p>
-                <p className="text-sm text-[#2A2121] dark:text-white font-medium">
-                  {artworkData.year || 'N/A'}
-                </p>
-              </div>
-              <div>
-                <p className="text-xs text-[#2A2121]/50 dark:text-white/50 uppercase tracking-wider mb-1">Medium</p>
-                <p className="text-sm text-[#2A2121] dark:text-white font-medium">
-                  {artworkData.medium || 'N/A'}
-                </p>
-              </div>
-              <div className="col-span-2">
-                <p className="text-xs text-[#2A2121]/50 dark:text-white/50 uppercase tracking-wider mb-1">Dimensions</p>
-                <p className="text-sm text-[#2A2121] dark:text-white font-medium">
-                  {artworkData.dimensions || 'N/A'}
-                </p>
+            <div className="h-10 w-10 rounded-full border border-[#2A2121]/20 bg-[#f7f4ef]/60 p-1">
+              <div className="flex h-full w-full items-center justify-center rounded-full border border-[#2A2121]/20 text-[8px] uppercase tracking-[0.2em] text-[#2A2121]/70">
+                Verified
               </div>
             </div>
+          </div>
 
-            {/* Verification Badges */}
-            <div className="flex flex-wrap gap-2">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#2A2121] dark:bg-[#BC8010] text-white dark:text-[#2A2121] text-xs rounded-full">
-                <CheckCircle className="w-3 h-3" />
-                <span className="font-medium">Authenticated</span>
-              </div>
-              {verificationLevel.hasNFC && (
-                <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#BC8010]/10 text-[#BC8010] text-xs rounded-full border border-[#BC8010]/30">
-                  <Wifi className="w-3 h-3" />
-                  <span className="font-medium">NFC Linked</span>
-                </div>
-              )}
+          <div className="mt-6">
+            <h2 className="text-[28px] font-semibold tracking-tight text-[#2A2121] sm:text-[32px]">
+              {artworkData.title || 'Untitled Artwork'}
+            </h2>
+            <p className="mt-1 text-sm text-[#2A2121]/70">
+              {artworkData.artistName || 'Unknown Artist'}
+            </p>
+          </div>
+
+          <div className="mt-5 flex flex-wrap gap-2 text-[11px] uppercase tracking-[0.22em] text-[#2A2121]/55">
+            <span className="rounded-full border border-[#2A2121]/20 bg-white/50 px-3 py-1">Certificate</span>
+            <span className="rounded-full border border-[#2A2121]/20 bg-white/50 px-3 py-1">Studio Access</span>
+            <span className="rounded-full border border-[#2A2121]/20 bg-white/50 px-3 py-1">Registry</span>
+          </div>
+
+          <div className="mt-6 grid grid-cols-1 gap-4 text-sm text-[#2A2121]/70 sm:grid-cols-2">
+            <div className="rounded-2xl border border-[#2A2121]/10 bg-white/50 px-4 py-3">
+              <p className="text-[11px] uppercase tracking-[0.22em] text-[#2A2121]/45">Certificate ID</p>
+              <p className="mt-1 font-mono text-[13px] text-[#2A2121]">{certificateData.certificateId}</p>
             </div>
-          </motion.div>
-        </div>
+            <div className="rounded-2xl border border-[#2A2121]/10 bg-white/50 px-4 py-3">
+              <p className="text-[11px] uppercase tracking-[0.22em] text-[#2A2121]/45">Issued</p>
+              <p className="mt-1 text-[13px] text-[#2A2121]">{formatDate(certificateData.generatedAt)}</p>
+            </div>
+            <div className="rounded-2xl border border-[#2A2121]/10 bg-white/50 px-4 py-3">
+              <p className="text-[11px] uppercase tracking-[0.22em] text-[#2A2121]/45">Medium</p>
+              <p className="mt-1 text-[13px] text-[#2A2121]">{artworkData.medium || 'N/A'}</p>
+            </div>
+            <div className="rounded-2xl border border-[#2A2121]/10 bg-white/50 px-4 py-3">
+              <p className="text-[11px] uppercase tracking-[0.22em] text-[#2A2121]/45">Dimensions</p>
+              <p className="mt-1 text-[13px] text-[#2A2121]">{artworkData.dimensions || 'N/A'}</p>
+            </div>
+          </div>
 
-        <OrnamentalDivider />
-
-        {/* Certificate Details */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.5 }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8"
-        >
-          {/* QR Code */}
-          <div className="flex flex-col items-center text-center">
-            <div className="bg-white p-3 rounded-lg shadow-sm border border-[#2A2121]/10 mb-3">
+          <div className="mt-6 flex items-center justify-between gap-4">
+            <div className="flex items-center gap-2 text-xs text-[#2A2121]/70">
+              <CheckCircle className="h-4 w-4 text-[#BC8010]" />
+              Authenticated record
+            </div>
+            <div className="rounded-2xl border border-[#2A2121]/10 bg-white/60 p-2">
               <QRCodeSVG
                 value={certificateData.qrCodeUrl}
-                size={100}
+                size={64}
                 level="M"
                 fgColor="#2A2121"
-                bgColor="#FFFFFF"
+                bgColor="transparent"
               />
             </div>
-            <p className="text-xs text-[#2A2121]/60 dark:text-white/50">
-              Scan to Verify
-            </p>
           </div>
 
-          {/* Certificate Info */}
-          <div className="flex flex-col justify-center md:col-span-2">
-            <div className="space-y-3">
-              <div>
-                <p className="text-xs text-[#2A2121]/50 dark:text-white/50 uppercase tracking-wider mb-0.5">
-                  Certificate ID
-                </p>
-                <p className="text-sm font-mono text-[#2A2121] dark:text-white font-medium">
-                  {certificateData.certificateId}
-                </p>
-              </div>
-              <div>
-                <p className="text-xs text-[#2A2121]/50 dark:text-white/50 uppercase tracking-wider mb-0.5">
-                  Issue Date
-                </p>
-                <p className="text-sm text-[#2A2121] dark:text-white">
-                  {formatDate(certificateData.generatedAt)}
-                </p>
-              </div>
-              <div>
-                <p className="text-xs text-[#2A2121]/50 dark:text-white/50 uppercase tracking-wider mb-0.5">
-                  Blockchain Signature
-                </p>
-                <p className="text-xs font-mono text-[#2A2121]/70 dark:text-white/70 break-all">
-                  {certificateData.blockchainHash.slice(0, 32)}...
-                </p>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Footer */}
-        <div className="text-center pt-4 border-t border-[#2A2121]/10 dark:border-[#BC8010]/20">
-          <p className="text-xs text-[#2A2121]/50 dark:text-white/40 max-w-md mx-auto leading-relaxed">
-            This certificate is digitally signed and recorded on the blockchain.
-            The authenticity of this artwork can be verified at any time using the QR code above
-            or by visiting <span className="text-[#BC8010]">aetherlabs.art/verify</span>
-          </p>
-
-          {/* NFC UID if available */}
           {verificationLevel.hasNFC && verificationLevel.nfcUid && (
-            <p className="text-xs text-[#BC8010] mt-2 font-mono">
-              NFC Tag: {verificationLevel.nfcUid}
-            </p>
+            <div className="mt-4 text-xs text-[#2A2121]/60">
+              NFC Tag: <span className="font-mono text-[#2A2121]">{verificationLevel.nfcUid}</span>
+            </div>
           )}
         </div>
       </motion.div>

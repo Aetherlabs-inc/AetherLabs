@@ -88,7 +88,7 @@ export default function RootLayout({
     return (
         <html lang="en" suppressHydrationWarning>
             <ThemeProvider attribute="class" defaultTheme='light' disableTransitionOnChange>
-                <body className="flex flex-col">
+                <body className="flex flex-col font-body-sans">
                     <Provider>
                         <main className="">
                             {children}

@@ -11,7 +11,6 @@ import {
 } from 'lucide-react';
 import COACertificateElegant from './COACertificateElegant';
 import { downloadCertificatePDF } from './COACertificatePDF';
-import { ArtworkRegistrationService } from '@/src/services/artwork-registration-service';
 
 interface COAGenerationScreenProps {
     artworkData: {
@@ -50,8 +49,7 @@ const COAGenerationScreen: React.FC<COAGenerationScreenProps> = ({
     const generationSteps = [
         'Validating artwork data...',
         'Generating unique certificate ID...',
-        'Creating digital signature...',
-        'Registering on blockchain...',
+        'Creating registry signature...',
         'Generating QR code...',
         'Finalizing certificate...'
     ];
@@ -73,24 +71,24 @@ const COAGenerationScreen: React.FC<COAGenerationScreenProps> = ({
         }
     }, [isGenerating]);
 
-    const generateCOA = async () => {
-        try {
-            // Generate COA using the service
-            const newCOAData = await ArtworkRegistrationService.generateCOA('temp-artwork-id');
+    const generateCOA = () => {
+        const certificateId = `COA-${Date.now()}-${Math.random().toString(36).slice(2, 10).toUpperCase()}`;
+        const qrCode = `https://aetherlabs.art/verify/${certificateId}`;
+        const registrySignature = `SIG-${Math.random().toString(36).slice(2, 18).toUpperCase()}`;
+        const generatedAt = new Date().toISOString();
 
-            setCoaData(newCOAData);
-            setIsGenerating(false);
-        } catch (error) {
-            console.error('Error generating COA:', error);
-            alert(`Error generating COA: ${error instanceof Error ? error.message : 'Unknown error'}`);
-            setIsGenerating(false);
-        }
+        setCoaData({
+            certificateId,
+            qrCode,
+            blockchainHash: registrySignature,
+            generatedAt
+        });
+        setIsGenerating(false);
     };
 
     const handleGenerate = () => {
         if (!artistName.trim()) {
-            alert('Please enter the artist name');
-            return;
+            setArtistName('Unknown Artist');
         }
         setIsGenerating(true);
         setGenerationStep(0);
@@ -159,7 +157,7 @@ const COAGenerationScreen: React.FC<COAGenerationScreenProps> = ({
                             Generate Certificate of Authenticity
                         </h1>
                         <p className="text-xl text-foreground">
-                            Create a blockchain-verified certificate for &quot;{artworkData.title}&quot;
+                            Create a verified certificate for &quot;{artworkData.title}&quot;
                         </p>
                     </div>
                 </div>
@@ -167,15 +165,18 @@ const COAGenerationScreen: React.FC<COAGenerationScreenProps> = ({
                 {!isGenerating && !coaData && (
                     <Card className="border border-border bg-card">
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2 text-foreground">
-                                <Shield className="h-5 w-5" />
-                                Artist Information
-                            </CardTitle>
-                            <CardDescription className="text-muted-foreground">
-                                Please provide the artist name for the certificate
-                            </CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-6">
+                        <CardTitle className="flex items-center gap-2 text-foreground">
+                            <Shield className="h-5 w-5" />
+                            Artist Information
+                        </CardTitle>
+                        <CardDescription className="text-muted-foreground">
+                            Please provide the artist name for the certificate
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                        <div className="rounded-lg border border-border bg-muted px-4 py-3 text-sm text-muted-foreground">
+                            Certificate generation is disabled during testing. You can continue without a COA for now.
+                        </div>
                             <div className="space-y-2">
                                 <Label htmlFor="artistName" className="text-foreground">
                                     Artist Name *
@@ -214,11 +215,11 @@ const COAGenerationScreen: React.FC<COAGenerationScreenProps> = ({
                             <div className="flex gap-4">
                                 <Button
                                     onClick={handleGenerate}
-                                    disabled={!artistName.trim()}
+                                    disabled
                                     className="flex-1 py-3 text-lg font-semibold bg-primary hover:bg-primary/90 text-primary-foreground"
                                 >
                                     <Shield className="h-5 w-5 mr-2" />
-                                    Generate COA
+                                    Generate COA (Soon)
                                 </Button>
                                 <Button
                                     onClick={onSkip}
@@ -235,14 +236,14 @@ const COAGenerationScreen: React.FC<COAGenerationScreenProps> = ({
                 {isGenerating && (
                     <Card className="border border-border bg-card">
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2 text-foreground">
-                                <Loader2 className="h-5 w-5 animate-spin" />
-                                Generating Certificate
-                            </CardTitle>
-                            <CardDescription className="text-muted-foreground">
-                                Creating your blockchain-verified certificate of authenticity
-                            </CardDescription>
-                        </CardHeader>
+                        <CardTitle className="flex items-center gap-2 text-foreground">
+                            <Loader2 className="h-5 w-5 animate-spin" />
+                            Generating Certificate
+                        </CardTitle>
+                        <CardDescription className="text-muted-foreground">
+                            Creating your certificate of authenticity
+                        </CardDescription>
+                    </CardHeader>
                         <CardContent className="space-y-6">
                             <div className="space-y-4">
                                 {generationSteps.map((step, index) => (
@@ -306,11 +307,11 @@ const COAGenerationScreen: React.FC<COAGenerationScreenProps> = ({
                                     <CheckCircle className="h-5 w-5 text-[#BC8010]" />
                                     Certificate Generated Successfully
                                 </CardTitle>
-                                <CardDescription className="text-muted-foreground">
-                                    Your certificate of authenticity has been created and registered on the blockchain
-                                </CardDescription>
-                            </CardHeader>
-                            <CardContent className="space-y-6">
+                            <CardDescription className="text-muted-foreground">
+                                    Your certificate of authenticity has been created in your registry
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-6">
                                 <div className="bg-[#BC8010]/5 border border-[#BC8010]/20 rounded-lg p-4">
                                     <div className="flex items-center gap-2 mb-2">
                                         <Shield className="h-5 w-5 text-[#BC8010]" />
@@ -331,7 +332,7 @@ const COAGenerationScreen: React.FC<COAGenerationScreenProps> = ({
                                         </Button>
                                     </div>
                                     <p className="text-sm text-muted-foreground">
-                                        This certificate is now permanently recorded on the blockchain
+                                        This certificate is now recorded in your registry
                                     </p>
                                 </div>
 

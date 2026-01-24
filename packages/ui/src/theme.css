@@ -104,10 +104,33 @@
     @apply border-border;
   }
 
-  body {
-    @apply bg-background font-inter text-foreground antialiased;
-    letter-spacing: -0.025em;
+  :root {
+    --font-base: clamp(16px, 0.85vw + 13px, 18px);
+    --font-ratio: 1.618;
+    --step-1: calc(var(--font-base) * var(--font-ratio));
+    --step-2: calc(var(--step-1) * var(--font-ratio));
+    --step-3: calc(var(--step-2) * var(--font-ratio));
+    --step-4: calc(var(--step-3) * var(--font-ratio));
+    --step-5: calc(var(--step-4) * var(--font-ratio));
   }
+
+  body {
+    @apply bg-background font-cormorant text-foreground antialiased;
+    font-size: var(--font-base);
+    letter-spacing: -0.01em;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-playfair;
+    letter-spacing: -0.02em;
+  }
+
+  h1 { font-size: var(--step-5); }
+  h2 { font-size: var(--step-4); }
+  h3 { font-size: var(--step-3); }
+  h4 { font-size: var(--step-2); }
+  h5 { font-size: var(--step-1); }
+  h6 { font-size: calc(var(--font-base) * 1.25); }
 
   ::selection {
     background: hsl(var(--accent));    /* Gold selection */

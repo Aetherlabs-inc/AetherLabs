@@ -13,7 +13,6 @@ import {
 import COADecisionScreen from './COADecisionScreen';
 import COAGenerationScreen from './COAGenerationScreen';
 import NFCBindingScreen from './NFCBindingScreen';
-import { ArtworkRegistrationService } from '@/src/services/artwork-registration-service';
 
 interface ArtworkFormData {
     // Identity (Core MVP)
@@ -64,6 +63,7 @@ interface RegisterArtworkProps {
 type Screen = 'form' | 'coa-decision' | 'coa-generation' | 'nfc-binding' | 'complete';
 
 const RegisterArtwork: React.FC<RegisterArtworkProps> = ({ onBack }) => {
+    const demoMode = true;
     const [currentScreen, setCurrentScreen] = useState<Screen>('form');
     const [coaData, setCoaData] = useState<{
         certificateId: string;
@@ -226,6 +226,22 @@ const RegisterArtwork: React.FC<RegisterArtworkProps> = ({ onBack }) => {
     };
 
 
+    const normalizeFormData = (data: ArtworkFormData): ArtworkFormData => {
+        const currentYear = new Date().getFullYear().toString();
+        return {
+            ...data,
+            title: data.title.trim() || 'Untitled Artwork',
+            year: data.year.trim() || currentYear,
+            medium: data.medium.trim() || 'Mixed media',
+            dimensions: {
+                height: data.dimensions.height || '24',
+                width: data.dimensions.width || '18',
+                depth: data.dimensions.depth || '0',
+                unit: data.dimensions.unit || 'in'
+            }
+        };
+    };
+
     const validateForm = (): boolean => {
         const newErrors: Record<string, string> = {};
 
@@ -295,27 +311,16 @@ const RegisterArtwork: React.FC<RegisterArtworkProps> = ({ onBack }) => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        // Validate form
-        if (!validateForm()) {
+        if (!demoMode && !validateForm()) {
             return;
         }
-
-        console.log('Form data:', formData);
-        console.log('Errors:', errors);
-
         setIsSubmitting(true);
 
         try {
-            console.log('Starting artwork creation with form data:', {
-                title: formData.title,
-                hasImage: !!formData.primaryImage,
-                imageName: formData.primaryImage?.name,
-                imageSize: formData.primaryImage?.size
-            });
-
-            // Create artwork in database
-            const artwork = await ArtworkRegistrationService.createArtwork(formData);
-            console.log('Artwork created successfully:', artwork);
+            const safeFormData = normalizeFormData(formData);
+            setFormData(safeFormData);
+            setErrors({});
+            await new Promise(resolve => setTimeout(resolve, 600));
 
             // Navigate to COA decision screen
             setCurrentScreen('coa-decision');
@@ -504,7 +509,7 @@ const RegisterArtwork: React.FC<RegisterArtworkProps> = ({ onBack }) => {
                                             Certificate ID: {coaData.certificateId}
                                         </p>
                                         <p className="text-xs text-muted-foreground">
-                                            Blockchain verified and registered
+                                            Verified and recorded in your registry
                                         </p>
                                     </CardContent>
                                 </Card>
