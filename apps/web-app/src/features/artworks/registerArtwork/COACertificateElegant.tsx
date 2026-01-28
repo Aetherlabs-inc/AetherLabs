@@ -2,10 +2,11 @@
 
 import React from 'react'
 import { motion } from 'framer-motion'
-import { CheckCircle, Copy, Download } from 'lucide-react'
+import { Copy, Download } from 'lucide-react'
 import { Button } from '@aetherlabs/ui'
 import { QRCodeSVG } from 'qrcode.react'
 import Image from 'next/image'
+import { CertificateTemplateConfig } from '@/src/types/database'
 
 interface COACertificateElegantProps {
   artworkData: {
@@ -28,144 +29,369 @@ interface COACertificateElegantProps {
     hasNFC: boolean
     nfcUid?: string
   }
+  templateConfig?: CertificateTemplateConfig
   showActions?: boolean
   onDownload?: () => void
   onCopy?: () => void
   className?: string
 }
 
+const defaultConfig: CertificateTemplateConfig = {
+  colors: {
+    background: '#e8e4dc',
+    text: '#3d3a35',
+    accent: '#6b665c',
+    border: '#c4bfb5',
+  },
+  font: 'playfair',
+  show_qr: true,
+  show_seal: true,
+  background_blur: 4,
+  invert_background: true,
+  background_opacity: 90,
+}
+
+const fontClasses: Record<string, string> = {
+  'playfair': 'font-playfair',
+  'cormorant': 'font-serif',
+  'libre-baskerville': 'font-serif',
+  'inter': 'font-sans',
+  'dm-sans': 'font-sans',
+}
+
+const getVerificationLabel = (level: string) => {
+  switch (level) {
+    case 'third_party_verified':
+      return 'EXPERT VERIFIED'
+    case 'gallery_verified':
+      return 'GALLERY VERIFIED'
+    case 'artist_verified':
+      return 'ARTIST VERIFIED'
+    default:
+      return 'REGISTERED'
+  }
+}
+
 const COACertificateElegant: React.FC<COACertificateElegantProps> = ({
   artworkData,
   certificateData,
   verificationLevel = { level: 'artist_verified', hasNFC: false },
+  templateConfig,
   showActions = true,
   onDownload,
   onCopy,
   className = ''
 }) => {
-  const formatDate = (dateString: string) =>
-    new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
+  const config = { ...defaultConfig, ...templateConfig }
+  const { colors, font, show_qr, show_seal, background_blur, invert_background, background_opacity } = config
+  const fontClass = fontClasses[font] || 'font-playfair'
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString)
+    return date.toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric',
+    }) + "'" + date.getFullYear().toString().slice(-2)
+  }
+
+  const formatTime = (dateString: string) => {
+    const date = new Date(dateString)
+    return date.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
     })
+  }
 
   const handleCopy = () => {
     navigator.clipboard.writeText(certificateData.certificateId)
     onCopy?.()
   }
 
-  const noiseSvg =
-    "<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/></filter><rect width='160' height='160' filter='url(%23n)' opacity='0.45'/></svg>"
+  const verificationLabel = getVerificationLabel(verificationLevel.level)
+
+  // Subtle noise texture
+  const noiseSvg = `<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300' viewBox='0 0 300 300'><filter id='noise'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='300' height='300' filter='url(%23noise)' opacity='0.035'/></svg>`
   const noiseUrl = `url("data:image/svg+xml;utf8,${encodeURIComponent(noiseSvg)}")`
-  const backgroundImageUrl = artworkData.imageUrl || '/IMG_6262-2.jpg'
+
+  // Dynamic styles based on config
+  const bgImageFilter = [
+    invert_background ? 'invert' : '',
+    `blur(${background_blur}px)`,
+    'brightness-90',
+    'contrast-125',
+    'saturate-150',
+  ].filter(Boolean).join(' ')
 
   return (
-    <div className={`relative ${className}`}>
-      {/* Main Certificate */}
+    <div className={`relative ${className} w-full`}>
+      {/* Main Certificate Card */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="relative max-w-[460px] sm:max-w-[520px] mx-auto overflow-hidden rounded-[28px] border border-[#2A2121]/10 bg-[#f7f4ef] shadow-[0_22px_60px_rgba(42,33,33,0.18)]"
+        initial={{ opacity: 0, y: 20, scale: 0.98 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+        className="relative max-w-[480px] sm:max-w-[420px] mx-auto"
       >
-        <div className="absolute inset-0 overflow-hidden rounded-[28px] border border-[#2A2121]/10 shadow-[0_22px_60px_rgba(42,33,33,0.18)] w-full h-full">
-          <Image
-            src={backgroundImageUrl}
-            alt={artworkData.title}
-            fill
-            className="object-cover invert saturate-150"
-          />
-          <div
-            className="absolute inset-0 bg-black/10 bg-blend-multiply"
-            style={{ backgroundImage: noiseUrl }}
-          />
-        </div>
-
-        <div className="relative px-6 py-7 sm:px-8 sm:py-8">
-          <div className="flex items-start justify-between gap-4">
-            <div className="flex items-center gap-2">
-              <p className="flex h-7 w-7 items-center font-playfair justify-center rounded-md bg-[#2A2121] text-[#f9f8f6] text-sm font-medium text-center">
-                Æ
-              </p>
-              <p className="text-sm font-playfair text-[#2A2121]/80">AetherLabs</p>
-            </div>
-            <div className="h-10 w-10 rounded-full border border-[#2A2121]/20 bg-[#f7f4ef]/60 p-1">
-              <div className="flex h-full w-full items-center justify-center rounded-full border border-[#2A2121]/20 text-[8px] uppercase tracking-[0.2em] text-[#2A2121]/70">
-                Verified
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-6">
-            <h2 className="text-[28px] font-semibold tracking-tight text-[#2A2121] sm:text-[32px]">
-              {artworkData.title || 'Untitled Artwork'}
-            </h2>
-            <p className="mt-1 text-sm text-[#2A2121]/70">
-              {artworkData.artistName || 'Unknown Artist'}
-            </p>
-          </div>
-
-          <div className="mt-5 flex flex-wrap gap-2 text-[11px] uppercase tracking-[0.22em] text-[#2A2121]/55">
-            <span className="rounded-full border border-[#2A2121]/20 bg-white/50 px-3 py-1">Certificate</span>
-            <span className="rounded-full border border-[#2A2121]/20 bg-white/50 px-3 py-1">Studio Access</span>
-            <span className="rounded-full border border-[#2A2121]/20 bg-white/50 px-3 py-1">Registry</span>
-          </div>
-
-          <div className="mt-6 grid grid-cols-1 gap-4 text-sm text-[#2A2121]/70 sm:grid-cols-2">
-            <div className="rounded-2xl border border-[#2A2121]/10 bg-white/50 px-4 py-3">
-              <p className="text-[11px] uppercase tracking-[0.22em] text-[#2A2121]/45">Certificate ID</p>
-              <p className="mt-1 font-mono text-[13px] text-[#2A2121]">{certificateData.certificateId}</p>
-            </div>
-            <div className="rounded-2xl border border-[#2A2121]/10 bg-white/50 px-4 py-3">
-              <p className="text-[11px] uppercase tracking-[0.22em] text-[#2A2121]/45">Issued</p>
-              <p className="mt-1 text-[13px] text-[#2A2121]">{formatDate(certificateData.generatedAt)}</p>
-            </div>
-            <div className="rounded-2xl border border-[#2A2121]/10 bg-white/50 px-4 py-3">
-              <p className="text-[11px] uppercase tracking-[0.22em] text-[#2A2121]/45">Medium</p>
-              <p className="mt-1 text-[13px] text-[#2A2121]">{artworkData.medium || 'N/A'}</p>
-            </div>
-            <div className="rounded-2xl border border-[#2A2121]/10 bg-white/50 px-4 py-3">
-              <p className="text-[11px] uppercase tracking-[0.22em] text-[#2A2121]/45">Dimensions</p>
-              <p className="mt-1 text-[13px] text-[#2A2121]">{artworkData.dimensions || 'N/A'}</p>
-            </div>
-          </div>
-
-          <div className="mt-6 flex items-center justify-between gap-4">
-            <div className="flex items-center gap-2 text-xs text-[#2A2121]/70">
-              <CheckCircle className="h-4 w-4 text-[#BC8010]" />
-              Authenticated record
-            </div>
-            <div className="rounded-2xl border border-[#2A2121]/10 bg-white/60 p-2">
-              <QRCodeSVG
-                value={certificateData.qrCodeUrl}
-                size={64}
-                level="M"
-                fgColor="#2A2121"
-                bgColor="transparent"
+        {/* Card */}
+        <div
+          className="relative overflow-hidden rounded-[20px] shadow-[0_20px_60px_rgba(0,0,0,0.12),0_8px_24px_rgba(0,0,0,0.08)] w-full"
+          style={{ backgroundColor: colors.background }}
+        >
+          {/* Artwork background */}
+          {artworkData.imageUrl && (
+            <div className="absolute inset-0 overflow-hidden">
+              <Image
+                src={artworkData.imageUrl}
+                alt=""
+                fill
+                className="object-cover"
+                style={{
+                  filter: `${invert_background ? 'invert(1)' : ''} blur(${background_blur}px) brightness(0.9) contrast(1.25) saturate(1.5)`,
+                  opacity: background_opacity / 100,
+                }}
               />
             </div>
-          </div>
-
-          {verificationLevel.hasNFC && verificationLevel.nfcUid && (
-            <div className="mt-4 text-xs text-[#2A2121]/60">
-              NFC Tag: <span className="font-mono text-[#2A2121]">{verificationLevel.nfcUid}</span>
-            </div>
           )}
+
+          {/* Noise texture overlay */}
+          <div
+            className="absolute inset-0 pointer-events-none z-10"
+            style={{ backgroundImage: noiseUrl }}
+          />
+
+          {/* Content */}
+          <div className="relative z-20 px-7 py-8 sm:px-8 sm:py-9">
+            {/* Header - Logo and Seal */}
+            <div className="flex items-start justify-between">
+              {/* Logo mark */}
+              <Image
+                src="/aetherlabs-logo.png"
+                alt="AetherLabs Logo"
+                width={40}
+                height={40}
+                className="object-cover"
+              />
+
+              {/* Embossed circular seal */}
+              {show_seal && (
+                <div className="relative h-[72px] w-[72px]">
+                  {/* Outer ring with text */}
+                  <svg viewBox="0 0 100 100" className="absolute inset-0 w-full h-full">
+                    <defs>
+                      <path
+                        id="circlePath"
+                        d="M 50,50 m -37,0 a 37,37 0 1,1 74,0 a 37,37 0 1,1 -74,0"
+                      />
+                    </defs>
+                    {/* Outer circle */}
+                    <circle
+                      cx="50"
+                      cy="50"
+                      r="46"
+                      fill="none"
+                      stroke={colors.border}
+                      strokeWidth="1"
+                    />
+                    <circle
+                      cx="50"
+                      cy="50"
+                      r="42"
+                      fill="none"
+                      stroke={colors.border}
+                      strokeWidth="0.5"
+                    />
+                    {/* Curved text */}
+                    <text
+                      className="text-[9px] uppercase tracking-[0.15em]"
+                      style={{ fill: colors.accent }}
+                    >
+                      <textPath href="#circlePath" startOffset="0%">
+                        Certificate of Authenticity
+                      </textPath>
+                    </text>
+                  </svg>
+                  {/* Inner content */}
+                  <div
+                    className="absolute inset-[14px] rounded-full flex flex-col items-center justify-center"
+                    style={{
+                      borderColor: colors.border,
+                      borderWidth: 1,
+                      backgroundColor: `${colors.background}80`,
+                    }}
+                  >
+                    <span
+                      className={`text-[18px] ${fontClass} font-semibold`}
+                      style={{ color: colors.accent }}
+                    >
+                      Æ
+                    </span>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Artist Name - Large bold text */}
+            <h2
+              className={`mt-7 text-[32px] sm:text-[36px] ${fontClass} font-bold tracking-tight leading-[1.1]`}
+              style={{ color: colors.text }}
+            >
+              {artworkData.artistName || 'Unknown Artist'}
+            </h2>
+
+            {/* Title */}
+            <p
+              className="mt-1 text-[15px] italic"
+              style={{ color: colors.accent }}
+            >
+              {artworkData.title || 'Untitled Artwork'}
+              {artworkData.year && <span className="not-italic">, {artworkData.year}</span>}
+            </p>
+
+            {/* Status pills */}
+            <div className="mt-5 flex flex-wrap gap-2">
+              <span
+                className="inline-flex items-center px-4 py-1.5 rounded-full text-[11px] font-semibold uppercase tracking-[0.1em]"
+                style={{
+                  borderColor: colors.border,
+                  borderWidth: 1,
+                  backgroundColor: `${colors.background}80`,
+                  color: colors.text,
+                }}
+              >
+                {verificationLabel}
+              </span>
+              <span
+                className="inline-flex items-center px-4 py-1.5 rounded-full font-mono text-[11px] uppercase tracking-wide"
+                style={{
+                  borderColor: colors.border,
+                  borderWidth: 1,
+                  backgroundColor: `${colors.background}80`,
+                  color: colors.text,
+                }}
+              >
+                #{certificateData.certificateId.slice(0, 8).toUpperCase()}
+              </span>
+            </div>
+
+            {/* Details grid */}
+            <div className="mt-7 flex justify-between items-end">
+              <div className="space-y-1.5">
+                <p
+                  className="text-[11px] uppercase tracking-[0.12em]"
+                  style={{ color: colors.accent }}
+                >
+                  {artworkData.medium || 'Mixed Media'}
+                </p>
+                <p
+                  className="text-[11px] uppercase tracking-[0.12em]"
+                  style={{ color: colors.accent }}
+                >
+                  {artworkData.dimensions || 'Dimensions vary'}
+                </p>
+                <p
+                  className="text-[11px] uppercase tracking-[0.12em]"
+                  style={{ color: colors.accent }}
+                >
+                  ISSUED {formatDate(certificateData.generatedAt)}
+                </p>
+                <p
+                  className="text-[11px] uppercase tracking-[0.12em]"
+                  style={{ color: colors.accent }}
+                >
+                  {formatTime(certificateData.generatedAt)}
+                </p>
+              </div>
+
+              <div className="text-right">
+                <p
+                  className="text-[11px] uppercase tracking-[0.12em] font-medium"
+                  style={{ color: colors.accent }}
+                >
+                  {verificationLevel.hasNFC ? 'NFC LINKED' : 'RECORD ACTIVE'}
+                </p>
+              </div>
+            </div>
+
+            {/* QR Code section */}
+            <div
+              className="mt-6 pt-5"
+              style={{ borderTopColor: `${colors.border}99`, borderTopWidth: 1 }}
+            >
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex-1 min-w-0">
+                  <p
+                    className="text-[10px] uppercase tracking-[0.15em] font-medium"
+                    style={{ color: colors.accent }}
+                  >
+                    Registry Hash
+                  </p>
+                  <p
+                    className="mt-1 font-mono text-[9px] break-all leading-relaxed"
+                    style={{ color: colors.accent }}
+                  >
+                    {certificateData.blockchainHash.slice(0, 32)}...
+                  </p>
+                  {verificationLevel.hasNFC && verificationLevel.nfcUid && (
+                    <>
+                      <p
+                        className="mt-2 text-[10px] uppercase tracking-[0.15em] font-medium"
+                        style={{ color: colors.accent }}
+                      >
+                        NFC UID
+                      </p>
+                      <p
+                        className="mt-0.5 font-mono text-[9px]"
+                        style={{ color: colors.accent }}
+                      >
+                        {verificationLevel.nfcUid}
+                      </p>
+                    </>
+                  )}
+                </div>
+
+                {/* QR Code */}
+                {show_qr && (
+                  <div className="shrink-0 p-2 rounded-xl bg-white/80 shadow-sm">
+                    <QRCodeSVG
+                      value={certificateData.qrCodeUrl}
+                      size={64}
+                      level="M"
+                      fgColor={colors.text}
+                      bgColor="transparent"
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Verify button */}
+            <button
+              className="mt-5 w-full py-3 rounded-full bg-transparent text-[11px] font-semibold uppercase tracking-[0.15em] transition-colors hover:opacity-80"
+              style={{
+                borderColor: colors.border,
+                borderWidth: 1,
+                color: colors.text,
+              }}
+            >
+              Verify Authenticity
+            </button>
+          </div>
         </div>
       </motion.div>
 
       {/* Action Buttons */}
       {showActions && (
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.7 }}
-          className="flex justify-center gap-4 mt-6"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.5 }}
+          className="flex justify-center gap-3 mt-8"
         >
           <Button
             onClick={onDownload}
-            className="bg-[#2A2121] hover:bg-[#2A2121]/90 text-white"
+            className="shadow-lg shadow-black/10 transition-all"
+            style={{ backgroundColor: colors.text, color: colors.background }}
           >
             <Download className="w-4 h-4 mr-2" />
             Download PDF
@@ -173,7 +399,8 @@ const COACertificateElegant: React.FC<COACertificateElegantProps> = ({
           <Button
             variant="outline"
             onClick={handleCopy}
-            className="border-[#2A2121] dark:border-[#BC8010] hover:bg-[#BC8010]/10"
+            className="transition-all"
+            style={{ borderColor: colors.border, color: colors.text }}
           >
             <Copy className="w-4 h-4 mr-2" />
             Copy ID
@@ -185,3 +412,6 @@ const COACertificateElegant: React.FC<COACertificateElegantProps> = ({
 }
 
 export default COACertificateElegant
+
+// Export the default config for the designer
+export { defaultConfig as defaultCertificateConfig }

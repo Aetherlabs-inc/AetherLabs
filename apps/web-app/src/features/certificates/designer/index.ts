@@ -1,0 +1,1 @@
+export { CertificateDesigner } from './CertificateDesigner'

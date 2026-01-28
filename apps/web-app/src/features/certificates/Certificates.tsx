@@ -19,10 +19,12 @@ import {
   Image as ImageIcon,
   Award,
   Link2,
+  Palette,
 } from 'lucide-react'
 import { CertificateService, type Certificate, type CertificateStats } from '@/src/services/certificate-service'
 import { DataError } from '@/src/components/error-states'
 import CertificatePreview from '@/src/features/certificates/CertificatePreview'
+import { CertificateDesigner } from './designer/CertificateDesigner'
 
 // Skeleton components
 function CertificateCardSkeleton() {
@@ -97,38 +99,33 @@ export default function Certificates() {
   const [searchQuery, setSearchQuery] = useState('')
   const [previewCert, setPreviewCert] = useState<Certificate | null>(null)
 
-  // const fetchData = async () => {
-  //   try {
-  //     setLoading(true)
-  //     setError(null)
+  const fetchData = async () => {
+    try {
+      setLoading(true)
+      setError(null)
 
-  //     // const [certsData, statsData] = await Promise.all([
-  //     //   CertificateService.getCertificates(),
-  //     //   CertificateService.getStats(),
-  //     // ])
-  //     const certsData = []
-  //     const statsData = {
-  //       total: 0,
-  //       thisMonth: 0,
-  //       withNFC: 0,
-  //     }
+      const [certsData, statsData] = await Promise.all([
+        CertificateService.getCertificates(),
+        CertificateService.getStats(),
+      ])
 
-  //     setCertificates(certsData)
-  //     setStats(statsData)
-  //     if (!previewCert && certsData.length > 0) {
-  //       setPreviewCert(certsData[0])
-  //     }
-  //   } catch (err) {
-  //     console.error('Failed to fetch certificates:', err)
-  //     setError(err instanceof Error ? err.message : 'Failed to load certificates')
-  //   } finally {
-  //     setLoading(false)
-  //   }
-  // }
+      setCertificates(certsData)
+      setStats(statsData)
+      if (!previewCert && certsData.length > 0) {
+        setPreviewCert(certsData[0])
+      }
+    } catch (err) {
+      console.error('Failed to fetch certificates:', err)
+      setError(err instanceof Error ? err.message : 'Failed to load certificates')
+    } finally {
+      setLoading(false)
+    }
+  }
 
-  // useEffect(() => {
-  //   fetchData()
-  // }, [])
+  useEffect(() => {
+    fetchData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   // Filter certificates based on search
   const filteredCertificates = useMemo(() => {
@@ -181,15 +178,21 @@ export default function Certificates() {
     <div className="w-full min-h-screen bg-background">
       <div className="mx-auto w-full px-4 py-6 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold text-foreground sm:text-3xl">Certificates</h1>
-          <p className="text-muted-foreground mt-1">
-            View and manage your certificates of authenticity
-          </p>
-        </div>
-
-        <div className="mb-8">
-          <CertificatePreview certificate={previewCert} />
+        <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold text-foreground sm:text-3xl">Certificates</h1>
+            <p className="text-muted-foreground mt-1">
+              View and manage your certificates of authenticity
+            </p>
+          </div>
+          <Button
+            onClick={() => router.push('/certificates/designer')}
+            variant="outline"
+            className="gap-2"
+          >
+            <Palette className="h-4 w-4" />
+            Certificate Designer
+          </Button>
         </div>
 
         {/* Stats Cards */}
@@ -390,6 +393,11 @@ export default function Certificates() {
                 </Card>
               </motion.div>
             ))}
+                  
+                  <div className="mb-8 h-[calc(100vh-2rem)] ">
+                    {/* <CertificatePreview certificate={previewCert} /> */}
+                    <CertificateDesigner />
+                  </div>
           </div>
         )}
       </div>

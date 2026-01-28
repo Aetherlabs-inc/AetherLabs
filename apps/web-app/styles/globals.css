@@ -57,6 +57,54 @@
   }
 }
 
+/* Custom Scrollbar Styles - Light and Seamless */
+@layer base {
+  /* Firefox - subtle warm gray */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(35 8% 82% / 0.6) transparent;
+  }
+
+  /* Webkit browsers (Chrome, Safari, Edge) */
+  *::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background-color: hsl(35 8% 82% / 0.6);
+    border-radius: 3px;
+    border: 1.5px solid transparent;
+    background-clip: padding-box;
+    transition: background-color 0.2s ease;
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(35 8% 75% / 0.8);
+  }
+
+  *::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
+  /* Dark mode scrollbars - subtle warm dark */
+  .dark * {
+    scrollbar-color: hsl(20 8% 30% / 0.5) transparent;
+  }
+
+  .dark *::-webkit-scrollbar-thumb {
+    background-color: hsl(20 8% 30% / 0.5);
+  }
+
+  .dark *::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(20 8% 40% / 0.7);
+  }
+}
+
 @keyframes float-slow {
   0%, 100% {
     transform: translate3d(0, 0, 0) scale(1);

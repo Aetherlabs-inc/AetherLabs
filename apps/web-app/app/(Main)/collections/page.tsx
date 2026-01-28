@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import CollectionsComingSoon from '@/src/features/collections/CollectionsComingSoon';
+import Collections from '@/src/features/collections/Collections';
 
 export const metadata: Metadata = {
     title: "Collections | AetherLabs",
@@ -11,5 +11,5 @@ export const metadata: Metadata = {
 };
 
 export default function CollectionsPage() {
-    return <CollectionsComingSoon />;
+    return <Collections />;
 }

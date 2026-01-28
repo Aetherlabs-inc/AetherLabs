@@ -28,7 +28,7 @@ const DEFAULT_CERT: PreviewCertificate = {
     year: new Date().getFullYear(),
     medium: 'Oil on linen',
     dimensions: '24 × 18 in',
-    image_url: "/IMG_6262.JPG",
+    image_url: "/IMG_6262-2.JPG",
   },
   certificate_id: 'COA-PREVIEW-0001',
   generated_at: new Date().toISOString(),

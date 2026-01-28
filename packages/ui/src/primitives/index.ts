@@ -70,6 +70,20 @@ export { Checkbox } from "./checkbox";
 // Collapsible
 export { Collapsible, CollapsibleTrigger, CollapsibleContent } from "./collapsible";
 
+// Dialog
+export {
+  Dialog,
+  DialogPortal,
+  DialogOverlay,
+  DialogClose,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogFooter,
+  DialogTitle,
+  DialogDescription,
+} from "./dialog";
+
 // Dropdown Menu
 export {
   DropdownMenu,
@@ -150,6 +164,9 @@ export { Skeleton } from "./skeleton";
 
 // Switch
 export { Switch } from "./switch";
+
+// Tabs
+export { Tabs, TabsList, TabsTrigger, TabsContent } from "./tabs";
 
 // Textarea
 export { Textarea } from "./textarea";

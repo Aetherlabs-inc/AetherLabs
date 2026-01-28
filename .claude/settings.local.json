@@ -11,7 +11,8 @@
       "Bash(pnpm --filter=aetherlabs-dashboard build:*)",
       "Bash(grep:*)",
       "Bash(tree:*)",
-      "Bash(pnpm add:*)"
+      "Bash(pnpm add:*)",
+      "Bash(pnpm build:*)"
     ]
   }
 }
