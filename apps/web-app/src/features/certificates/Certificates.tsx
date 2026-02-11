@@ -23,7 +23,6 @@ import {
 } from 'lucide-react'
 import { CertificateService, type Certificate, type CertificateStats } from '@/src/services/certificate-service'
 import { DataError } from '@/src/components/error-states'
-import CertificatePreview from '@/src/features/certificates/CertificatePreview'
 import { CertificateDesigner } from './designer/CertificateDesigner'
 
 // Skeleton components

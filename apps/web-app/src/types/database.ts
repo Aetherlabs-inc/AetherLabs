@@ -134,6 +134,10 @@ export interface Database {
                     nfc_uid: string
                     is_bound: boolean
                     binding_status: 'pending' | 'success' | 'failed'
+                    verification_code: string | null
+                    aes_key: string | null
+                    last_counter: number
+                    tag_type: 'standard' | 'ntag424'
                     created_at: string
                     updated_at: string
                 }
@@ -143,6 +147,10 @@ export interface Database {
                     nfc_uid: string
                     is_bound?: boolean
                     binding_status?: 'pending' | 'success' | 'failed'
+                    verification_code?: string | null
+                    aes_key?: string | null
+                    last_counter?: number
+                    tag_type?: 'standard' | 'ntag424'
                     created_at?: string
                     updated_at?: string
                 }
@@ -152,6 +160,10 @@ export interface Database {
                     nfc_uid?: string
                     is_bound?: boolean
                     binding_status?: 'pending' | 'success' | 'failed'
+                    verification_code?: string | null
+                    aes_key?: string | null
+                    last_counter?: number
+                    tag_type?: 'standard' | 'ntag424'
                     created_at?: string
                     updated_at?: string
                 }
@@ -205,6 +217,47 @@ export interface Database {
                     updated_at?: string
                 }
             }
+            verification_scans: {
+                Row: {
+                    id: string
+                    nfc_tag_id: string | null
+                    artwork_id: string | null
+                    scan_type: 'web' | 'app' | 'app_authenticated'
+                    device_fingerprint: string | null
+                    ip_address: string | null
+                    user_agent: string | null
+                    counter_value: number | null
+                    verification_result: 'valid' | 'invalid_cmac' | 'replay_attack' | 'not_found' | 'rate_limited'
+                    scanned_at: string
+                    created_at: string
+                }
+                Insert: {
+                    id?: string
+                    nfc_tag_id?: string | null
+                    artwork_id?: string | null
+                    scan_type: 'web' | 'app' | 'app_authenticated'
+                    device_fingerprint?: string | null
+                    ip_address?: string | null
+                    user_agent?: string | null
+                    counter_value?: number | null
+                    verification_result: 'valid' | 'invalid_cmac' | 'replay_attack' | 'not_found' | 'rate_limited'
+                    scanned_at?: string
+                    created_at?: string
+                }
+                Update: {
+                    id?: string
+                    nfc_tag_id?: string | null
+                    artwork_id?: string | null
+                    scan_type?: 'web' | 'app' | 'app_authenticated'
+                    device_fingerprint?: string | null
+                    ip_address?: string | null
+                    user_agent?: string | null
+                    counter_value?: number | null
+                    verification_result?: 'valid' | 'invalid_cmac' | 'replay_attack' | 'not_found' | 'rate_limited'
+                    scanned_at?: string
+                    created_at?: string
+                }
+            }
         }
     }
 }
@@ -215,6 +268,7 @@ export type Certificate = Database['public']['Tables']['certificates']['Row']
 export type NFCTag = Database['public']['Tables']['nfc_tags']['Row']
 export type VerificationLevel = Database['public']['Tables']['verification_levels']['Row']
 export type SurveyResponse = Database['public']['Tables']['survey_responses']['Row']
+export type VerificationScan = Database['public']['Tables']['verification_scans']['Row']
 
 export type ArtworkWithDetails = Artwork & {
     certificates?: Certificate[]
@@ -448,4 +502,151 @@ export interface CertificateTemplateUpdate {
     name?: string
     is_default?: boolean
     config?: CertificateTemplateConfig
+}
+
+// ============================================
+// DOCUMENT INTELLIGENCE - IMPORT SYSTEM
+// ============================================
+
+export type ImportSessionStatus = 'uploaded' | 'processing' | 'extracted' | 'completed' | 'failed'
+export type DocumentType = 'inventory' | 'invoice' | 'quotation' | 'mixed'
+export type ExtractedRecordType = 'artwork' | 'transaction' | 'quotation' | 'client'
+export type ExtractedRecordStatus = 'pending' | 'approved' | 'rejected' | 'edited' | 'saved'
+export type FileType = 'xlsx' | 'csv' | 'docx'
+export type ClientType = 'collector' | 'buyer' | 'gallery' | 'dealer' | 'institution' | 'other'
+export type TransactionType = 'sale' | 'purchase' | 'commission' | 'rental' | 'consignment' | 'other'
+export type QuotationStatus = 'draft' | 'sent' | 'accepted' | 'rejected' | 'expired'
+
+export interface Client {
+    id: string
+    user_id: string
+    name: string
+    email: string | null
+    phone: string | null
+    company: string | null
+    type: ClientType | null
+    notes: string | null
+    created_at: string
+    updated_at: string
+}
+
+export interface ClientInsert {
+    user_id: string
+    name: string
+    email?: string | null
+    phone?: string | null
+    company?: string | null
+    type?: ClientType | null
+    notes?: string | null
+}
+
+export interface ImportSession {
+    id: string
+    user_id: string
+    file_name: string
+    file_url: string | null
+    file_type: FileType
+    file_size: number | null
+    document_type: DocumentType | null
+    status: ImportSessionStatus
+    total_records: number
+    approved_records: number
+    error_message: string | null
+    created_at: string
+    updated_at: string
+}
+
+export interface ImportSessionInsert {
+    user_id: string
+    file_name: string
+    file_url?: string | null
+    file_type: FileType
+    file_size?: number | null
+    document_type?: DocumentType | null
+    status?: ImportSessionStatus
+}
+
+export interface ExtractedRecord {
+    id: string
+    session_id: string
+    record_type: ExtractedRecordType
+    extracted_data: Record<string, any>
+    confidence: number
+    status: ExtractedRecordStatus
+    user_edits: Record<string, any> | null
+    row_index: number | null
+    created_at: string
+    updated_at: string
+}
+
+export interface ExtractedRecordInsert {
+    session_id: string
+    record_type: ExtractedRecordType
+    extracted_data: Record<string, any>
+    confidence?: number
+    status?: ExtractedRecordStatus
+    user_edits?: Record<string, any> | null
+    row_index?: number | null
+}
+
+export interface Transaction {
+    id: string
+    user_id: string
+    artwork_id: string | null
+    client_id: string | null
+    import_session_id: string | null
+    type: TransactionType
+    amount: number | null
+    currency: string
+    date: string | null
+    invoice_number: string | null
+    notes: string | null
+    created_at: string
+    updated_at: string
+}
+
+export interface TransactionInsert {
+    user_id: string
+    artwork_id?: string | null
+    client_id?: string | null
+    import_session_id?: string | null
+    type: TransactionType
+    amount?: number | null
+    currency?: string
+    date?: string | null
+    invoice_number?: string | null
+    notes?: string | null
+}
+
+export interface Quotation {
+    id: string
+    user_id: string
+    artwork_id: string | null
+    client_id: string | null
+    import_session_id: string | null
+    amount: number | null
+    currency: string
+    valid_until: string | null
+    status: QuotationStatus
+    quotation_number: string | null
+    notes: string | null
+    created_at: string
+    updated_at: string
+}
+
+export interface QuotationInsert {
+    user_id: string
+    artwork_id?: string | null
+    client_id?: string | null
+    import_session_id?: string | null
+    amount?: number | null
+    currency?: string
+    valid_until?: string | null
+    status?: QuotationStatus
+    quotation_number?: string | null
+    notes?: string | null
+}
+
+export interface ImportSessionWithRecords extends ImportSession {
+    extracted_records?: ExtractedRecord[]
 }

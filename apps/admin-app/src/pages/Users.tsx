@@ -16,8 +16,10 @@ import { Search, RefreshCw } from 'lucide-react'
 
 interface User {
   id: string
-  email: string
-  username: string
+  email: string | null
+  full_name: string | null
+  username: string | null
+  user_type: string | null
   created_at: string
 }
 
@@ -29,7 +31,7 @@ export function Users() {
   async function fetchUsers() {
     setLoading(true)
     const { data, error } = await supabase
-      .from('profiles')
+      .from('user_profiles')
       .select('*')
       .order('created_at', { ascending: false })
       .limit(50)
@@ -44,17 +46,22 @@ export function Users() {
     fetchUsers()
   }, [])
 
-  const filteredUsers = users.filter(
-    (user) =>
-      user.username?.toLowerCase().includes(search.toLowerCase()) ||
-      user.email?.toLowerCase().includes(search.toLowerCase())
-  )
+  const filteredUsers = users.filter((user) => {
+    const query = search.toLowerCase()
+    return (
+      user.username?.toLowerCase().includes(query) ||
+      user.email?.toLowerCase().includes(query) ||
+      user.full_name?.toLowerCase().includes(query)
+    )
+  })
 
   return (
     <div>
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-foreground">Users</h1>
-        <p className="text-neutral-500 mt-1">Manage your application users</p>
+        <p className="text-neutral-500 mt-1">
+          {users.length} users currently in the system
+        </p>
       </div>
 
       <Card>
@@ -79,22 +86,23 @@ export function Users() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Username</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Joined</TableHead>
+              <TableHead>Username</TableHead>
+              <TableHead>Email</TableHead>
+              <TableHead>Type</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Joined</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={4} className="text-center py-8">
+                  <TableCell colSpan={5} className="text-center py-8">
                     <span className="text-neutral-500">Loading...</span>
                   </TableCell>
                 </TableRow>
               ) : filteredUsers.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={4} className="text-center py-8">
+                  <TableCell colSpan={5} className="text-center py-8">
                     <span className="text-neutral-500">No users found</span>
                   </TableCell>
                 </TableRow>
@@ -102,10 +110,13 @@ export function Users() {
                 filteredUsers.map((user) => (
                   <TableRow key={user.id}>
                     <TableCell className="font-medium">
-                      {user.username || '-'}
+                      {user.username || user.full_name || '-'}
                     </TableCell>
                     <TableCell className="text-neutral-500">
                       {user.email || '-'}
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant="outline">{user.user_type || 'unknown'}</Badge>
                     </TableCell>
                     <TableCell>
                       <Badge variant="success">Active</Badge>

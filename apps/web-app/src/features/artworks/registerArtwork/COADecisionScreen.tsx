@@ -1,132 +1,159 @@
-import React from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, Button } from '@aetherlabs/ui';
-import { FileText, Shield, ArrowLeft, ArrowRight } from 'lucide-react';
+'use client'
+
+import React from 'react'
+import { Button } from '@aetherlabs/ui'
+import { FileText, Shield, ArrowLeft, ArrowRight } from 'lucide-react'
+import COACertificateElegant from './COACertificateElegant'
 
 interface COADecisionScreenProps {
-    artworkTitle: string;
-    onBack: () => void;
-    onGenerateCOA: () => void;
-    onSkipCOA: () => void;
+  artworkTitle: string
+  artworkData?: {
+    year?: string
+    medium?: string
+    dimensions?: string
+    artistName?: string
+    imageUrl?: string
+  }
+  onBack: () => void
+  onGenerateCOA: () => void
+  onSkipCOA: () => void
 }
 
 const COADecisionScreen: React.FC<COADecisionScreenProps> = ({
-    artworkTitle,
-    onBack,
-    onGenerateCOA,
-    onSkipCOA
+  artworkTitle,
+  artworkData,
+  onBack,
+  onGenerateCOA,
+  onSkipCOA,
 }) => {
-    return (
-        <div className="min-h-screen bg-background p-6">
-            <div className="max-w-4xl mx-auto">
-                {/* Header */}
-                <div className="mb-8">
-                    <Button
-                        onClick={onBack}
-                        variant="ghost"
-                        className="mb-4 flex items-center gap-2 text-foreground hover:text-muted-foreground"
-                    >
-                        <ArrowLeft className="h-4 w-4" />
-                        Back to Artwork Registration
-                    </Button>
+  // Create preview data for the certificate
+  const previewArtworkData = {
+    title: artworkTitle || 'Your Artwork',
+    year: artworkData?.year || new Date().getFullYear().toString(),
+    medium: artworkData?.medium || 'Mixed Media',
+    dimensions: artworkData?.dimensions || '24 × 18 in',
+    artistName: artworkData?.artistName || 'Artist Name',
+    imageUrl: artworkData?.imageUrl,
+  }
 
-                    <div className="text-center">
-                        <h1 className="text-4xl font-bold text-foreground mb-4">
-                            Certificate of Authenticity
-                        </h1>
-                        <p className="text-xl text-foreground mb-4">
-                            Would you like to create a COA for &quot;{artworkTitle}&quot;?
-                        </p>
-                    </div>
-                </div>
+  const previewCertificateData = {
+    certificateId: 'COA-PREVIEW',
+    qrCodeUrl: 'https://aetherlabs.art/verify/preview',
+    blockchainHash: '0x' + 'a'.repeat(32) + '...',
+    generatedAt: new Date().toISOString(),
+  }
 
-                {/* COA Preview */}
-                <Card className="border border-border bg-card mb-8">
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-2 text-foreground">
-                            <Shield className="h-5 w-5" />
-                            Certificate of Authenticity Preview
-                        </CardTitle>
-                        <CardDescription className="text-muted-foreground">
-                            A digital certificate will be generated for &quot;{artworkTitle}&quot;
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="bg-muted border border-border rounded-lg p-6">
-                            <div className="text-center mb-6">
-                                <div className="mx-auto w-16 h-16 bg-primary rounded-full flex items-center justify-center mb-4">
-                                    <Shield className="h-8 w-8 text-primary-foreground" />
-                                </div>
-                                <h3 className="text-xl font-bold text-foreground mb-2">Certificate of Authenticity</h3>
-                                <p className="text-sm text-muted-foreground">Digital Certificate Preview</p>
-                            </div>
+  return (
+    <div className="min-h-screen bg-background p-6">
+      <div className="max-w-4xl mx-auto">
+        {/* Header */}
+        <div className="mb-8">
+          <Button
+            onClick={onBack}
+            variant="ghost"
+            className="mb-4 flex items-center gap-2 text-foreground hover:text-muted-foreground"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back to Artwork Registration
+          </Button>
 
-                            <div className="space-y-4">
-                                <div className="grid grid-cols-2 gap-4 text-sm">
-                                    <div>
-                                        <span className="text-foreground font-semibold">Artwork:</span>
-                                        <p className="text-foreground">{artworkTitle}</p>
-                                    </div>
-                                    <div>
-                                        <span className="text-foreground font-semibold">Certificate ID:</span>
-                                        <p className="text-foreground font-mono">COA-XXXX-XXXX</p>
-                                    </div>
-                                    <div>
-                                        <span className="text-foreground font-semibold">Registry Signature:</span>
-                                        <p className="text-muted-foreground font-mono text-xs">SIG-XXXX-XXXX</p>
-                                    </div>
-                                    <div>
-                                        <span className="text-foreground font-semibold">Status:</span>
-                                        <p className="text-foreground">Pending Generation</p>
-                                    </div>
-                                </div>
-
-                                <div className="border-t border-border pt-4">
-                                    <div className="flex items-center gap-2 mb-2">
-                                        <div className="w-2 h-2 bg-foreground rounded-full"></div>
-                                        <span className="text-sm text-foreground font-semibold">Features Included:</span>
-                                    </div>
-                                    <ul className="text-sm text-foreground space-y-1 ml-4">
-                                        <li>• Secure registry verification</li>
-                                        <li>• Unique certificate ID</li>
-                                        <li>• QR code for verification</li>
-                                        <li>• NFC tag binding capability</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-
-                {/* Action Buttons */}
-                <div className="flex gap-4 justify-center">
-                    <Button
-                        onClick={onSkipCOA}
-                        variant="outline"
-                        className="px-8 py-3 text-lg font-semibold border-border text-foreground hover:bg-muted"
-                    >
-                        <FileText className="h-5 w-5 mr-2" />
-                        Continue Without COA
-                    </Button>
-                    <Button
-                        onClick={onGenerateCOA}
-                        disabled
-                        className="px-8 py-3 text-lg font-semibold bg-primary hover:bg-primary/90 text-primary-foreground"
-                    >
-                        <Shield className="h-5 w-5 mr-2" />
-                        Generate COA (Soon)
-                        <ArrowRight className="h-4 w-4 ml-2" />
-                    </Button>
-                </div>
-
-                {/* Additional Info */}
-                <div className="mt-12 text-center">
-                    <p className="text-sm text-muted-foreground">
-                        You can always generate a COA later from your artwork&apos;s detail page
-                    </p>
-                </div>
-            </div>
+          <div className="text-center">
+            <h1 className="text-4xl font-bold text-foreground mb-4">Certificate of Authenticity</h1>
+            <p className="text-xl text-muted-foreground mb-2">
+              Would you like to create a COA for &quot;{artworkTitle}&quot;?
+            </p>
+            <p className="text-sm text-muted-foreground">
+              A beautiful, verifiable certificate that proves authenticity
+            </p>
+          </div>
         </div>
-    );
-};
 
-export default COADecisionScreen;
+        {/* Certificate Preview */}
+        <div className="mb-8">
+          <div className="relative">
+            {/* Preview label */}
+            <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-30">
+              <span className="bg-[#BC8010] text-white text-xs font-semibold px-3 py-1 rounded-full">
+                PREVIEW
+              </span>
+            </div>
+
+            {/* Certificate preview with slight opacity to indicate it's a preview */}
+            <div className="opacity-90 pointer-events-none">
+              <COACertificateElegant
+                artworkData={previewArtworkData}
+                certificateData={previewCertificateData}
+                verificationLevel={{
+                  level: 'artist_verified',
+                  hasNFC: false,
+                }}
+                showActions={false}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Features List */}
+        <div className="max-w-md mx-auto mb-8">
+          <div className="bg-card border border-border rounded-xl p-6">
+            <h3 className="font-semibold text-foreground mb-4 flex items-center gap-2">
+              <Shield className="h-5 w-5 text-[#BC8010]" />
+              What&apos;s Included
+            </h3>
+            <ul className="space-y-3 text-sm text-muted-foreground">
+              <li className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 bg-[#BC8010] rounded-full" />
+                Unique certificate ID for verification
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 bg-[#BC8010] rounded-full" />
+                QR code for instant authenticity check
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 bg-[#BC8010] rounded-full" />
+                Registry signature on record
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 bg-[#BC8010] rounded-full" />
+                Downloadable PDF certificate
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 bg-[#BC8010] rounded-full" />
+                NFC tag binding capability
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex gap-4 justify-center">
+          <Button
+            onClick={onSkipCOA}
+            variant="outline"
+            className="px-8 py-3 text-lg font-semibold border-border text-foreground hover:bg-muted"
+          >
+            <FileText className="h-5 w-5 mr-2" />
+            Continue Without COA
+          </Button>
+          <Button
+            onClick={onGenerateCOA}
+            className="px-8 py-3 text-lg font-semibold bg-[#2A2121] hover:bg-[#2A2121]/90 text-white"
+          >
+            <Shield className="h-5 w-5 mr-2" />
+            Generate COA
+            <ArrowRight className="h-4 w-4 ml-2" />
+          </Button>
+        </div>
+
+        {/* Additional Info */}
+        <div className="mt-8 text-center">
+          <p className="text-sm text-muted-foreground">
+            You can always generate a COA later from your artwork&apos;s detail page
+          </p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default COADecisionScreen

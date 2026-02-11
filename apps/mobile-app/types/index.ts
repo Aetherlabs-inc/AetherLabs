@@ -57,14 +57,37 @@ export interface Artwork {
   updated_at?: string;
 }
 
+export type NFCTagType = 'standard' | 'ntag424';
+
 export interface NFCTag {
   id: string;
   artwork_id: string;
   nfc_uid: string;
   is_bound: boolean;
   binding_status: string;
+  verification_code?: string;
+  aes_key?: string;
+  last_counter?: number;
+  tag_type?: NFCTagType;
   created_at?: string;
   updated_at?: string;
+}
+
+export interface VerificationResult {
+  valid: boolean;
+  error?: 'invalid_cmac' | 'replay_attack' | 'not_found' | 'rate_limited';
+  artwork?: {
+    title: string;
+    artist: string | null;
+    year: number | null;
+    status: string;
+    image_url: string | null;
+  };
+  certificate?: {
+    certificate_id: string;
+    generated_at: string;
+  };
+  tagType?: NFCTagType;
 }
 
 export interface VerificationLevel {

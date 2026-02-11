@@ -248,6 +248,8 @@ export class ArtworkService {
         nfc_uid: string
         is_bound?: boolean
         binding_status?: 'pending' | 'success' | 'failed'
+        verification_code?: string
+        tag_type?: 'standard' | 'ntag424'
     }): Promise<NFCTag> {
         const { data: { user } } = await supabase.auth.getUser()
 

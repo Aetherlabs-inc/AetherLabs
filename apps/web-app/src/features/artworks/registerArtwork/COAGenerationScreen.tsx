@@ -174,9 +174,6 @@ const COAGenerationScreen: React.FC<COAGenerationScreenProps> = ({
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-6">
-                        <div className="rounded-lg border border-border bg-muted px-4 py-3 text-sm text-muted-foreground">
-                            Certificate generation is disabled during testing. You can continue without a COA for now.
-                        </div>
                             <div className="space-y-2">
                                 <Label htmlFor="artistName" className="text-foreground">
                                     Artist Name *
@@ -215,11 +212,11 @@ const COAGenerationScreen: React.FC<COAGenerationScreenProps> = ({
                             <div className="flex gap-4">
                                 <Button
                                     onClick={handleGenerate}
-                                    disabled
+                                    disabled={!artistName.trim()}
                                     className="flex-1 py-3 text-lg font-semibold bg-primary hover:bg-primary/90 text-primary-foreground"
                                 >
                                     <Shield className="h-5 w-5 mr-2" />
-                                    Generate COA (Soon)
+                                    Generate Certificate
                                 </Button>
                                 <Button
                                     onClick={onSkip}

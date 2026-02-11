@@ -186,3 +186,216 @@ export async function requestNfcPermission(): Promise<boolean> {
     return false;
   }
 }
+
+/**
+ * NTAG 424 DNA verification URL parameters
+ */
+export interface NTAG424UrlParams {
+  url: string;
+  code: string;
+  counter: number | null;
+  cmac: string | null;
+}
+
+/**
+ * Read NTAG 424 DNA verification URL from NFC tag
+ * Returns parsed URL with verification code, counter, and CMAC
+ */
+export async function readNfcTagUrl(): Promise<NTAG424UrlParams | null> {
+  if (!isNfcModuleAvailable() || !NfcTech) {
+    throw new Error('NFC Manager is not available.');
+  }
+
+  try {
+    // Request NFC technology
+    await NfcManager.requestTechnology(NfcTech.Ndef);
+
+    // Get the tag
+    const tag = await NfcManager.getTag();
+
+    if (!tag) {
+      throw new Error('No tag found');
+    }
+
+    // Look for NDEF URL record
+    const ndefRecords = tag.ndefMessage;
+    if (!ndefRecords || ndefRecords.length === 0) {
+      return null;
+    }
+
+    // Find URL record (TNF 0x01 = Well-Known, RTD 0x55 = URI)
+    for (const record of ndefRecords) {
+      if (record.tnf === 1 && record.type && record.type[0] === 0x55) {
+        // Parse URI record
+        const payload = record.payload;
+        if (!payload || payload.length === 0) continue;
+
+        // First byte is URI identifier code
+        const uriCode = payload[0];
+        const uriPrefixes: Record<number, string> = {
+          0x00: '',
+          0x01: 'http://www.',
+          0x02: 'https://www.',
+          0x03: 'http://',
+          0x04: 'https://',
+        };
+
+        const prefix = uriPrefixes[uriCode] || '';
+        const uriBody = String.fromCharCode(...payload.slice(1));
+        const url = prefix + uriBody;
+
+        // Parse AetherLabs verification URL
+        // Format: https://aetherlabs.art/v/{code}?c={counter}&m={cmac}
+        const parsed = parseVerificationUrl(url);
+        if (parsed) {
+          return parsed;
+        }
+      }
+    }
+
+    return null;
+  } catch (error: any) {
+    console.error('Error reading NFC tag URL:', error);
+
+    if (error.message?.includes('cancelled') || error.message?.includes('User')) {
+      throw new Error('NFC scan cancelled');
+    }
+
+    throw new Error(error.message || 'Failed to read NFC tag URL.');
+  } finally {
+    try {
+      if (isNfcModuleAvailable()) {
+        await NfcManager.cancelTechnologyRequest();
+      }
+    } catch (error) {
+      // Ignore cleanup errors
+    }
+  }
+}
+
+/**
+ * Parse AetherLabs verification URL
+ * Format: https://aetherlabs.art/v/{code}?c={counter}&m={cmac}
+ */
+function parseVerificationUrl(url: string): NTAG424UrlParams | null {
+  try {
+    const urlObj = new URL(url);
+
+    // Check if it's an AetherLabs verification URL
+    const pathMatch = urlObj.pathname.match(/^\/v\/([A-Z0-9]{8})$/i);
+    if (!pathMatch) {
+      return null;
+    }
+
+    const code = pathMatch[1].toUpperCase();
+    const counterStr = urlObj.searchParams.get('c');
+    const cmac = urlObj.searchParams.get('m');
+
+    return {
+      url,
+      code,
+      counter: counterStr ? parseInt(counterStr, 16) : null,
+      cmac: cmac?.toUpperCase() || null,
+    };
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Read NFC tag and return either UID (standard tag) or URL params (NTAG 424 DNA)
+ */
+export interface NFCReadResult {
+  type: 'standard' | 'ntag424';
+  uid: string;
+  urlParams?: NTAG424UrlParams;
+}
+
+export async function readNfcTagSmart(): Promise<NFCReadResult> {
+  if (!isNfcModuleAvailable() || !NfcTech) {
+    throw new Error('NFC Manager is not available.');
+  }
+
+  try {
+    // Request NFC technology
+    await NfcManager.requestTechnology(NfcTech.Ndef);
+
+    // Get the tag
+    const tag = await NfcManager.getTag();
+
+    if (!tag) {
+      throw new Error('No tag found');
+    }
+
+    // Extract UID
+    let uid: string = '';
+    if (Platform.OS === 'ios') {
+      uid = tag.id || '';
+    } else {
+      if (Array.isArray(tag.id)) {
+        uid = tag.id.map((byte: number) => byte.toString(16).padStart(2, '0')).join('').toUpperCase();
+      } else if (typeof tag.id === 'string') {
+        uid = tag.id.toUpperCase();
+      }
+    }
+
+    if (!uid) {
+      throw new Error('Could not extract UID from tag');
+    }
+
+    // Try to read NTAG 424 DNA URL
+    const ndefRecords = tag.ndefMessage;
+    if (ndefRecords && ndefRecords.length > 0) {
+      for (const record of ndefRecords) {
+        if (record.tnf === 1 && record.type && record.type[0] === 0x55) {
+          const payload = record.payload;
+          if (!payload || payload.length === 0) continue;
+
+          const uriCode = payload[0];
+          const uriPrefixes: Record<number, string> = {
+            0x00: '',
+            0x01: 'http://www.',
+            0x02: 'https://www.',
+            0x03: 'http://',
+            0x04: 'https://',
+          };
+
+          const prefix = uriPrefixes[uriCode] || '';
+          const uriBody = String.fromCharCode(...payload.slice(1));
+          const url = prefix + uriBody;
+
+          const urlParams = parseVerificationUrl(url);
+          if (urlParams) {
+            return {
+              type: 'ntag424',
+              uid,
+              urlParams,
+            };
+          }
+        }
+      }
+    }
+
+    // Standard tag - just return UID
+    return {
+      type: 'standard',
+      uid,
+    };
+  } catch (error: any) {
+    console.error('Error reading NFC tag:', error);
+
+    if (error.message?.includes('cancelled') || error.message?.includes('User')) {
+      throw new Error('NFC scan cancelled');
+    }
+
+    throw new Error(error.message || 'Failed to read NFC tag.');
+  } finally {
+    try {
+      if (isNfcModuleAvailable()) {
+        await NfcManager.cancelTechnologyRequest();
+      }
+    } catch (error) {
+      // Ignore cleanup errors
+    }
+  }
+}

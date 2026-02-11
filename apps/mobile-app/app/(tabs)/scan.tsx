@@ -20,9 +20,11 @@ import { getNFCTagByUID, getArtworks, getArtworkById } from '@/lib/artworks';
 import {
   isNfcSupported,
   readNfcTag,
+  readNfcTagSmart,
   requestNfcPermission,
   stopNfc,
   isNfcModuleAvailable,
+  NFCReadResult,
 } from '@/lib/nfc';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -209,14 +211,48 @@ export default function ScanScreen() {
             text: 'Start Scan',
             onPress: async () => {
               try {
-                const nfcUID = await readNfcTag();
-                console.log('NFC Tag UID:', nfcUID);
+                // Use smart reader that handles both standard and NTAG 424 DNA tags
+                const nfcResult: NFCReadResult = await readNfcTagSmart();
+                console.log('NFC Read Result:', nfcResult);
 
                 await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-
-                const nfcTag = await getNFCTagByUID(nfcUID);
-
                 await stopNfc();
+
+                // Handle NTAG 424 DNA tags with verification URL
+                if (nfcResult.type === 'ntag424' && nfcResult.urlParams) {
+                  const { code, counter, cmac } = nfcResult.urlParams;
+
+                  // Build verification URL and open in browser or navigate to verification screen
+                  let verifyUrl = `https://aetherlabs.art/v/${code}`;
+                  if (counter !== null && cmac) {
+                    verifyUrl += `?c=${counter.toString(16).padStart(6, '0')}&m=${cmac}`;
+                  }
+
+                  // For authenticated users, try to get full artwork info
+                  // For now, navigate to the verification page which shows minimal info
+                  setScanResult({
+                    type: 'found',
+                    nfcUID: nfcResult.uid,
+                  });
+
+                  await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+
+                  // Open the verification URL - this will show the public verification page
+                  // In a future update, we can fetch the artwork details directly if the user owns it
+                  setTimeout(() => {
+                    // For now, open in the app's webview or external browser
+                    // You can also create a dedicated verification screen in the mobile app
+                    router.push(`/verify?code=${code}${counter !== null ? `&c=${counter}` : ''}${cmac ? `&m=${cmac}` : ''}`);
+                    setIsScanning(false);
+                    setScanResult({ type: null });
+                  }, 1500);
+
+                  return;
+                }
+
+                // Handle standard NFC tags (UID lookup)
+                const nfcUID = nfcResult.uid;
+                const nfcTag = await getNFCTagByUID(nfcUID);
 
                 if (nfcTag && nfcTag.is_bound && nfcTag.artwork_id) {
                   const artwork = await getArtworkById(nfcTag.artwork_id);

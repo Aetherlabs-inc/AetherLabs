@@ -23,7 +23,7 @@ import {
   Button,
   Skeleton,
 } from "@aetherlabs/ui";
-import { Settings, Home, Image, HelpCircle, LogOut, FileCheck, FolderOpen, Plus, Activity } from "lucide-react";
+import { Settings, Home, Image, HelpCircle, LogOut, FileCheck, FolderOpen, Plus, Activity, FileUp } from "lucide-react";
 import { createClient } from '@/src/lib/supabase';
 import { userProfileService, UserProfile } from '@/src/services/user-profile-service';
 import { DashboardService, type Activity as ActivityType } from '@/src/services/dashboard-service';
@@ -33,6 +33,7 @@ const mainNavItems = [
   { title: "Artworks", icon: Image, url: "/artworks" },
   { title: "Certificates", icon: FileCheck, url: "/certificates" },
   { title: "Collections", icon: FolderOpen, url: "/collections" },
+  { title: "Import", icon: FileUp, url: "/import" },
 ];
 
 const footerNavItems = [

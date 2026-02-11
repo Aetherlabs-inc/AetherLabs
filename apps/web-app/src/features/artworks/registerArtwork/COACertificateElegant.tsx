@@ -141,16 +141,29 @@ const COACertificateElegant: React.FC<COACertificateElegantProps> = ({
           {/* Artwork background */}
           {artworkData.imageUrl && (
             <div className="absolute inset-0 overflow-hidden">
-              <Image
-                src={artworkData.imageUrl}
-                alt=""
-                fill
-                className="object-cover"
-                style={{
-                  filter: `${invert_background ? 'invert(1)' : ''} blur(${background_blur}px) brightness(0.9) contrast(1.25) saturate(1.5)`,
-                  opacity: background_opacity / 100,
-                }}
-              />
+              {/* Use img tag for data URLs, Next Image for regular URLs */}
+              {artworkData.imageUrl.startsWith('data:') ? (
+                <img
+                  src={artworkData.imageUrl}
+                  alt=""
+                  className="absolute inset-0 w-full h-full object-cover"
+                  style={{
+                    filter: `${invert_background ? 'invert(1)' : ''} blur(${background_blur}px) brightness(0.9) contrast(1.25) saturate(1.5)`,
+                    opacity: background_opacity / 100,
+                  }}
+                />
+              ) : (
+                <Image
+                  src={artworkData.imageUrl}
+                  alt=""
+                  fill
+                  className="object-cover"
+                  style={{
+                    filter: `${invert_background ? 'invert(1)' : ''} blur(${background_blur}px) brightness(0.9) contrast(1.25) saturate(1.5)`,
+                    opacity: background_opacity / 100,
+                  }}
+                />
+              )}
             </div>
           )}
 

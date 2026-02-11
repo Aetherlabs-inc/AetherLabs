@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&display=swap");
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -86,7 +87,7 @@
   --color-ring: var(--color-accent-500);
 
   /* Typography */
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
 
   /* Radius */
@@ -110,6 +111,34 @@ body {
 ::selection {
   background: hsl(var(--sidebar-primary));
   color: hsl(var(--sidebar-primary-foreground));
+}
+
+@layer utilities {
+  .auth-blob {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(70px);
+    opacity: 0.45;
+    pointer-events: none;
+  }
+
+  .auth-blob--gold {
+    width: 26rem;
+    height: 26rem;
+    background: rgba(188, 128, 16, 0.35);
+  }
+
+  .auth-blob--terracotta {
+    width: 30rem;
+    height: 30rem;
+    background: rgba(202, 91, 43, 0.28);
+  }
+
+  .auth-blob--charcoal {
+    width: 18rem;
+    height: 18rem;
+    background: rgba(42, 33, 33, 0.18);
+  }
 }
 
 /* Sidebar CSS Variables - Light Theme */

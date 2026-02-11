@@ -12,7 +12,11 @@ import {
 } from 'lucide-react';
 import COADecisionScreen from './COADecisionScreen';
 import COAGenerationScreen from './COAGenerationScreen';
-import NFCBindingScreen from './NFCBindingScreen';
+import NFCBindingScreen, { NFCData } from './NFCBindingScreen';
+import { ArtworkRegistrationService } from '@/src/services/artwork-registration-service';
+import { Artwork } from '@/src/types/database';
+import { userProfileService } from '@/src/services/user-profile-service';
+import { createClient } from '@/src/lib/supabase';
 
 interface ArtworkFormData {
     // Identity (Core MVP)
@@ -71,11 +75,9 @@ const RegisterArtwork: React.FC<RegisterArtworkProps> = ({ onBack }) => {
         blockchainHash: string;
         generatedAt: string;
     } | null>(null);
-    const [nfcData, setNfcData] = useState<{
-        nfcUid: string;
-        isBound: boolean;
-        bindingStatus: 'pending' | 'success' | 'failed';
-    } | null>(null);
+    const [nfcData, setNfcData] = useState<NFCData | null>(null);
+    const [registeredArtwork, setRegisteredArtwork] = useState<Artwork | null>(null);
+    const [registrationError, setRegistrationError] = useState<string | null>(null);
 
     const [formData, setFormData] = useState<ArtworkFormData>({
         // Identity
@@ -124,10 +126,30 @@ const RegisterArtwork: React.FC<RegisterArtworkProps> = ({ onBack }) => {
     const [isAutoSaving, setIsAutoSaving] = useState(false);
     const [lastSaved, setLastSaved] = useState<Date | null>(null);
     const [newTag, setNewTag] = useState('');
+    const [artistName, setArtistName] = useState('');
 
     // Categories and collections
     const categories = ['Painting', 'Sculpture', 'Photography', 'Digital Art', 'Mixed Media', 'Print', 'Drawing', 'Other'];
     const units = ['in', 'cm', 'mm', 'ft'];
+
+    // Fetch artist name from user profile on mount
+    useEffect(() => {
+        const fetchArtistName = async () => {
+            try {
+                const supabase = createClient();
+                const { data: { user } } = await supabase.auth.getUser();
+                if (user) {
+                    const profile = await userProfileService.getUserProfile(user.id);
+                    if (profile?.full_name) {
+                        setArtistName(profile.full_name);
+                    }
+                }
+            } catch (error) {
+                console.error('Failed to fetch artist name:', error);
+            }
+        };
+        fetchArtistName();
+    }, []);
 
     // Autosave functionality
     useEffect(() => {
@@ -345,6 +367,10 @@ const RegisterArtwork: React.FC<RegisterArtworkProps> = ({ onBack }) => {
         setCurrentScreen('form');
     };
 
+    const handleBackToCOADecision = () => {
+        setCurrentScreen('coa-decision');
+    };
+
     const handleGenerateCOA = () => {
         setCurrentScreen('coa-generation');
     };
@@ -363,13 +389,35 @@ const RegisterArtwork: React.FC<RegisterArtworkProps> = ({ onBack }) => {
         setCurrentScreen('nfc-binding');
     };
 
-    const handleNFCComplete = (nfc: {
-        nfcUid: string;
-        isBound: boolean;
-        bindingStatus: 'pending' | 'success' | 'failed';
-    }) => {
+    const handleNFCComplete = async (nfc: NFCData) => {
         setNfcData(nfc);
-        setCurrentScreen('complete');
+        setIsSubmitting(true);
+        setRegistrationError(null);
+
+        try {
+            // Prepare form data for submission
+            const submissionData = {
+                ...formData,
+                generateCOA: !!coaData,
+                bindNFC: nfc.isBound,
+                nfcUid: nfc.nfcUid,
+            };
+
+            // Register the artwork with all data
+            const result = await ArtworkRegistrationService.registerArtwork(
+                submissionData,
+                coaData || undefined,
+                nfc.isBound ? nfc : undefined
+            );
+
+            setRegisteredArtwork(result.artwork);
+            setCurrentScreen('complete');
+        } catch (error) {
+            console.error('Error registering artwork:', error);
+            setRegistrationError(error instanceof Error ? error.message : 'Failed to register artwork');
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     const handleNFCBack = () => {
@@ -381,21 +429,13 @@ const RegisterArtwork: React.FC<RegisterArtworkProps> = ({ onBack }) => {
     };
 
     const handleFinalComplete = () => {
-        // Reset everything and go back to form
+        // Reset everything
         setFormData({
-            // Identity
             title: '',
             year: '',
             medium: '',
-            dimensions: {
-                height: '',
-                width: '',
-                depth: '',
-                unit: 'in'
-            },
+            dimensions: { height: '', width: '', depth: '', unit: 'in' },
             primaryImage: null,
-
-            // Details
             description: '',
             editionType: 'unique',
             editionSize: '',
@@ -403,22 +443,14 @@ const RegisterArtwork: React.FC<RegisterArtworkProps> = ({ onBack }) => {
             signature: false,
             signatureLocation: '',
             creationLocation: '',
-
-            // COA Linkage
             certificateId: '',
             generateCOA: true,
-
-            // NFC
             nfcUid: '',
             bindNFC: false,
-
-            // Cataloging
             tags: [],
             category: '',
             collection: '',
             series: '',
-
-            // Privacy & Status
             visibility: 'private',
             status: 'draft'
         });
@@ -426,8 +458,48 @@ const RegisterArtwork: React.FC<RegisterArtworkProps> = ({ onBack }) => {
         setErrors({});
         setCoaData(null);
         setNfcData(null);
+        setRegisteredArtwork(null);
+        setRegistrationError(null);
         setCurrentScreen('form');
-        alert('Artwork registered successfully!');
+
+        // Go back to artworks list if callback is provided
+        if (onBack) {
+            onBack();
+        }
+    };
+
+    const handleRegisterAnother = () => {
+        setFormData({
+            title: '',
+            year: '',
+            medium: '',
+            dimensions: { height: '', width: '', depth: '', unit: 'in' },
+            primaryImage: null,
+            description: '',
+            editionType: 'unique',
+            editionSize: '',
+            editionNumber: '',
+            signature: false,
+            signatureLocation: '',
+            creationLocation: '',
+            certificateId: '',
+            generateCOA: true,
+            nfcUid: '',
+            bindNFC: false,
+            tags: [],
+            category: '',
+            collection: '',
+            series: '',
+            visibility: 'private',
+            status: 'draft'
+        });
+        setPreviewImage(null);
+        setErrors({});
+        setCoaData(null);
+        setNfcData(null);
+        setRegisteredArtwork(null);
+        setRegistrationError(null);
+        setCurrentScreen('form');
     };
 
 
@@ -437,6 +509,13 @@ const RegisterArtwork: React.FC<RegisterArtworkProps> = ({ onBack }) => {
         return (
             <COADecisionScreen
                 artworkTitle={formData.title}
+                artworkData={{
+                    year: formData.year,
+                    medium: formData.medium,
+                    dimensions: `${formData.dimensions.height} × ${formData.dimensions.width} × ${formData.dimensions.depth} ${formData.dimensions.unit}`,
+                    artistName: artistName,
+                    imageUrl: previewImage || undefined
+                }}
                 onBack={handleBackToForm}
                 onGenerateCOA={handleGenerateCOA}
                 onSkipCOA={handleSkipCOA}
@@ -452,9 +531,10 @@ const RegisterArtwork: React.FC<RegisterArtworkProps> = ({ onBack }) => {
                     year: formData.year,
                     medium: formData.medium,
                     dimensions: `${formData.dimensions.height} × ${formData.dimensions.width} × ${formData.dimensions.depth} ${formData.dimensions.unit}`,
-                    artistName: '' // This would come from user profile
+                    artistName: artistName,
+                    imageUrl: previewImage || undefined
                 }}
-                onBack={handleBackToForm}
+                onBack={handleBackToCOADecision}
                 onComplete={handleCOAComplete}
                 onSkip={handleSkipCOA}
             />
@@ -479,37 +559,93 @@ const RegisterArtwork: React.FC<RegisterArtworkProps> = ({ onBack }) => {
     }
 
     if (currentScreen === 'complete') {
+        // Show loading state while submitting
+        if (isSubmitting) {
+            return (
+                <div className="min-h-screen bg-background p-6">
+                    <div className="max-w-4xl mx-auto">
+                        <div className="text-center py-16">
+                            <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary mx-auto mb-6"></div>
+                            <h2 className="text-2xl font-semibold text-foreground mb-2">Registering Artwork...</h2>
+                            <p className="text-muted-foreground">Please wait while we save your artwork</p>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // Show error state
+        if (registrationError) {
+            return (
+                <div className="min-h-screen bg-background p-6">
+                    <div className="max-w-4xl mx-auto">
+                        <div className="text-center py-16">
+                            <div className="mx-auto w-20 h-20 bg-destructive/10 rounded-full flex items-center justify-center mb-6">
+                                <AlertCircle className="h-10 w-10 text-destructive" />
+                            </div>
+                            <h1 className="text-4xl font-bold text-foreground mb-4">Registration Failed</h1>
+                            <p className="text-lg text-muted-foreground mb-8">{registrationError}</p>
+                            <div className="flex gap-4 justify-center">
+                                <Button onClick={() => setCurrentScreen('nfc-binding')} variant="outline">
+                                    <ArrowLeft className="h-4 w-4 mr-2" />
+                                    Go Back
+                                </Button>
+                                <Button onClick={handleRegisterAnother}>Try Again</Button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // Show success state
         return (
             <div className="min-h-screen bg-background p-6">
                 <div className="max-w-4xl mx-auto">
                     <div className="text-center">
                         <div className="mb-8">
-                            <div className="mx-auto w-20 h-20 bg-primary rounded-full flex items-center justify-center mb-6">
-                                <CheckCircle className="h-10 w-10 text-primary-foreground" />
+                            <div className="mx-auto w-20 h-20 bg-emerald-500/10 rounded-full flex items-center justify-center mb-6">
+                                <CheckCircle className="h-10 w-10 text-emerald-600" />
                             </div>
                             <h1 className="text-4xl font-bold text-foreground mb-4">
-                                Artwork Registration Complete!
+                                Artwork Registered Successfully!
                             </h1>
-                            <p className="text-xl text-foreground mb-8">
-                                &ldquo;{formData.title}&rdquo; has been successfully registered
+                            <p className="text-xl text-muted-foreground mb-8">
+                                &ldquo;{registeredArtwork?.title || formData.title}&rdquo; has been added to your collection
                             </p>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 max-w-2xl mx-auto">
                             {coaData && (
                                 <Card className="border border-border bg-card">
                                     <CardHeader>
-                                        <CardTitle className="flex items-center gap-2 text-foreground">
-                                            <CheckCircle className="h-5 w-5 text-foreground" />
-                                            Certificate of Authenticity
+                                        <CardTitle className="flex items-center gap-2 text-foreground text-lg">
+                                            <CheckCircle className="h-5 w-5 text-emerald-600" />
+                                            Certificate Created
                                         </CardTitle>
                                     </CardHeader>
                                     <CardContent>
-                                        <p className="text-sm text-foreground mb-2">
-                                            Certificate ID: {coaData.certificateId}
+                                        <p className="text-sm font-mono text-foreground mb-2">
+                                            {coaData.certificateId}
                                         </p>
                                         <p className="text-xs text-muted-foreground">
-                                            Verified and recorded in your registry
+                                            Certificate of Authenticity generated
+                                        </p>
+                                    </CardContent>
+                                </Card>
+                            )}
+
+                            {!coaData && (
+                                <Card className="border border-border bg-card">
+                                    <CardHeader>
+                                        <CardTitle className="flex items-center gap-2 text-foreground text-lg">
+                                            <FileText className="h-5 w-5 text-muted-foreground" />
+                                            No Certificate
+                                        </CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <p className="text-sm text-muted-foreground">
+                                            You can generate a certificate later from your artwork&apos;s detail page
                                         </p>
                                     </CardContent>
                                 </Card>
@@ -518,14 +654,14 @@ const RegisterArtwork: React.FC<RegisterArtworkProps> = ({ onBack }) => {
                             {nfcData && nfcData.isBound && (
                                 <Card className="border border-border bg-card">
                                     <CardHeader>
-                                        <CardTitle className="flex items-center gap-2 text-foreground">
-                                            <CheckCircle className="h-5 w-5 text-foreground" />
+                                        <CardTitle className="flex items-center gap-2 text-foreground text-lg">
+                                            <CheckCircle className="h-5 w-5 text-emerald-600" />
                                             NFC Tag Bound
                                         </CardTitle>
                                     </CardHeader>
                                     <CardContent>
-                                        <p className="text-sm text-foreground mb-2">
-                                            NFC UID: {nfcData.nfcUid}
+                                        <p className="text-sm font-mono text-foreground mb-2">
+                                            {nfcData.nfcUid}
                                         </p>
                                         <p className="text-xs text-muted-foreground">
                                             Physical verification enabled
@@ -533,14 +669,40 @@ const RegisterArtwork: React.FC<RegisterArtworkProps> = ({ onBack }) => {
                                     </CardContent>
                                 </Card>
                             )}
+
+                            {(!nfcData || !nfcData.isBound) && (
+                                <Card className="border border-border bg-card">
+                                    <CardHeader>
+                                        <CardTitle className="flex items-center gap-2 text-foreground text-lg">
+                                            <FileText className="h-5 w-5 text-muted-foreground" />
+                                            No NFC Tag
+                                        </CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <p className="text-sm text-muted-foreground">
+                                            You can bind an NFC tag later from your artwork&apos;s detail page
+                                        </p>
+                                    </CardContent>
+                                </Card>
+                            )}
                         </div>
 
-                        <Button
-                            onClick={handleFinalComplete}
-                            className="px-8 py-3 text-lg font-semibold bg-primary hover:bg-primary/90 text-primary-foreground"
-                        >
-                            Register Another Artwork
-                        </Button>
+                        <div className="flex gap-4 justify-center">
+                            <Button
+                                onClick={handleFinalComplete}
+                                variant="outline"
+                                className="px-6 py-3 text-lg font-semibold"
+                            >
+                                View Artworks
+                            </Button>
+                            <Button
+                                onClick={handleRegisterAnother}
+                                className="px-6 py-3 text-lg font-semibold bg-primary hover:bg-primary/90 text-primary-foreground"
+                            >
+                                <Plus className="h-5 w-5 mr-2" />
+                                Register Another
+                            </Button>
+                        </div>
                     </div>
                 </div>
             </div>

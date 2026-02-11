@@ -57,6 +57,8 @@ export interface NFCData {
     nfcUid: string
     isBound: boolean
     bindingStatus: 'pending' | 'success' | 'failed'
+    verificationCode?: string
+    tagType?: 'standard' | 'ntag424'
 }
 
 export class ArtworkRegistrationService {
@@ -198,18 +200,22 @@ export class ArtworkRegistrationService {
     /**
      * Bind NFC tag to artwork
      */
-    static async bindNFCTag(artworkId: string, nfcUid: string): Promise<NFCData> {
+    static async bindNFCTag(artworkId: string, nfcUid: string, verificationCode?: string): Promise<NFCData> {
         try {
             await ArtworkService.createNFCTag(artworkId, {
                 nfc_uid: nfcUid,
                 is_bound: true,
-                binding_status: 'success'
+                binding_status: 'success',
+                verification_code: verificationCode,
+                tag_type: 'standard'
             })
 
             return {
                 nfcUid,
                 isBound: true,
-                bindingStatus: 'success'
+                bindingStatus: 'success',
+                verificationCode,
+                tagType: 'standard'
             }
         } catch (error) {
             console.error('Error binding NFC tag:', error)
@@ -250,7 +256,9 @@ export class ArtworkRegistrationService {
                 nfcTag = await ArtworkService.createNFCTag(artwork.id, {
                     nfc_uid: nfcData.nfcUid,
                     is_bound: nfcData.isBound,
-                    binding_status: nfcData.bindingStatus
+                    binding_status: nfcData.bindingStatus,
+                    verification_code: nfcData.verificationCode,
+                    tag_type: nfcData.tagType || 'standard'
                 })
             }
 
