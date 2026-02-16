@@ -4,6 +4,7 @@ import { Button, Card, CardContent, CardHeader, CardTitle, Badge, AlertDialog, A
 import { ArtworkWithDetails } from '@/src/types/database';
 import { formatArtistName } from '@/src/utils/artist-utils';
 import { downloadCertificatePDF } from './registerArtwork/COACertificatePDF';
+import { ArtworkLinkedDocuments } from './ArtworkLinkedDocuments';
 
 
 interface ArtworkDetailsProps {
@@ -416,6 +417,9 @@ const ArtworkDetails: React.FC<ArtworkDetailsProps> = ({
                                 )}
                             </CardContent>
                         </Card>
+
+                        {/* Linked Quotations & Transactions */}
+                        <ArtworkLinkedDocuments artworkId={artwork.id} />
                     </div>
                 </div>
             </div>

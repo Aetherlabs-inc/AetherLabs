@@ -156,6 +156,48 @@ export class ImportService {
         }
     }
 
+    static async updateArtworkMatchDecision(
+        recordId: string,
+        matchIndex: number,
+        decision: 'confirmed' | 'create_new' | 'no_match'
+    ): Promise<ExtractedRecord> {
+        // Fetch the current record
+        const { data: record, error: fetchError } = await supabase
+            .from('extracted_records')
+            .select('*')
+            .eq('id', recordId)
+            .single()
+
+        if (fetchError || !record) {
+            throw new Error('Record not found')
+        }
+
+        const edits = record.user_edits || {}
+        const matches = [...(edits.artwork_matches || [])]
+
+        if (matchIndex >= 0 && matchIndex < matches.length) {
+            matches[matchIndex] = {
+                ...matches[matchIndex],
+                status: decision,
+            }
+        }
+
+        const { data: updated, error } = await supabase
+            .from('extracted_records')
+            .update({
+                user_edits: { ...edits, artwork_matches: matches },
+            })
+            .eq('id', recordId)
+            .select()
+            .single()
+
+        if (error) {
+            throw new Error(`Failed to update match decision: ${error.message}`)
+        }
+
+        return updated
+    }
+
     static async deleteSession(sessionId: string): Promise<void> {
         const { data: { user } } = await supabase.auth.getUser()
         if (!user) throw new Error('User not authenticated')

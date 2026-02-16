@@ -7,6 +7,7 @@ import {
 } from '@aetherlabs/ui'
 import { Pencil, Check, X, FileText } from 'lucide-react'
 import { ConfidenceIndicator } from '../ConfidenceIndicator'
+import { ArtworkMatchSection } from '../ArtworkMatchSection'
 import { QuotationDocument } from './QuotationDocument'
 import type { ExtractedRecord } from '@/src/types/database'
 
@@ -15,6 +16,8 @@ interface QuotationCardProps {
     onApprove: (id: string) => void
     onReject: (id: string) => void
     onEdit: (id: string, edits: Record<string, unknown>) => void
+    onConfirmArtworkMatch?: (recordId: string, matchIndex: number) => void
+    onCreateArtwork?: (recordId: string, matchIndex: number) => void
 }
 
 interface LineItem {
@@ -27,7 +30,7 @@ interface LineItem {
     quantity?: number
 }
 
-export function QuotationCard({ record, onApprove, onReject, onEdit }: QuotationCardProps) {
+export function QuotationCard({ record, onApprove, onReject, onEdit, onConfirmArtworkMatch, onCreateArtwork }: QuotationCardProps) {
     const [editOpen, setEditOpen] = useState(false)
     const [viewOpen, setViewOpen] = useState(false)
     const data = { ...record.extracted_data, ...record.user_edits }
@@ -169,6 +172,19 @@ export function QuotationCard({ record, onApprove, onReject, onEdit }: Quotation
                         <>
                             <div className="border-t border-neutral-200 my-3" />
                             <p className="text-xs text-muted-foreground italic">{data.notes}</p>
+                        </>
+                    )}
+
+                    {/* Artwork Matches */}
+                    {data.artwork_matches && data.artwork_matches.length > 0 && (
+                        <>
+                            <div className="border-t border-neutral-200 my-3" />
+                            <ArtworkMatchSection
+                                matches={data.artwork_matches}
+                                onConfirmMatch={onConfirmArtworkMatch ? (idx) => onConfirmArtworkMatch(record.id, idx) : undefined}
+                                onCreateNew={onCreateArtwork ? (idx) => onCreateArtwork(record.id, idx) : undefined}
+                                disabled={isActioned}
+                            />
                         </>
                     )}
 

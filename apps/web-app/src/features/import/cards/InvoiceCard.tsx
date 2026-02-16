@@ -8,6 +8,7 @@ import {
 } from '@aetherlabs/ui'
 import { Pencil, Check, X, FileText } from 'lucide-react'
 import { ConfidenceIndicator } from '../ConfidenceIndicator'
+import { ArtworkMatchSection } from '../ArtworkMatchSection'
 import { InvoiceDocument } from './InvoiceDocument'
 import type { ExtractedRecord } from '@/src/types/database'
 
@@ -16,6 +17,8 @@ interface InvoiceCardProps {
     onApprove: (id: string) => void
     onReject: (id: string) => void
     onEdit: (id: string, edits: Record<string, unknown>) => void
+    onConfirmArtworkMatch?: (recordId: string, matchIndex: number) => void
+    onCreateArtwork?: (recordId: string, matchIndex: number) => void
 }
 
 interface LineItem {
@@ -30,7 +33,7 @@ interface LineItem {
 
 const TRANSACTION_TYPES = ['sale', 'purchase', 'commission', 'rental', 'consignment', 'other']
 
-export function InvoiceCard({ record, onApprove, onReject, onEdit }: InvoiceCardProps) {
+export function InvoiceCard({ record, onApprove, onReject, onEdit, onConfirmArtworkMatch, onCreateArtwork }: InvoiceCardProps) {
     const [editOpen, setEditOpen] = useState(false)
     const [viewOpen, setViewOpen] = useState(false)
     const data = { ...record.extracted_data, ...record.user_edits }
@@ -167,6 +170,19 @@ export function InvoiceCard({ record, onApprove, onReject, onEdit }: InvoiceCard
                         <>
                             <div className="border-t border-neutral-200 my-3" />
                             <p className="text-xs text-muted-foreground italic">{data.notes}</p>
+                        </>
+                    )}
+
+                    {/* Artwork Matches */}
+                    {data.artwork_matches && data.artwork_matches.length > 0 && (
+                        <>
+                            <div className="border-t border-neutral-200 my-3" />
+                            <ArtworkMatchSection
+                                matches={data.artwork_matches}
+                                onConfirmMatch={onConfirmArtworkMatch ? (idx) => onConfirmArtworkMatch(record.id, idx) : undefined}
+                                onCreateNew={onCreateArtwork ? (idx) => onCreateArtwork(record.id, idx) : undefined}
+                                disabled={isActioned}
+                            />
                         </>
                     )}
 

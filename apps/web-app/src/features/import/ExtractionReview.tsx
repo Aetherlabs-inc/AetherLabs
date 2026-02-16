@@ -5,10 +5,11 @@ import { useRouter } from 'next/navigation'
 import { Button, Badge, Skeleton, Card, CardContent } from '@aetherlabs/ui'
 import {
     ArrowLeft, Sparkles, Loader2, CheckCircle2, Save,
-    FileSpreadsheet, FileText, AlertCircle,
+    FileSpreadsheet, FileText, AlertCircle, Link2,
 } from 'lucide-react'
 import { ImportService } from '@/src/services/import-service'
 import { DocumentIntelligenceService } from '@/src/services/document-intelligence-service'
+import type { MatchSummary } from '@/src/services/document-intelligence-service'
 import { DocumentTypeTabs } from './DocumentTypeTabs'
 import { ArtworkCard } from './cards/ArtworkCard'
 import { InvoiceCard } from './cards/InvoiceCard'
@@ -30,6 +31,8 @@ export function ExtractionReview({ sessionId }: ExtractionReviewProps) {
     const [records, setRecords] = useState<ExtractedRecord[]>([])
     const [loading, setLoading] = useState(true)
     const [extracting, setExtracting] = useState(false)
+    const [matching, setMatching] = useState(false)
+    const [matchSummary, setMatchSummary] = useState<MatchSummary | null>(null)
     const [saving, setSaving] = useState(false)
     const [saveResult, setSaveResult] = useState<{ saved: number; errors: string[] } | null>(null)
     const [error, setError] = useState<string | null>(null)
@@ -60,6 +63,21 @@ export function ExtractionReview({ sessionId }: ExtractionReviewProps) {
             setError(err instanceof Error ? err.message : 'Extraction failed')
         } finally {
             setExtracting(false)
+        }
+    }
+
+    const handleMatchArtworks = async () => {
+        setMatching(true)
+        setError(null)
+        try {
+            const result = await DocumentIntelligenceService.triggerArtworkMatching(sessionId)
+            setMatchSummary(result.summary)
+            // Refresh records to get match data stored in user_edits
+            await fetchSession()
+        } catch (err: unknown) {
+            setError(err instanceof Error ? err.message : 'Artwork matching failed')
+        } finally {
+            setMatching(false)
         }
     }
 
@@ -98,6 +116,28 @@ export function ExtractionReview({ sessionId }: ExtractionReviewProps) {
             )
         } catch (err: unknown) {
             setError(err instanceof Error ? err.message : 'Failed to edit record')
+        }
+    }
+
+    const handleConfirmArtworkMatch = async (recordId: string, matchIndex: number) => {
+        try {
+            const updated = await ImportService.updateArtworkMatchDecision(recordId, matchIndex, 'confirmed')
+            setRecords((prev) =>
+                prev.map((r) => (r.id === recordId ? { ...r, user_edits: updated.user_edits } : r))
+            )
+        } catch (err: unknown) {
+            setError(err instanceof Error ? err.message : 'Failed to confirm match')
+        }
+    }
+
+    const handleCreateArtwork = async (recordId: string, matchIndex: number) => {
+        try {
+            const updated = await ImportService.updateArtworkMatchDecision(recordId, matchIndex, 'create_new')
+            setRecords((prev) =>
+                prev.map((r) => (r.id === recordId ? { ...r, user_edits: updated.user_edits } : r))
+            )
+        } catch (err: unknown) {
+            setError(err instanceof Error ? err.message : 'Failed to set create decision')
         }
     }
 
@@ -146,6 +186,16 @@ export function ExtractionReview({ sessionId }: ExtractionReviewProps) {
         (r) => r.confidence >= 0.8 && r.status === 'pending'
     ).length
 
+    // Check if there are quotation/transaction records that could benefit from matching
+    const hasLinkableRecords = records.some(
+        (r) => (r.record_type === 'quotation' || r.record_type === 'transaction') &&
+            r.status !== 'saved'
+    )
+    const hasArtworkMatches = records.some((r) => {
+        const data = { ...r.extracted_data, ...r.user_edits }
+        return data.artwork_matches && data.artwork_matches.length > 0
+    })
+
     if (loading) {
         return (
             <div className="space-y-6">
@@ -185,8 +235,22 @@ export function ExtractionReview({ sessionId }: ExtractionReviewProps) {
         }
         switch (record.record_type) {
             case 'artwork': return <ArtworkCard key={record.id} {...props} />
-            case 'transaction': return <InvoiceCard key={record.id} {...props} />
-            case 'quotation': return <QuotationCard key={record.id} {...props} />
+            case 'transaction': return (
+                <InvoiceCard
+                    key={record.id}
+                    {...props}
+                    onConfirmArtworkMatch={handleConfirmArtworkMatch}
+                    onCreateArtwork={handleCreateArtwork}
+                />
+            )
+            case 'quotation': return (
+                <QuotationCard
+                    key={record.id}
+                    {...props}
+                    onConfirmArtworkMatch={handleConfirmArtworkMatch}
+                    onCreateArtwork={handleCreateArtwork}
+                />
+            )
             case 'client': return <ClientCard key={record.id} {...props} />
             default: return null
         }
@@ -307,6 +371,65 @@ export function ExtractionReview({ sessionId }: ExtractionReviewProps) {
             {/* Records review */}
             {isExtracted && records.length > 0 && (
                 <>
+                    {/* Artwork matching prompt */}
+                    {hasLinkableRecords && !hasArtworkMatches && !isCompleted && (
+                        <Card>
+                            <CardContent className="p-4">
+                                <div className="flex items-center justify-between gap-4">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center">
+                                            <Link2 className="w-4 h-4 text-blue-600" />
+                                        </div>
+                                        <div>
+                                            <p className="text-sm font-medium text-foreground">
+                                                Link Artworks
+                                            </p>
+                                            <p className="text-xs text-muted-foreground">
+                                                Match quotations and invoices to your existing artworks
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={handleMatchArtworks}
+                                        disabled={matching}
+                                        className="border-blue-500/30 text-blue-600 hover:bg-blue-500/10 shrink-0"
+                                    >
+                                        {matching ? (
+                                            <>
+                                                <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />
+                                                Matching...
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Link2 className="w-3.5 h-3.5 mr-1.5" />
+                                                Match Artworks
+                                            </>
+                                        )}
+                                    </Button>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    )}
+
+                    {/* Match summary */}
+                    {matchSummary && (
+                        <div className="flex items-start gap-2 p-3 rounded-lg bg-blue-500/10 text-blue-700 text-sm border border-blue-500/20">
+                            <Link2 className="w-4 h-4 mt-0.5 shrink-0" />
+                            <div>
+                                <p className="font-medium">
+                                    Artwork matching complete
+                                </p>
+                                <p className="text-xs mt-0.5 opacity-80">
+                                    {matchSummary.matched} exact match{matchSummary.matched !== 1 ? 'es' : ''}
+                                    {matchSummary.fuzzy > 0 && `, ${matchSummary.fuzzy} possible match${matchSummary.fuzzy !== 1 ? 'es' : ''} (needs confirmation)`}
+                                    {matchSummary.unmatched > 0 && `, ${matchSummary.unmatched} unmatched`}
+                                </p>
+                            </div>
+                        </div>
+                    )}
+
                     {/* Stats + bulk actions bar */}
                     <div className="flex flex-wrap items-center justify-between gap-3 p-3 rounded-lg bg-white/5 border border-white/10">
                         <div className="flex items-center gap-4 text-sm text-neutral-300">

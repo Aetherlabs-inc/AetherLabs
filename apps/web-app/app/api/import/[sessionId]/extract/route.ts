@@ -12,14 +12,21 @@ const EXTRACTION_PROMPT = `You are a document data extraction specialist for an 
 
 Your task: Identify and extract records from the data. Each record should be classified as one of:
 - "artwork" — inventory items (title, artist, year, medium, dimensions, price, location, notes)
-- "transaction" — sales/purchases/invoices (client_name, client_email, client_address, artwork_title, type, amount, currency, date, invoice_number, notes, line_items, vendor_name, vendor_address, vendor_phone, vendor_email, subtotal, tax_rate, tax_amount)
-- "quotation" — price quotes (client_name, client_email, client_address, artwork_title, amount, currency, date, valid_until, quotation_number, status, notes, line_items, vendor_name, vendor_address, vendor_phone, vendor_email, subtotal, tax_rate, tax_amount)
+- "transaction" — sales/purchases/invoices (client_name, client_email, client_address, type, amount, currency, date, invoice_number, notes, line_items, vendor_name, vendor_address, vendor_phone, vendor_email, subtotal, tax_rate, tax_amount, artwork_references)
+- "quotation" — price quotes (client_name, client_email, client_address, amount, currency, date, valid_until, quotation_number, status, notes, line_items, vendor_name, vendor_address, vendor_phone, vendor_email, subtotal, tax_rate, tax_amount, artwork_references)
 - "client" — contact information (name, email, phone, company, type, notes)
 
 For each record, provide:
 1. "record_type": one of the above categories
 2. "extracted_data": an object with the relevant fields filled in from the data
 3. "confidence": a number from 0.0 to 1.0 indicating how confident you are in the extraction accuracy
+
+CRITICAL — Artwork references in quotations and transactions:
+- For quotation and transaction records, you MUST include an "artwork_references" array listing ALL artworks mentioned in the document.
+- Each artwork reference must have: { "title": "...", "artist": "..." }
+- If only the title is mentioned without an artist, set artist to null.
+- A single quotation or transaction can reference MULTIPLE artworks. Extract ALL of them.
+- Example: "artwork_references": [{ "title": "Sunset Over Harbor", "artist": "Jane Smith" }, { "title": "Morning Light", "artist": "Jane Smith" }]
 
 CRITICAL — Document-level grouping rules:
 - A single quotation document = ONE quotation record. Do NOT create a separate quotation record for each line item/service in the document.

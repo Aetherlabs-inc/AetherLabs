@@ -650,3 +650,53 @@ export interface QuotationInsert {
 export interface ImportSessionWithRecords extends ImportSession {
     extracted_records?: ExtractedRecord[]
 }
+
+// ============================================
+// ARTWORK LINKING (Many-to-Many)
+// ============================================
+
+export interface QuotationArtwork {
+    id: string
+    quotation_id: string
+    artwork_id: string
+    created_at: string
+}
+
+export interface TransactionArtwork {
+    id: string
+    transaction_id: string
+    artwork_id: string
+    created_at: string
+}
+
+export interface QuotationWithArtworks extends Quotation {
+    artworks?: Artwork[]
+}
+
+export interface TransactionWithArtworks extends Transaction {
+    artworks?: Artwork[]
+}
+
+export interface ArtworkWithLinkedDocuments extends ArtworkWithDetails {
+    quotations?: Quotation[]
+    transactions?: Transaction[]
+}
+
+// ============================================
+// ARTWORK MATCHING (Import Flow)
+// ============================================
+
+export type ArtworkMatchStatus = 'matched' | 'fuzzy_match' | 'no_match' | 'confirmed' | 'create_new'
+
+export interface ArtworkReference {
+    title: string
+    artist?: string
+}
+
+export interface ArtworkMatch {
+    reference: ArtworkReference
+    status: ArtworkMatchStatus
+    matched_artwork_id?: string
+    matched_artwork?: { id: string; title: string; artist: string }
+    fuzzy_candidates?: { id: string; title: string; artist: string; reason: string }[]
+}
