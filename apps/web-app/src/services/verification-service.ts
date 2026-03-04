@@ -10,6 +10,8 @@ export interface PublicArtworkInfo {
   title: string
   artist: string | null
   year: number | null
+  medium: string | null
+  dimensions: string | null
   status: string
   image_url: string | null
 }
@@ -17,14 +19,22 @@ export interface PublicArtworkInfo {
 export interface PublicCertificateInfo {
   certificate_id: string
   generated_at: string
+  blockchain_hash: string | null
 }
+
+export type VerificationMethod = 'nfc_scan' | 'certificate_link'
 
 export interface VerificationResult {
   valid: boolean
   error?: VerificationError
   artwork?: PublicArtworkInfo
   certificate?: PublicCertificateInfo
+  /** Present when verified via NFC tag scan (physical verification) */
   tagType?: 'standard' | 'ntag424'
+  /** True when the artwork has an NFC tag linked (regardless of how this page was opened) */
+  nfcLinked?: boolean
+  /** How this page was opened: NFC scan = physically verified, certificate_link = shared URL only */
+  verificationMethod?: VerificationMethod
 }
 
 export interface ScanMetadata {
@@ -81,8 +91,8 @@ export class VerificationService {
         .single()
 
       if (tagError || !tag) {
-        await this.logScan(null, null, 'not_found', metadata)
-        return { valid: false, error: 'not_found' }
+        // Fall back to certificate ID lookup for shared certificate URLs
+        return this.verifyByCertificateId(code, metadata)
       }
 
       // 2. Check rate limiting
@@ -110,11 +120,14 @@ export class VerificationService {
           title,
           artist,
           year,
+          medium,
+          dimensions,
           status,
           image_url,
           certificates (
             certificate_id,
-            generated_at
+            generated_at,
+            blockchain_hash
           )
         `
         )
@@ -130,15 +143,18 @@ export class VerificationService {
       await this.logScan(tag.id, tag.artwork_id, 'valid', metadata, counter)
 
       // 6. Return minimal public info
-      const certificates = artwork.certificates as Array<{ certificate_id: string; generated_at: string }> | null
+      const certificates = artwork.certificates as Array<{ certificate_id: string; generated_at: string; blockchain_hash: string | null }> | null
 
       return {
         valid: true,
+        verificationMethod: 'nfc_scan',
         tagType: tag.tag_type as 'standard' | 'ntag424',
         artwork: {
           title: artwork.title,
           artist: artwork.artist,
           year: artwork.year,
+          medium: artwork.medium,
+          dimensions: artwork.dimensions,
           status: artwork.status,
           image_url: artwork.image_url,
         },
@@ -146,11 +162,97 @@ export class VerificationService {
           ? {
               certificate_id: certificates[0].certificate_id,
               generated_at: certificates[0].generated_at,
+              blockchain_hash: certificates[0].blockchain_hash,
             }
           : undefined,
       }
     } catch (error) {
       console.error('Verification error:', error)
+      return { valid: false, error: 'not_found' }
+    }
+  }
+
+  /**
+   * Verify an artwork by its certificate ID (for shared certificate URLs)
+   */
+  async verifyByCertificateId(
+    certificateId: string,
+    metadata?: ScanMetadata
+  ): Promise<VerificationResult> {
+    try {
+      const { data: cert, error: certError } = await this.supabase
+        .from('certificates')
+        .select(
+          `
+          certificate_id,
+          generated_at,
+          blockchain_hash,
+          artwork_id,
+          artworks (
+            id,
+            title,
+            artist,
+            year,
+            medium,
+            dimensions,
+            status,
+            image_url,
+            nfc_tags (
+              nfc_uid,
+              is_bound
+            )
+          )
+        `
+        )
+        .eq('certificate_id', certificateId)
+        .single()
+
+      if (certError || !cert) {
+        return { valid: false, error: 'not_found' }
+      }
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const artwork = (cert as any).artworks as {
+        id: string
+        title: string
+        artist: string | null
+        year: number | null
+        medium: string | null
+        dimensions: string | null
+        status: string
+        image_url: string | null
+        nfc_tags: Array<{ nfc_uid: string; is_bound: boolean }> | null
+      } | null
+
+      if (!artwork) {
+        return { valid: false, error: 'not_found' }
+      }
+
+      const hasNFC = artwork.nfc_tags?.some(tag => tag.is_bound) ?? false
+
+      await this.logScan(null, artwork.id, 'valid', metadata)
+
+      return {
+        valid: true,
+        verificationMethod: 'certificate_link',
+        artwork: {
+          title: artwork.title,
+          artist: artwork.artist,
+          year: artwork.year,
+          medium: artwork.medium,
+          dimensions: artwork.dimensions,
+          status: artwork.status,
+          image_url: artwork.image_url,
+        },
+        certificate: {
+          certificate_id: cert.certificate_id,
+          generated_at: cert.generated_at,
+          blockchain_hash: cert.blockchain_hash,
+        },
+        nfcLinked: hasNFC,
+      }
+    } catch (error) {
+      console.error('Certificate verification error:', error)
       return { valid: false, error: 'not_found' }
     }
   }
@@ -268,11 +370,14 @@ export class VerificationService {
           title,
           artist,
           year,
+          medium,
+          dimensions,
           status,
           image_url,
           certificates (
             certificate_id,
-            generated_at
+            generated_at,
+            blockchain_hash
           )
         `
         )
@@ -287,15 +392,18 @@ export class VerificationService {
       // Log successful verification
       await this.logScan(tag.id, tag.artwork_id, 'valid', metadata)
 
-      const certificates = artwork.certificates as Array<{ certificate_id: string; generated_at: string }> | null
+      const certificates = artwork.certificates as Array<{ certificate_id: string; generated_at: string; blockchain_hash: string | null }> | null
 
       return {
         valid: true,
+        verificationMethod: 'nfc_scan',
         tagType: (tag.tag_type as 'standard' | 'ntag424') || 'standard',
         artwork: {
           title: artwork.title,
           artist: artwork.artist,
           year: artwork.year,
+          medium: artwork.medium,
+          dimensions: artwork.dimensions,
           status: artwork.status,
           image_url: artwork.image_url,
         },
@@ -303,6 +411,7 @@ export class VerificationService {
           ? {
               certificate_id: certificates[0].certificate_id,
               generated_at: certificates[0].generated_at,
+              blockchain_hash: certificates[0].blockchain_hash,
             }
           : undefined,
       }

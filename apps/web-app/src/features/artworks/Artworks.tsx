@@ -1,14 +1,10 @@
 'use client'
 import React, { useState, useEffect, useMemo } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { Search, Filter, Image as ImageIcon, Shield, AlertCircle, Clock, Eye, Wifi, CheckCircle, X, Trash2, ChevronDown, ArrowLeft, Download, Share2, Copy, Loader2 } from 'lucide-react';
+import Link from 'next/link';
+import { Search, Filter, Image as ImageIcon, Shield, AlertCircle, Clock, Eye, Wifi, CheckCircle, X, Trash2, ChevronDown } from 'lucide-react';
 import { Button, Card, CardContent, Badge, AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator, DropdownMenuLabel } from '@aetherlabs/ui';
 import RegisterArtwork from '@/src/features/artworks/registerArtwork/RegisterArtwork';
-import COACertificate from '@/src/features/artworks/registerArtwork/COACertificate';
-import COACertificateElegant from '@/src/features/artworks/registerArtwork/COACertificateElegant';
-import COAGenerationScreen from '@/src/features/artworks/registerArtwork/COAGenerationScreen';
-import { downloadCertificatePDF } from '@/src/features/artworks/registerArtwork/COACertificatePDF';
-import ArtworkDetails from '@/src/features/artworks/ArtworkDetails';
 import { useAuth } from '@/src/components/auth-provider';
 import { ArtworkService } from '@/src/services/artwork-service';
 import { ArtworkWithDetails } from '@/src/types/database';
@@ -32,16 +28,10 @@ const Artworks: React.FC = () => {
     const searchParams = useSearchParams();
     const router = useRouter();
     const [showRegisterForm, setShowRegisterForm] = useState(false);
-    const [selectedArtwork, setSelectedArtwork] = useState<ArtworkWithDetails | null>(null);
-    const [showCertificate, setShowCertificate] = useState(false);
-    const [showArtworkDetails, setShowArtworkDetails] = useState(false);
-    const [showGenerateCertificate, setShowGenerateCertificate] = useState(false);
     const [artworks, setArtworks] = useState<ArtworkWithDetails[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [deletingArtworkId, setDeletingArtworkId] = useState<string | null>(null);
-    const [isDownloadingPDF, setIsDownloadingPDF] = useState(false);
-    const [copiedCertId, setCopiedCertId] = useState(false);
 
     // Search and filter state
     const [searchQuery, setSearchQuery] = useState('');
@@ -142,83 +132,11 @@ const Artworks: React.FC = () => {
         },
     ];
 
-    const handleViewArtwork = (artwork: ArtworkWithDetails) => {
-        setSelectedArtwork(artwork);
-        setShowArtworkDetails(true);
-    };
-
-    const handleViewCertificate = () => {
-        setShowArtworkDetails(false);
-        setShowCertificate(true);
-    };
-
-    const handleGenerateCertificate = () => {
-        if (selectedArtwork) {
-            setShowArtworkDetails(false);
-            setShowGenerateCertificate(true);
-        }
-    };
-
-    const handleCertificateGenerated = async (coaData: {
-        certificateId: string;
-        qrCode: string;
-        blockchainHash: string;
-        generatedAt: string;
-    }) => {
-        if (!selectedArtwork) return;
-
-        try {
-            // Save the certificate to the database
-            await ArtworkService.createCertificate(selectedArtwork.id, {
-                certificate_id: coaData.certificateId,
-                qr_code_url: coaData.qrCode,
-                blockchain_hash: coaData.blockchainHash,
-            });
-
-            // Reload artworks to get updated data
-            await loadArtworks();
-
-            // Update selected artwork with new certificate
-            const updatedArtwork = artworks.find(a => a.id === selectedArtwork.id);
-            if (updatedArtwork) {
-                setSelectedArtwork(updatedArtwork);
-            }
-
-            // Go back to artwork details
-            setShowGenerateCertificate(false);
-            setShowArtworkDetails(true);
-        } catch (err) {
-            console.error('Failed to save certificate:', err);
-            setError(err instanceof Error ? err.message : 'Failed to save certificate');
-        }
-    };
-
-    const handleBackFromCertificateGeneration = () => {
-        setShowGenerateCertificate(false);
-        setShowArtworkDetails(true);
-    };
-
-    const handleConnectNFC = () => {
-        console.log('Connect NFC for:', selectedArtwork?.title);
-    };
-
-    const handleBackToArtworks = () => {
-        setShowArtworkDetails(false);
-        setShowCertificate(false);
-        setSelectedArtwork(null);
-    };
-
     const handleDeleteArtwork = async (artworkId: string) => {
         try {
             setDeletingArtworkId(artworkId);
             await ArtworkService.deleteArtwork(artworkId);
             setArtworks(prevArtworks => prevArtworks.filter(artwork => artwork.id !== artworkId));
-
-            if (selectedArtwork?.id === artworkId) {
-                setSelectedArtwork(null);
-                setShowArtworkDetails(false);
-                setShowCertificate(false);
-            }
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Failed to delete artwork');
         } finally {
@@ -228,244 +146,6 @@ const Artworks: React.FC = () => {
 
     if (showRegisterForm) {
         return <RegisterArtwork onBack={() => setShowRegisterForm(false)} />;
-    }
-
-    if (showGenerateCertificate && selectedArtwork) {
-        return (
-            <COAGenerationScreen
-                artworkData={{
-                    title: selectedArtwork.title,
-                    year: selectedArtwork.year?.toString() || '',
-                    medium: selectedArtwork.medium || '',
-                    dimensions: selectedArtwork.dimensions || '',
-                    artistName: selectedArtwork.artist || '',
-                    imageUrl: selectedArtwork.image_url || undefined,
-                }}
-                onBack={handleBackFromCertificateGeneration}
-                onComplete={handleCertificateGenerated}
-                onSkip={handleBackFromCertificateGeneration}
-            />
-        );
-    }
-
-    // Certificate view - check this BEFORE artwork details
-    if (showCertificate && selectedArtwork) {
-        const cert = selectedArtwork.certificates?.[0];
-        const hasNFC = selectedArtwork.nfc_tags?.some(tag => tag.is_bound) ?? false;
-        const nfcUid = selectedArtwork.nfc_tags?.find(tag => tag.is_bound)?.nfc_uid;
-
-        const handleDownloadPDF = async () => {
-            if (!cert) return;
-            setIsDownloadingPDF(true);
-            try {
-                await downloadCertificatePDF({
-                    artworkData: {
-                        title: selectedArtwork.title,
-                        year: selectedArtwork.year?.toString() || '',
-                        medium: selectedArtwork.medium || '',
-                        dimensions: selectedArtwork.dimensions || '',
-                        artistName: selectedArtwork.artist || '',
-                        imageUrl: selectedArtwork.image_url || undefined,
-                    },
-                    certificateData: {
-                        certificateId: cert.certificate_id,
-                        qrCodeUrl: `https://aetherlabs.art/verify/${cert.certificate_id}`,
-                        blockchainHash: cert.blockchain_hash || '',
-                        generatedAt: cert.generated_at,
-                    },
-                    verificationLevel: {
-                        hasNFC,
-                        nfcUid,
-                    },
-                });
-            } catch (err) {
-                console.error('Failed to download PDF:', err);
-                alert('Failed to download PDF. Please try again.');
-            } finally {
-                setIsDownloadingPDF(false);
-            }
-        };
-
-        const handleCopyCertificateId = () => {
-            if (!cert) return;
-            navigator.clipboard.writeText(cert.certificate_id);
-            setCopiedCertId(true);
-            setTimeout(() => setCopiedCertId(false), 2000);
-        };
-
-        const handleShareCertificate = async () => {
-            if (!cert) return;
-            const shareUrl = `https://aetherlabs.art/v/${cert.certificate_id}`;
-
-            if (navigator.share) {
-                try {
-                    await navigator.share({
-                        title: `Certificate of Authenticity - ${selectedArtwork.title}`,
-                        text: `View the certificate of authenticity for "${selectedArtwork.title}" by ${selectedArtwork.artist}`,
-                        url: shareUrl,
-                    });
-                } catch {
-                    navigator.clipboard.writeText(shareUrl);
-                    alert('Link copied to clipboard!');
-                }
-            } else {
-                navigator.clipboard.writeText(shareUrl);
-                alert('Link copied to clipboard!');
-            }
-        };
-
-        return (
-            <div className="min-h-screen bg-background p-6">
-                <div className="max-w-4xl mx-auto">
-                    {/* Header */}
-                    <div className="mb-8">
-                        <Button
-                            onClick={() => {
-                                setShowCertificate(false);
-                                setShowArtworkDetails(true);
-                            }}
-                            variant="ghost"
-                            className="mb-4 flex items-center gap-2 text-foreground hover:text-muted-foreground"
-                        >
-                            <ArrowLeft className="h-4 w-4" />
-                            Back to Artwork Details
-                        </Button>
-                        <div className="text-center">
-                            <h1 className="text-3xl font-bold text-foreground mb-2">
-                                Certificate of Authenticity
-                            </h1>
-                            <p className="text-muted-foreground">
-                                &quot;{selectedArtwork.title}&quot; by {selectedArtwork.artist}
-                            </p>
-                        </div>
-                    </div>
-
-                    {/* Certificate */}
-                    <COACertificateElegant
-                        artworkData={{
-                            title: selectedArtwork.title,
-                            year: selectedArtwork.year?.toString() || '',
-                            medium: selectedArtwork.medium || '',
-                            dimensions: selectedArtwork.dimensions || '',
-                            artistName: selectedArtwork.artist || '',
-                            imageUrl: selectedArtwork.image_url || undefined
-                        }}
-                        certificateData={{
-                            certificateId: cert?.certificate_id ?? '',
-                            qrCodeUrl: `https://aetherlabs.art/v/${cert?.certificate_id}`,
-                            blockchainHash: cert?.blockchain_hash ?? '',
-                            generatedAt: cert?.generated_at ?? selectedArtwork.created_at
-                        }}
-                        verificationLevel={{
-                            level: selectedArtwork.verification_levels?.[0]?.level ?? 'artist_verified',
-                            hasNFC,
-                            nfcUid
-                        }}
-                        showActions={false}
-                    />
-
-                    {/* Action Buttons */}
-                    <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center max-w-md mx-auto">
-                        <Button
-                            onClick={handleDownloadPDF}
-                            disabled={isDownloadingPDF}
-                            className="flex-1 bg-[#2A2121] hover:bg-[#2A2121]/90 text-white"
-                        >
-                            {isDownloadingPDF ? (
-                                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                            ) : (
-                                <Download className="h-4 w-4 mr-2" />
-                            )}
-                            {isDownloadingPDF ? 'Generating...' : 'Download PDF'}
-                        </Button>
-                        <Button
-                            onClick={handleShareCertificate}
-                            variant="outline"
-                            className="flex-1 border-border text-foreground hover:bg-muted"
-                        >
-                            <Share2 className="h-4 w-4 mr-2" />
-                            Share
-                        </Button>
-                        <Button
-                            onClick={handleCopyCertificateId}
-                            variant="outline"
-                            className="flex-1 border-border text-foreground hover:bg-muted"
-                        >
-                            {copiedCertId ? (
-                                <CheckCircle className="h-4 w-4 mr-2 text-green-500" />
-                            ) : (
-                                <Copy className="h-4 w-4 mr-2" />
-                            )}
-                            {copiedCertId ? 'Copied!' : 'Copy ID'}
-                        </Button>
-                    </div>
-
-                    {/* Certificate Info */}
-                    <div className="mt-8 max-w-md mx-auto">
-                        <div className="bg-card border border-border rounded-xl p-6 space-y-4">
-                            <h3 className="font-semibold text-foreground flex items-center gap-2">
-                                <Shield className="h-5 w-5 text-[#BC8010]" />
-                                Certificate Details
-                            </h3>
-                            <div className="space-y-3 text-sm">
-                                <div className="flex justify-between">
-                                    <span className="text-muted-foreground">Certificate ID</span>
-                                    <span className="font-mono text-foreground">{cert?.certificate_id}</span>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span className="text-muted-foreground">Issued</span>
-                                    <span className="text-foreground">
-                                        {cert?.generated_at ? new Date(cert.generated_at).toLocaleDateString('en-US', {
-                                            year: 'numeric',
-                                            month: 'long',
-                                            day: 'numeric'
-                                        }) : 'N/A'}
-                                    </span>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span className="text-muted-foreground">NFC Tag</span>
-                                    <span className="text-foreground">
-                                        {hasNFC ? (
-                                            <span className="flex items-center gap-1">
-                                                <Wifi className="h-3 w-3 text-[#BC8010]" />
-                                                Connected
-                                            </span>
-                                        ) : (
-                                            'Not connected'
-                                        )}
-                                    </span>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span className="text-muted-foreground">Verification URL</span>
-                                    <a
-                                        href={`https://aetherlabs.art/v/${cert?.certificate_id}`}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="text-[#BC8010] hover:underline"
-                                    >
-                                        View Public Page →
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        );
-    }
-
-    // Artwork details view
-    if (showArtworkDetails && selectedArtwork) {
-        return (
-            <ArtworkDetails
-                artwork={selectedArtwork}
-                onBack={handleBackToArtworks}
-                onViewCOA={handleViewCertificate}
-                onGenerateCOA={handleGenerateCertificate}
-                onConnectNFC={handleConnectNFC}
-                onDelete={handleDeleteArtwork}
-            />
-        );
     }
 
     return (
@@ -711,12 +391,14 @@ const Artworks: React.FC = () => {
                                     {/* Action Buttons */}
                                     <div className="flex gap-2">
                                         <Button
-                                            onClick={() => handleViewArtwork(artwork)}
+                                            asChild
                                             size="sm"
                                             className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground"
                                         >
-                                            <Eye className="h-3 w-3 mr-1" />
-                                            View Details
+                                            <Link href={`/artworks/${artwork.id}`}>
+                                                <Eye className="h-3 w-3 mr-1" />
+                                                View Details
+                                            </Link>
                                         </Button>
 
                                         <AlertDialog>

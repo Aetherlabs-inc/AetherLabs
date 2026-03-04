@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import AuthIntro from "@/src/components/auth-intro";
 
 export const metadata: Metadata = {
     title: "Sign In | AetherLabs",
@@ -18,7 +17,6 @@ interface AuthLayoutProps {
 export default function AuthLayout({ children }: AuthLayoutProps) {
     return (
         <div className="relative min-h-svh overflow-hidden bg-[#f9f8f6]" role="main">
-            <AuthIntro />
             <div className="pointer-events-none absolute inset-0">
                 <div className="auth-blob auth-blob--gold -top-24 right-0" />
                 <div className="auth-blob auth-blob--terracotta -bottom-24 left-0" />
