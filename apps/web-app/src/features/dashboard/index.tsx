@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { Image, FileCheck, Clock, Plus, BarChart3, Activity, AlertCircle, ChevronRight, FileText } from "lucide-react";
+import { Image, FileCheck, Clock, Plus, BarChart3, Activity, AlertCircle, ChevronRight, FileText, Users } from "lucide-react";
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -17,7 +17,7 @@ import {
 } from "chart.js";
 import { Line, Doughnut } from "react-chartjs-2";
 import { Card, CardContent, CardHeader, CardTitle, Button } from "@aetherlabs/ui";
-import { DashboardService, type DashboardStats, type Activity as ActivityType, type PendingItem } from "@/src/services/dashboard-service";
+import { DashboardService, type DashboardStats, type CRMStats, type Activity as ActivityType, type PendingItem } from "@/src/services/dashboard-service";
 import { StatsGridSkeleton, ActivityListSkeleton, QuickActionsSkeleton, ChartSkeleton } from "@/src/components/skeletons/DashboardSkeleton";
 import { DataError } from "@/src/components/error-states";
 
@@ -95,6 +95,7 @@ const Dashboard = () => {
 
     // State for real data
     const [stats, setStats] = useState<DashboardStats | null>(null);
+    const [crmStats, setCrmStats] = useState<CRMStats | null>(null);
     const [recentActivity, setRecentActivity] = useState<ActivityType[]>([]);
     const [pendingItems, setPendingItems] = useState<PendingItem[]>([]);
     const [loading, setLoading] = useState(true);
@@ -106,13 +107,15 @@ const Dashboard = () => {
             setLoading(true);
             setError(null);
 
-            const [statsData, activityData, pendingData] = await Promise.all([
+            const [statsData, crmData, activityData, pendingData] = await Promise.all([
                 DashboardService.getStats(),
+                DashboardService.getCRMStats(),
                 DashboardService.getRecentActivity(5),
                 DashboardService.getPendingItems()
             ]);
 
             setStats(statsData);
+            setCrmStats(crmData);
             setRecentActivity(activityData);
             setPendingItems(pendingData);
         } catch (err) {
@@ -261,6 +264,43 @@ const Dashboard = () => {
                             </Card>
                         </motion.div>
                     </div>
+                )}
+
+                {/* CRM Overview */}
+                {!loading && crmStats && (crmStats.totalClients > 0 || crmStats.recentTransactionsCount > 0 || crmStats.quotationsDraft + crmStats.quotationsSent + crmStats.quotationsAccepted > 0) && (
+                    <motion.div {...fadeInUp(0.18)} className="mb-6 sm:mb-8">
+                        <Card className="border border-border bg-card">
+                            <CardHeader className="flex flex-row items-center justify-between">
+                                <CardTitle className="flex items-center">
+                                    <Users className="w-5 h-5 mr-2 shrink-0" />
+                                    CRM Overview
+                                </CardTitle>
+                                <Button variant="outline" size="sm" onClick={() => router.push("/clients")}>
+                                    View Clients
+                                </Button>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                                    <div className="p-3 rounded-lg bg-muted/50">
+                                        <p className="text-xs text-muted-foreground">Clients</p>
+                                        <p className="text-xl font-bold text-foreground">{crmStats.totalClients}</p>
+                                    </div>
+                                    <div className="p-3 rounded-lg bg-muted/50">
+                                        <p className="text-xs text-muted-foreground">Transactions</p>
+                                        <p className="text-xl font-bold text-foreground">{crmStats.recentTransactionsCount}</p>
+                                    </div>
+                                    <div className="p-3 rounded-lg bg-muted/50">
+                                        <p className="text-xs text-muted-foreground">Quotations (Draft)</p>
+                                        <p className="text-xl font-bold text-foreground">{crmStats.quotationsDraft}</p>
+                                    </div>
+                                    <div className="p-3 rounded-lg bg-muted/50">
+                                        <p className="text-xs text-muted-foreground">Quotations (Sent/Accepted)</p>
+                                        <p className="text-xl font-bold text-foreground">{crmStats.quotationsSent + crmStats.quotationsAccepted}</p>
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </motion.div>
                 )}
 
                 {/* Needs Attention Section */}

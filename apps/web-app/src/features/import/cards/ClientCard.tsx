@@ -168,6 +168,13 @@ export function ClientCard({ record, onApprove, onReject, onEdit }: ClientCardPr
                             />
                         </div>
                         <div>
+                            <Label>Address</Label>
+                            <Input
+                                value={editData.address || ''}
+                                onChange={(e) => setEditData({ ...editData, address: e.target.value })}
+                            />
+                        </div>
+                        <div>
                             <Label>Type</Label>
                             <Select
                                 value={editData.type || 'other'}

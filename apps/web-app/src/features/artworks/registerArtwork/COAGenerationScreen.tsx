@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import COACertificateElegant from './COACertificateElegant';
 import { downloadCertificatePDF } from './COACertificatePDF';
+import { verificationUrl } from '@/src/lib/app-config';
 
 interface COAGenerationScreenProps {
     artworkData: {
@@ -73,9 +74,9 @@ const COAGenerationScreen: React.FC<COAGenerationScreenProps> = ({
 
     const generateCOA = () => {
         const certificateId = `COA-${Date.now()}-${Math.random().toString(36).slice(2, 10).toUpperCase()}`;
-        const qrCode = `https://aetherlabs.art/verify/${certificateId}`;
         const registrySignature = `SIG-${Math.random().toString(36).slice(2, 18).toUpperCase()}`;
         const generatedAt = new Date().toISOString();
+        const qrCode = verificationUrl(certificateId);
 
         setCoaData({
             certificateId,

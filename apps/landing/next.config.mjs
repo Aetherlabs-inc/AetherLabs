@@ -1,5 +1,15 @@
 /** @type {import('next').NextConfig} */
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://app.aetherlabs.art';
 const nextConfig = {
+  async redirects() {
+    return [
+      {
+        source: '/v/:path*',
+        destination: `${APP_URL}/v/:path*`,
+        permanent: false,
+      },
+    ];
+  },
   images: {
     remotePatterns: [
       {

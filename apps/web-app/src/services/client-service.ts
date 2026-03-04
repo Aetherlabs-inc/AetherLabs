@@ -106,6 +106,7 @@ export class ClientService {
                 email: data.email ?? null,
                 phone: data.phone ?? null,
                 company: data.company ?? null,
+                address: data.address ?? null,
                 type: data.type ?? null,
                 notes: data.notes ?? null,
             })
@@ -136,6 +137,7 @@ export class ClientService {
                 email: data.email,
                 phone: data.phone,
                 company: data.company,
+                address: data.address,
                 type: data.type,
                 notes: data.notes,
             })

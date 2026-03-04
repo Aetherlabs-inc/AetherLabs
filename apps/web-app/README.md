@@ -43,6 +43,9 @@ cp .env.example .env.local
 Required environment variables:
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+
+Optional:
+- `NEXT_PUBLIC_APP_URL` – Base URL for the web app (default: `https://app.aetherlabs.art`). Used for verification links, PDF footers, and shares. Set this to your deployment URL if different.
 - AWS Amplify configuration (if using)
 
 3. Run database migrations:

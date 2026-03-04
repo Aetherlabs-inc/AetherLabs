@@ -9,6 +9,7 @@ import COACertificateElegant from './registerArtwork/COACertificateElegant'
 import COAGenerationScreen from './registerArtwork/COAGenerationScreen'
 import { downloadCertificatePDF } from './registerArtwork/COACertificatePDF'
 import { ArtworkService } from '@/src/services/artwork-service'
+import { verificationUrl } from '@/src/lib/app-config'
 import type { ArtworkWithDetails } from '@/src/types/database'
 
 interface ArtworkDetailPageProps {
@@ -159,7 +160,7 @@ export default function ArtworkDetailPage({ artworkId }: ArtworkDetailPageProps)
                     },
                     certificateData: {
                         certificateId: cert.certificate_id,
-                        qrCodeUrl: `https://aetherlabs.art/verify/${cert.certificate_id}`,
+                        qrCodeUrl: verificationUrl(cert.certificate_id),
                         blockchainHash: cert.blockchain_hash || '',
                         generatedAt: cert.generated_at,
                     },
@@ -232,7 +233,7 @@ export default function ArtworkDetailPage({ artworkId }: ArtworkDetailPageProps)
                         }}
                         certificateData={{
                             certificateId: cert?.certificate_id ?? '',
-                            qrCodeUrl: `https://aetherlabs.art/v/${cert?.certificate_id}`,
+                            qrCodeUrl: cert ? verificationUrl(cert.certificate_id) : '',
                             blockchainHash: cert?.blockchain_hash ?? '',
                             generatedAt: cert?.generated_at ?? artwork.created_at
                         }}
@@ -300,7 +301,7 @@ export default function ArtworkDetailPage({ artworkId }: ArtworkDetailPageProps)
                                 <div className="flex justify-between">
                                     <span className="text-muted-foreground">Verification URL</span>
                                     <a
-                                        href={`https://aetherlabs.art/v/${cert?.certificate_id}`}
+                                        href={cert ? verificationUrl(cert.certificate_id) : '#'}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="text-accent hover:underline"

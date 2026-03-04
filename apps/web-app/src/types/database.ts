@@ -524,6 +524,7 @@ export interface Client {
     email: string | null
     phone: string | null
     company: string | null
+    address: string | null
     type: ClientType | null
     notes: string | null
     created_at: string
@@ -536,6 +537,7 @@ export interface ClientInsert {
     email?: string | null
     phone?: string | null
     company?: string | null
+    address?: string | null
     type?: ClientType | null
     notes?: string | null
 }

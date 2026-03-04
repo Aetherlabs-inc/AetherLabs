@@ -12,7 +12,7 @@ Build a CRM for artists (and gallery users) to manage their clientèle: clients,
 |-------|--------|-------|
 | Phase 1: Clients Module | Done | ClientService, list, detail, form, nav |
 | Phase 2: Transactions & Quotations | Done | TransactionService, QuotationService, forms, Client detail tabs |
-| Phase 3: CRM Dashboard & Enhancements | Pending | Optional overview, import integration, address field |
+| Phase 3: CRM Dashboard & Enhancements | Done | CRM overview on Dashboard, import integration, address on clients |
 
 ---
 
@@ -20,7 +20,7 @@ Build a CRM for artists (and gallery users) to manage their clientèle: clients,
 
 | Area | Status | Location |
 |------|--------|----------|
-| **Clients** | Table exists, RLS, UI implemented | `clients` (user_id, name, email, phone, company, type, notes) |
+| **Clients** | Table exists, RLS, UI implemented | `clients` (user_id, name, email, phone, company, type, notes, address) |
 | **Transactions** | Table exists, links to clients/artworks | `transactions` (sale, purchase, commission, etc.) |
 | **Quotations** | Table exists, links to clients/artworks | `quotations` (draft, sent, accepted, etc.) |
 | **Import** | Extracts clients from docs, saves to `clients` | `apps/web-app/src/features/import/` |

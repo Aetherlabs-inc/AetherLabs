@@ -75,6 +75,7 @@ export default function Clients() {
             email: data.email || null,
             phone: data.phone || null,
             company: data.company || null,
+            address: data.address || null,
             type: (data.type as ClientType) || null,
             notes: data.notes || null,
         })

@@ -296,12 +296,22 @@ interface CertificateData {
   }
 }
 
+// Derive verify base from qrCodeUrl (e.g. https://app.aetherlabs.art/v)
+function getVerifyBase(qrCodeUrl: string): string {
+  try {
+    return new URL(qrCodeUrl).origin + '/v'
+  } catch {
+    return 'https://app.aetherlabs.art/v'
+  }
+}
+
 // The PDF Document component
 const COACertificateDocument: React.FC<CertificateData> = ({
   artworkData,
   certificateData,
   verificationLevel,
 }) => {
+  const verifyBase = getVerifyBase(certificateData.qrCodeUrl)
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -433,7 +443,7 @@ const COACertificateDocument: React.FC<CertificateData> = ({
               <Text style={styles.footerText}>
                 This certificate is digitally signed and recorded in your registry.
                 The authenticity of this artwork can be verified at any time by visiting{' '}
-                <Text style={styles.footerHighlight}>aetherlabs.art/verify</Text>
+                <Text style={styles.footerHighlight}>{verifyBase.replace(/^https?:\/\//, '')}</Text>
               </Text>
               {verificationLevel?.hasNFC && verificationLevel?.nfcUid && (
                 <Text style={styles.nfcTag}>NFC Tag: {verificationLevel.nfcUid}</Text>

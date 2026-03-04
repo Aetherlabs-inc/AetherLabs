@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, Input, Label, Button, Switch } from '@aetherlabs/ui'
 import COACertificateElegant from '@/src/features/artworks/registerArtwork/COACertificateElegant'
+import { verificationUrl } from '@/src/lib/app-config'
 
 interface PreviewCertificate {
   artwork: {
@@ -56,7 +57,7 @@ export default function CertificatePreview({ certificate }: CertificatePreviewPr
   const certificateData = useMemo(() => {
     return {
       certificateId: seed.certificate_id,
-      qrCodeUrl: `https://aetherlabs.art/verify/${seed.certificate_id}`,
+      qrCodeUrl: verificationUrl(seed.certificate_id),
       blockchainHash: `SIG-${seed.certificate_id.slice(-4)}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`,
       generatedAt: seed.generated_at,
     }

@@ -17,6 +17,7 @@ import {
 } from '@aetherlabs/ui/primitives'
 import { Save, RotateCcw, Palette, Type, Settings2, Image as ImageIcon } from 'lucide-react'
 import { motion } from 'framer-motion'
+import { verificationUrl } from '@/src/lib/app-config'
 
 // Sample data for preview
 const sampleArtworkData = {
@@ -30,7 +31,7 @@ const sampleArtworkData = {
 
 const sampleCertificateData = {
     certificateId: 'COA-2024-ABC12345',
-    qrCodeUrl: 'https://aetherlabs.io/verify/COA-2024-ABC12345',
+    qrCodeUrl: verificationUrl('COA-2024-ABC12345'),
     blockchainHash: '0x7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7890',
     generatedAt: new Date().toISOString(),
 }

@@ -31,7 +31,7 @@ export function ExtractionReview({ sessionId }: ExtractionReviewProps) {
     const [loading, setLoading] = useState(true)
     const [extracting, setExtracting] = useState(false)
     const [saving, setSaving] = useState(false)
-    const [saveResult, setSaveResult] = useState<{ saved: number; errors: string[] } | null>(null)
+    const [saveResult, setSaveResult] = useState<{ saved: number; errors: string[]; clientsSaved?: number } | null>(null)
     const [error, setError] = useState<string | null>(null)
 
     const fetchSession = useCallback(async () => {
@@ -125,9 +125,12 @@ export function ExtractionReview({ sessionId }: ExtractionReviewProps) {
     const handleSaveApproved = async () => {
         setSaving(true)
         setError(null)
+        const clientsSaved = records.filter(
+            (r) => r.record_type === 'client' && (r.status === 'approved' || r.status === 'edited')
+        ).length
         try {
             const result = await DocumentIntelligenceService.saveApprovedRecords(sessionId)
-            setSaveResult(result)
+            setSaveResult({ ...result, clientsSaved: clientsSaved > 0 ? clientsSaved : undefined })
             // Refresh records to get updated statuses
             await fetchSession()
         } catch (err: unknown) {
@@ -289,18 +292,30 @@ export function ExtractionReview({ sessionId }: ExtractionReviewProps) {
 
             {/* Save result */}
             {saveResult && (
-                <div className="flex items-start gap-2 p-4 rounded-lg bg-success/15 text-success text-sm border border-success/20">
-                    <CheckCircle2 className="w-5 h-5 mt-0.5 shrink-0" />
-                    <div>
-                        <p className="font-medium">
-                            Successfully saved {saveResult.saved} record{saveResult.saved !== 1 ? 's' : ''}
-                        </p>
-                        {saveResult.errors.length > 0 && (
-                            <ul className="mt-1 text-xs text-destructive">
-                                {saveResult.errors.map((e, i) => <li key={i}>{e}</li>)}
-                            </ul>
-                        )}
+                <div className="flex flex-col gap-3 p-4 rounded-lg bg-success/15 text-success text-sm border border-success/20">
+                    <div className="flex items-start gap-2">
+                        <CheckCircle2 className="w-5 h-5 mt-0.5 shrink-0" />
+                        <div>
+                            <p className="font-medium">
+                                Successfully saved {saveResult.saved} record{saveResult.saved !== 1 ? 's' : ''}
+                            </p>
+                            {saveResult.errors.length > 0 && (
+                                <ul className="mt-1 text-xs text-destructive">
+                                    {saveResult.errors.map((e, i) => <li key={i}>{e}</li>)}
+                                </ul>
+                            )}
+                        </div>
                     </div>
+                    {saveResult.clientsSaved != null && saveResult.clientsSaved > 0 && (
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => router.push('/clients')}
+                            className="self-start border-success/50 text-success hover:bg-success/10"
+                        >
+                            {saveResult.clientsSaved} new client{saveResult.clientsSaved !== 1 ? 's' : ''} added — View Clients
+                        </Button>
+                    )}
                 </div>
             )}
 

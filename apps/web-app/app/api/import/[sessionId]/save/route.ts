@@ -109,6 +109,7 @@ export async function POST(
                                 email: data.email || null,
                                 phone: data.phone || null,
                                 company: data.company || null,
+                                address: data.address || null,
                                 type: VALID_CLIENT_TYPES.includes(data.type) ? data.type : 'other',
                                 notes: data.notes || null,
                             })

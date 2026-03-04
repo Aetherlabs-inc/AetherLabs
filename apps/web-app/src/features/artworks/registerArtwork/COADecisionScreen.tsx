@@ -38,7 +38,7 @@ const COADecisionScreen: React.FC<COADecisionScreenProps> = ({
 
   const previewCertificateData = {
     certificateId: 'COA-PREVIEW',
-    qrCodeUrl: 'https://aetherlabs.art/verify/preview',
+    qrCodeUrl: 'https://aetherlabs.art/v/preview',
     blockchainHash: '0x' + 'a'.repeat(32) + '...',
     generatedAt: new Date().toISOString(),
   }

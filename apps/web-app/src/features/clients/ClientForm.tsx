@@ -25,6 +25,7 @@ export interface ClientFormData {
     email: string
     phone: string
     company: string
+    address: string
     type: ClientType | ''
     notes: string
 }
@@ -34,6 +35,7 @@ const emptyForm: ClientFormData = {
     email: '',
     phone: '',
     company: '',
+    address: '',
     type: '',
     notes: '',
 }
@@ -53,6 +55,7 @@ export function ClientForm({ open, onOpenChange, client, onSubmit }: ClientFormP
                   email: client.email ?? '',
                   phone: client.phone ?? '',
                   company: client.company ?? '',
+                  address: client.address ?? '',
                   type: client.type ?? '',
                   notes: client.notes ?? '',
               }
@@ -85,7 +88,7 @@ export function ClientForm({ open, onOpenChange, client, onSubmit }: ClientFormP
 
     const handleOpenChange = (next: boolean) => {
         if (!next) {
-            setForm(client ? { name: client.name, email: client.email ?? '', phone: client.phone ?? '', company: client.company ?? '', type: client.type ?? '', notes: client.notes ?? '' } : emptyForm)
+            setForm(client ? { name: client.name, email: client.email ?? '', phone: client.phone ?? '', company: client.company ?? '', address: client.address ?? '', type: client.type ?? '', notes: client.notes ?? '' } : emptyForm)
             setError(null)
         }
         onOpenChange(next)
@@ -137,6 +140,16 @@ export function ClientForm({ open, onOpenChange, client, onSubmit }: ClientFormP
                                 value={form.company}
                                 onChange={e => setForm(f => ({ ...f, company: e.target.value }))}
                                 placeholder="Gallery or institution"
+                                className="bg-background"
+                            />
+                        </div>
+                        <div className="grid gap-2">
+                            <Label htmlFor="address">Address</Label>
+                            <Input
+                                id="address"
+                                value={form.address}
+                                onChange={e => setForm(f => ({ ...f, address: e.target.value }))}
+                                placeholder="Street, city, postal code"
                                 className="bg-background"
                             />
                         </div>

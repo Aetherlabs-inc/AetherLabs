@@ -7,6 +7,7 @@ import {
     User,
     Mail,
     Phone,
+    MapPin,
     Pencil,
     Trash2,
     Receipt,
@@ -121,6 +122,7 @@ export default function ClientDetailPage({ clientId }: ClientDetailPageProps) {
             email: data.email || null,
             phone: data.phone || null,
             company: data.company || null,
+            address: data.address || null,
             type: (data.type as ClientType) || null,
             notes: data.notes || null,
         })
@@ -252,13 +254,19 @@ export default function ClientDetailPage({ clientId }: ClientDetailPageProps) {
                                 </a>
                             </div>
                         )}
+                        {client.address && (
+                            <div className="flex items-center gap-3">
+                                <MapPin className="h-4 w-4 text-muted-foreground" />
+                                <span className="text-foreground">{client.address}</span>
+                            </div>
+                        )}
                         {client.notes && (
                             <div className="sm:col-span-2 flex items-start gap-3">
                                 <User className="h-4 w-4 text-muted-foreground mt-0.5" />
                                 <p className="text-muted-foreground text-sm">{client.notes}</p>
                             </div>
                         )}
-                        {!client.email && !client.phone && !client.notes && (
+                        {!client.email && !client.phone && !client.address && !client.notes && (
                             <p className="text-muted-foreground text-sm sm:col-span-2">No contact details</p>
                         )}
                     </CardContent>

@@ -8,6 +8,14 @@ export interface DashboardStats {
   needsReview: number
 }
 
+export interface CRMStats {
+  totalClients: number
+  recentTransactionsCount: number
+  quotationsDraft: number
+  quotationsSent: number
+  quotationsAccepted: number
+}
+
 export interface Activity {
   id: string
   type: 'artwork' | 'certificate' | 'verification' | 'nfc'
@@ -253,6 +261,36 @@ export class DashboardService {
     }
 
     return pendingItems.slice(0, 5)
+  }
+
+  /**
+   * Get CRM overview stats (clients, transactions, quotations by status)
+   */
+  static async getCRMStats(): Promise<CRMStats> {
+    const supabase = createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+
+    if (!user) {
+      throw new Error('Not authenticated')
+    }
+
+    const [{ count: totalClients }, { count: recentTx }, { data: quotations }] = await Promise.all([
+      supabase.from('clients').select('*', { count: 'exact', head: true }).eq('user_id', user.id),
+      supabase.from('transactions').select('*', { count: 'exact', head: true }).eq('user_id', user.id),
+      supabase.from('quotations').select('status').eq('user_id', user.id),
+    ])
+
+    const quotationsDraft = quotations?.filter(q => q.status === 'draft').length ?? 0
+    const quotationsSent = quotations?.filter(q => q.status === 'sent').length ?? 0
+    const quotationsAccepted = quotations?.filter(q => q.status === 'accepted').length ?? 0
+
+    return {
+      totalClients: totalClients ?? 0,
+      recentTransactionsCount: recentTx ?? 0,
+      quotationsDraft,
+      quotationsSent,
+      quotationsAccepted,
+    }
   }
 }
 

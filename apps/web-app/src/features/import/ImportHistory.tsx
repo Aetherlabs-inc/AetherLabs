@@ -11,7 +11,7 @@ import {
 } from '@aetherlabs/ui'
 import {
     FileSpreadsheet, FileText, Trash2, ExternalLink, Upload,
-    ArrowLeft,
+    ArrowLeft, Users,
 } from 'lucide-react'
 import { ImportService } from '@/src/services/import-service'
 import type { ImportSession } from '@/src/types/database'
@@ -87,10 +87,16 @@ export function ImportHistory() {
                     </button>
                     <p className="text-2xl font-playfair font-semibold text-foreground">Import History</p>
                 </div>
-                <Button onClick={() => router.push('/import')} className="bg-primary text-primary-foreground hover:bg-primary/90">
-                    <Upload className="w-4 h-4 mr-2" />
-                    New Import
-                </Button>
+                <div className="flex gap-2">
+                    <Button variant="outline" onClick={() => router.push('/clients')}>
+                        <Users className="w-4 h-4 mr-2" />
+                        View Clients
+                    </Button>
+                    <Button onClick={() => router.push('/import')} className="bg-primary text-primary-foreground hover:bg-primary/90">
+                        <Upload className="w-4 h-4 mr-2" />
+                        New Import
+                    </Button>
+                </div>
             </div>
 
             {sessions.length === 0 ? (
@@ -110,10 +116,16 @@ export function ImportHistory() {
                     <p className="text-muted-foreground text-center max-w-sm mx-auto mb-6">
                         Upload your first document to start extracting artwork data, invoices, and quotations.
                     </p>
-                    <Button onClick={() => router.push('/import')} className="bg-primary text-primary-foreground hover:bg-primary/90">
-                        <Upload className="w-4 h-4 mr-2" />
-                        Upload Your First Document
-                    </Button>
+                    <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                        <Button onClick={() => router.push('/import')} className="bg-primary text-primary-foreground hover:bg-primary/90">
+                            <Upload className="w-4 h-4 mr-2" />
+                            Upload Your First Document
+                        </Button>
+                        <Button variant="outline" onClick={() => router.push('/clients')}>
+                            <Users className="w-4 h-4 mr-2" />
+                            View Clients
+                        </Button>
+                    </div>
                 </div>
             ) : (
                 <div className="space-y-3">

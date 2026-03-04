@@ -4,6 +4,7 @@ import { Button, Card, CardContent, CardHeader, CardTitle, Badge, AlertDialog, A
 import { ArtworkWithDetails } from '@/src/types/database';
 import { formatArtistName } from '@/src/utils/artist-utils';
 import { downloadCertificatePDF } from './registerArtwork/COACertificatePDF';
+import { verificationUrl } from '@/src/lib/app-config';
 
 
 interface ArtworkDetailsProps {
@@ -44,7 +45,7 @@ const ArtworkDetails: React.FC<ArtworkDetailsProps> = ({
                 },
                 certificateData: {
                     certificateId: cert.certificate_id,
-                    qrCodeUrl: cert.qr_code_url || `https://aetherlabs.art/verify/${cert.certificate_id}`,
+                    qrCodeUrl: cert.qr_code_url || verificationUrl(cert.certificate_id),
                     blockchainHash: cert.blockchain_hash || '',
                     generatedAt: cert.generated_at,
                 },
@@ -72,7 +73,7 @@ const ArtworkDetails: React.FC<ArtworkDetailsProps> = ({
         if (!artwork.certificates || artwork.certificates.length === 0) return;
 
         const cert = artwork.certificates[0];
-        const shareUrl = `https://aetherlabs.art/verify/${cert.certificate_id}`;
+        const shareUrl = verificationUrl(cert.certificate_id);
 
         if (navigator.share) {
             try {

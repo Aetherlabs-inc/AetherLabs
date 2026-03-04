@@ -14,6 +14,7 @@ import {
 } from '@aetherlabs/ui'
 import { Wifi, ArrowLeft, ArrowRight, CheckCircle, Smartphone, Shield, Info } from 'lucide-react'
 import { generateVerificationCode } from '@/src/lib/crypto'
+import { verificationUrl } from '@/src/lib/app-config'
 
 interface NFCBindingScreenProps {
   artworkData: {
@@ -160,7 +161,7 @@ const NFCBindingScreen: React.FC<NFCBindingScreenProps> = ({ artworkData, coaDat
                           Once registered, anyone can verify this artwork by scanning the NFC tag or visiting:
                         </p>
                         <p className="text-sm font-mono mt-2 text-foreground bg-muted px-2 py-1 rounded">
-                          aetherlabs.art/v/{verificationCode}
+                          {verificationUrl(verificationCode)}
                         </p>
                       </div>
                     )}
